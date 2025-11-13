@@ -8,8 +8,8 @@ const Hero = () => {
   return (
     // حاوية القسم، مع خلفية رمادية فاتحة ودعم للوضع الداكن
     
-      <AuroraBackground><section className="  dark:bg-gray-900 -translate-x-10
-    mt-20 " dir="rtl">
+      <AuroraBackground><section className="h-full dark:bg-gray-900 -translate-x-10
+     mt-50 " dir="rtl">
         <div className=" w-full  px-6 py-16 lg:py-24">
         {/* نستخدم grid لتنسيق الشاشات الكبيرة (عمودين) والصغيرة (عمود واحد) */}
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">

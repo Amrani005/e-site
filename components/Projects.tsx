@@ -50,7 +50,7 @@ const Projects = () => {
     <section
       id="projects"
       ref={sectionRef} // 7. ربط الـ ref بالعنصر
-      className="py-20 sm:py-32 bg-white dark:bg-gray-950 -translate-x-13 lg:translate-x-0"
+      className="py-20 sm:py-32 mt-45 bg-white dark:bg-gray-950 -translate-x-13 lg:translate-x-0"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h2 id='title' className="text-5xl opacity-0 font-bold tracking-tight text-center text-purple-700 dark:text-purple-400 mb-16">
