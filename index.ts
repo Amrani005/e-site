@@ -60,23 +60,23 @@ export const portfolioSection = [
 export const projectsSection = [
   {
     image: "/clothe1.jpg", // يجب أن تضع صورك في /public/images
-    title: "pexlat form",
+    title: "Oversized Half-Zip Sweater",
     description: "حل متكامل لإدارة طلبات العملاء في متجرك، وتتبع معلومات العملاء.",
     tags: ["PHP", "WordPress"],
     price:' 12600.00',
     link: "/projects/pexlat-form", // رابط المشروع
   },
   {
-    image: "/cloteh3 (3).jpg",
-    title: " reels no",
+    image: "/cloteh3 (2).jpg",
+    title: " Black Full Tracksuit",
     description: "إضافة متصفح لإزالة مانع الإعلانات وحظر المقاطع المزعجة.",
     tags: ["HTML", "CSS", "js"],
     price:' 5600.00',
     link: "/projects/no-reels",
   },
   {
-    image: "/cloteh3 (2).jpg",
-    title: "نظام إدارة الرحلات",
+    image: "/cloteh3 (3).jpg",
+    title: "  Camel Wool-Blend Coat",
     description: "نظام متكامل لإدارة الرحلات والحجوزات والمبيعات مع تقارير شاملة.",
     tags: ["tailwind", "react"],
     price:' 8600.00',
@@ -84,7 +84,7 @@ export const projectsSection = [
   },
   {
     image: "/cloteh3 (1).jpg",
-    title: "مشروع No Music",
+    title: "Navy Ribbed Pullover",
     description: "مشروع مجاني لإزالة الموسيقى من الصفحات.",
     tags: ["Python", "react"], // "paython" -> "Python"
     link: "/projects/no-music",

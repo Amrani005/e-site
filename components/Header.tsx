@@ -60,13 +60,13 @@ const Header = () => {
             {/* 3. تبديل الأيقونة بناءً على الحالة */}
             {isMenuOpen ? <X size={40} className='rotate-180 hover:text-purple-600 duration-300 transition-transform ease-in-out' /> : <Menu size={40} className=' duration-300 transition-transform  ease-in-out text-purple-700 ' />}
           </button>
-          <ThemeToggle/>
+          <ThemeToggle />
           </div>
 
           {/* Right: Logo */}
           <Link href="/" className="flex items-center gap-2" prefetch={false}>
-            <span className="text-2xl  font-bold text-purple-700 dark:text-white">
-              إ-سايت
+            <span className="text-2xl font-mono font-bold text-purple-700 dark:text-white">
+                E-site
             </span>
             
             <Image
@@ -138,7 +138,7 @@ const Header = () => {
                  focus-visible:outline focus-visible:outline-2 
                  focus-visible:outline-offset-2
                   focus-visible:outline-purple-600
-                  hover:scale-[1.1]  "
+                  hover:scale-[1.1] ease-in-out "
               prefetch={false}
             >
                  تسجيل الدخول
@@ -146,8 +146,8 @@ const Header = () => {
             </div>
             
             <Link href="/" className="flex items-center gap-2" prefetch={false}>
-              <span className="text-xl font-bold text-purple-700 dark:text-white">
-                إ-سايت
+              <span className="text-xl font-mono font-bold text-purple-700 dark:text-white">
+                 E-site
 
               </span>
               <Image

@@ -91,7 +91,7 @@ const SocialIcon = ({ icon }: { icon: string }) => {
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-50 text-gray-700 py-12 px-4 sm:px-6
+    <footer className="bg-white text-gray-700 py-12 px-4 sm:px-6
      lg:px-8  " dir="rtl">
         
       <div className="max-w-7xl mx-auto items-center">
@@ -132,7 +132,8 @@ const Footer: React.FC = () => {
           {/* الأقسام الأخرى: روابط المساعدة (يتم جلبها بالـ map) */}
           {footerLinks.map((column) => (
             <div key={column.title}>
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+              <h3 className="text-sm font-semibold text-gray-900 
+              uppercase tracking-wider mb-4 ">
                 {column.title}
               </h3>
               <ul className="space-y-3">
@@ -150,7 +151,9 @@ const Footer: React.FC = () => {
         </div>
 
         {/* القسم السفلي: الحقوق وأيقونات الدفع */}
-        <div className="border-t border-gray-200 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-gray-200 mt-12 pt-8 flex 
+        flex-col md:flex-row justify-between items-center
+        -translate-x-13 lg:translate-x-0">
           <p className="text-gray-500 text-sm">
             Shop.co &copy; 2000-{new Date().getFullYear()}، جميع الحقوق محفوظة.
           </p>

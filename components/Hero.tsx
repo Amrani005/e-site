@@ -1,4 +1,5 @@
 import React from 'react';
+import { AuroraBackground } from './ui/AuroraBackground';
 // import Link from 'next/link'; // Replaced with <a> for preview
 // import Image from 'next/image'; // Replaced with <img> for preview
 
@@ -6,9 +7,10 @@ import React from 'react';
 const Hero = () => {
   return (
     // حاوية القسم، مع خلفية رمادية فاتحة ودعم للوضع الداكن
-    <section className="bg-gray-50 dark:bg-gray-900 -translate-x-10
-    mt-20" dir="rtl">
-      <div className="container mx-auto px-6 py-16 lg:py-24">
+    
+      <AuroraBackground><section className="  dark:bg-gray-900 -translate-x-10
+    mt-20 " dir="rtl">
+        <div className=" w-full  px-6 py-16 lg:py-24">
         {/* نستخدم grid لتنسيق الشاشات الكبيرة (عمودين) والصغيرة (عمود واحد) */}
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           
@@ -59,8 +61,11 @@ const Hero = () => {
             />
           </div>
         </div>
-      </div>
-    </section>
+      </div >
+      </section>
+      </AuroraBackground>
+     
+    
   );
 };
 
