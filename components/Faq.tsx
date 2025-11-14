@@ -13,8 +13,8 @@ const Faq = () => {
   };
 
   return (
-    <section id="faq" className="py-20 sm:py-32 bg-white
-     dark:bg-gray-900 -translate-x-13 lg:translate-x-0">
+    <section id="faq" className="py-20 sm:py-32 bg-transparent
+     dark:bg-transparent -translate-x-13 lg:translate-x-0">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
         <h2 className="text-5xl font- font-bold tracking-tight text-center text-purple-700 dark:text-purple-400 mb-16">
           الأسئلة الشائعة
@@ -24,7 +24,7 @@ const Faq = () => {
           {faqSection.map((item, index) => (
             <div
               key={item.question}
-              className="rounded-2xl bg-white dark:bg-gray-850 shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden"
+              className="rounded-2xl bg-transparent dark:bg-gray-850 shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden"
             >
               {/* زر السؤال (الرأس) */}
               <button

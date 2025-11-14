@@ -15,7 +15,7 @@ export default function Home() {
       <Hero/>
       <Projects/>
       <Faq/>
-      <hr className="border-zinc-300 mx-5"/>
+      <hr className="border-zinc-500 -translate-x-10 lg:translate-x-0"/>
       <Footer/>
       
     </div>

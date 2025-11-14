@@ -91,8 +91,8 @@ const SocialIcon = ({ icon }: { icon: string }) => {
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-white text-gray-700 py-12 px-4 sm:px-6
-     lg:px-8  " dir="rtl">
+    <footer className="bg-transparent text-gray-700 py-12 px-4 sm:px-6
+     lg:px-8 translate-x-3 lg:translate-x-0  " dir="rtl">
         
       <div className="max-w-7xl mx-auto items-center">
         <div className="grid  grid-cols-2
@@ -102,8 +102,8 @@ const Footer: React.FC = () => {
           <div className="md:col-span-2">
             
            <h1 className='text-4xl text-purple-700 cursor-pointer duration-300
-           ease-in-out hover:scale-[1.1] '>
-            إ-سايت
+           ease-in-out font-mono hover:scale-[1.1] '>
+             iSite
            </h1>
             <h2 className="text-3xl font-extrabold text-gray-900 h-9 mb-4">
               {/* SHOP.CO */}

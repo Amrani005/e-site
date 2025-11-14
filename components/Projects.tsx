@@ -17,7 +17,7 @@ const Projects = () => {
     const el = sectionRef.current;
 
     const cards = gsap.utils.toArray('.project-card');
-    gsap.to('#title',{opacity:1, duration:1.0})
+    gsap.fromTo('#title',{opacity:0, y:100},{opacity:1,y:0,duration:1.2})
 
     gsap.fromTo(
       cards,
@@ -28,7 +28,7 @@ const Projects = () => {
       {
         opacity: 1,
         y: 0,
-        duration: 1.2,
+        duration: 1.5,
         ease: 'power2.out',
         stagger: 0.8, // تأخير 0.1 ثانية بين كل بطاقة
 
@@ -50,10 +50,12 @@ const Projects = () => {
     <section
       id="projects"
       ref={sectionRef} // 7. ربط الـ ref بالعنصر
-      className="py-20 sm:py-32 mt-45 bg-white dark:bg-gray-950 -translate-x-13 lg:translate-x-0"
+      className="py-20 sm:py-32 mt-65 lg:mt-0 bg-transparent dark:bg-transparent 
+      -translate-x-9 lg:translate-x-0 "
     >
+      
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 id='title' className="text-5xl opacity-0 font-bold tracking-tight text-center text-purple-700 dark:text-purple-400 mb-16">
+        <h2 id='title' className="text-6xl mb-25 pt-20 font-bold tracking-tight text-center text-purple-700 dark:text-purple-400 ">
           منتجاتنا
         </h2>
 

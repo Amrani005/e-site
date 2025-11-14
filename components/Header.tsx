@@ -66,7 +66,7 @@ const Header = () => {
           {/* Right: Logo */}
           <Link href="/" className="flex items-center gap-2" prefetch={false}>
             <span className="text-2xl font-mono font-bold text-purple-700 dark:text-white">
-                E-site
+                iSite
             </span>
             
             <Image
@@ -147,7 +147,7 @@ const Header = () => {
             
             <Link href="/" className="flex items-center gap-2" prefetch={false}>
               <span className="text-xl font-mono font-bold text-purple-700 dark:text-white">
-                 E-site
+                 iSite
 
               </span>
               <Image
