@@ -40,7 +40,7 @@ export const serviceSection= [
 export const portfolioSection = [
   {
     image: "/images/portfolio-1.jpg", // يجب أن تضع صورك في /public/images
-    title: "هوية بصرية لشركة تقنية",
+    title: "هوية بصرية شركة تقنية",
     description: "تصميم هوية بصرية كاملة تشمل الشعار والألوان والخطوط.",
     tags: ["Photoshop", "Illustrator", "Adobe XD"],
   },
