@@ -41,7 +41,7 @@ const WilayaSelector = () => {
         <div className="mb-4">
           <label 
             htmlFor="wilaya-select" 
-            className="block text-lg font-medium text-gray-300 mb-2"
+            className="block text-lg font-medium text-gray-300 mb-3"
           >
             الولاية:
           </label>
