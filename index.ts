@@ -3,16 +3,16 @@ import { Monitor, Megaphone, Palette, Code } from 'lucide-react';
 
 export const navLinks = [
     { 
-        href: "/services",
+        href: "#home",
         label: "الرئيسية" 
     },
     { 
-        href: "/portfolio",
+        href: "#portfolio",
         label: " قائمة المنتجات" 
     },
     { 
-        href: "/methods", 
-        label: "تواصل معنا" 
+        href: "#faq", 
+        label: "الأسئلة الشائعة" 
     },
 ];
 export const serviceSection= [
@@ -69,7 +69,7 @@ export const projectsSection = [
   {
     image: "/cloteh3 (2).jpg",
     title: " Black Full Tracksuit",
-    description: "إضافة متصفح لإزالة مانع الإعلانات وحظر المقاطع المزعجة.",
+    description: "حل متكامل لإدارة طلبات العملاء في متجرك، وتتبع معلومات العملاء.",
     tags: ["HTML", "CSS", "js"],
     price:' 5600.00',
     link: "/projects/no-reels",
@@ -77,7 +77,7 @@ export const projectsSection = [
   {
     image: "/cloteh3 (3).jpg",
     title: "  Camel Wool-Blend Coat",
-    description: "نظام متكامل لإدارة الرحلات والحجوزات والمبيعات مع تقارير شاملة.",
+    description: "حل متكامل لإدارة طلبات العملاء في متجرك، وتتبع معلومات العملاء.",
     tags: ["tailwind", "react"],
     price:' 8600.00',
     link: "/projects/trip-manager",
@@ -85,7 +85,7 @@ export const projectsSection = [
   {
     image: "/cloteh3 (1).jpg",
     title: "Navy Ribbed Pullover",
-    description: "مشروع مجاني لإزالة الموسيقى من الصفحات.",
+    description: "حل متكامل لإدارة طلبات العملاء في متجرك، وتتبع معلومات العملاء.",
     tags: ["Python", "react"], // "paython" -> "Python"
     link: "/projects/no-music",
     price:' 35800.00',

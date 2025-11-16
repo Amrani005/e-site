@@ -34,7 +34,7 @@ const Header = () => {
 
   return (
     // أصلحنا px-10 لتكون متجاوبة وأزلنا font-tajawal (يجب أن يكون في globals.css)
-    <header className="fixed top-4 z-50 w-full px-4 sm:px-10">
+    <header className="fixed top-4 translate-x-13 lg:translate-x-0 z-50 w-full px-4 sm:px-10">
       <div
         className="w-full rounded-3xl border border-gray-200/80
         bg-transparent shadow-lg backdrop-blur-xl dark:border-gray-700/80
@@ -60,7 +60,10 @@ const Header = () => {
             {/* 3. تبديل الأيقونة بناءً على الحالة */}
             {isMenuOpen ? <X size={40} className='rotate-180 hover:text-purple-600 duration-300 transition-transform ease-in-out' /> : <Menu size={40} className=' duration-300 transition-transform  ease-in-out text-purple-700 ' />}
           </button>
+          <Link href='/cart'>
           <ThemeToggle />
+          </Link>
+          
           </div>
 
           {/* Right: Logo */}
@@ -84,10 +87,13 @@ const Header = () => {
           <div className="md:hidden mt-6 px-4 pb-4 text-center cursor-pointer
           duration-300 transition-all ease-in-out">
             {navLinks.map((item)=>(
-              <div className="text-lg font-medium text-gray-700 dark:text-gray-300
+              <a href={item.href}>
+                <div className="text-lg font-medium text-gray-700 dark:text-gray-300
                hover:text-purple-600 mt-4">
                 {item.label}
               </div>
+              </a>
+              
             ))}
             {/* زر "تواصل معنا" للموبايل */}
             <div className="mt-8 hover:scale-[1.1] duration-300">
@@ -114,14 +120,19 @@ const Header = () => {
         <div className="hidden h-20 items-center justify-between px-6 md:flex">
           {/* Left: Theme Toggle */}
           
-              <ThemeToggle/>
+              <Link href='/cart'>
+          <ThemeToggle />
+          </Link>
           {/* Center: Navigation Links */}
           <nav className='flex  gap-8'>
            {navLinks.map((item)=>(
-              <div className="text-2xl font-medium text-gray-700 dark:text-gray-300
+              <a href={item.href}>
+                <div  key={item.label}  className="text-2xl font-medium text-gray-700 dark:text-gray-300
                hover:text-purple-600 mt-4 ">
                 {item.label}
               </div>
+              </a>
+              
             ))}
           </nav>
           

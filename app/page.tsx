@@ -10,7 +10,7 @@ import Hero from "@/components/Hero";
 
 export default function Home() {
   return (
-    <div className="lg:w-full  w-[80%] flex flex-col">
+    <div className="lg:w-full  w-[100%] flex flex-col">
       <Header/>
       <Hero/>
       <Projects/>

@@ -46,7 +46,7 @@ export default function RootLayout({
 }>) {
   return (
     // 3. Set lang="ar" (Arabic) and dir="rtl" (Right-to-Left)
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl" suppressHydrationWarning={true}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${tajawal.variable} antialiased`}
       >
