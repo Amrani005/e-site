@@ -79,13 +79,13 @@ const Projects = () => {
       ref={sectionRef} 
       className="py-20 sm:py-32  lg:mt-0 bg-transparent dark:bg-transparent -translate-x-10 lg:translate-x-0 "
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 justify-center translate-x-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 justify-center translate-x-17">
         {/* التنسيق الأصلي 2: */}
-        <h2 id='title' className="text-8xl  mb-5 px-13 lg:px-0 pt-20 font-tajawal font-bold tracking-tight text-center text-purple-700 dark:text-purple-400 ">
+        <h2 id='title' className="text-8xl  mb-5 px-13 lg:px-0 pt-20  font-tajawal font-bold tracking-tight text-center text-purple-700 dark:text-purple-400 ">
           منتجاتنا
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 
-w-full h-full -translate-x-4 ">
+w-full h-full -translate-x-14 ">
           {products.map((item) => (
             <Link 
               key={item.id}
