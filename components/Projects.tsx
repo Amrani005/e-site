@@ -81,7 +81,7 @@ const Projects = () => {
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 justify-center translate-x-17">
         {/* التنسيق الأصلي 2: */}
-        <h2 id='title' className="text-8xl  mb-5 px-13 lg:px-0 pt-20  font-tajawal font-bold tracking-tight text-center text-purple-700 dark:text-purple-400 ">
+        <h2 id='title' className="text-8xl lg:text-9xl   lg:-mt-20 lg:mb-20 mb-5 px-13 lg:px-0   font-tajawal font-bold tracking-tight text-center text-purple-700 dark:text-purple-400 ">
           منتجاتنا
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 
