@@ -8,12 +8,12 @@ const AboutUs = () => {
 
   return (
     <motion.div
-      className="min-h-screen w-full bg-gray-50 font-tajawal"
+      className=" bg-gray-50 font-tajawal w- -translate-x-10  "
       dir="rtl" // Set direction to Right-to-Left for Arabic
       // Removed: initial="hidden" and animate="visible"
     >
       {/* 1. HERO SECTION: Title and Motto */}
-      <div className="py-20 bg-purple-600 text-white shadow-lg ">
+      <div className="flex flex-col  py-30 bg-gray-50  text-purple-600   ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mt-20">
           <motion.h1 
             // Removed: variants={sectionItem}

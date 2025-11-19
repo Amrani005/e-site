@@ -3,7 +3,7 @@ import { Monitor, Megaphone, Palette, Code } from 'lucide-react';
 
 export const navLinks = [
     { 
-        href: "#home",
+        href: "/home",
         label: "الرئيسية" 
     },
     { 
