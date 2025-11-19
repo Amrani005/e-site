@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'txydigitalproducts.dreamhosters.com',
+        hostname: 'algeriebledy.dreamhosters.com',
         pathname: '**',
       },
     ],

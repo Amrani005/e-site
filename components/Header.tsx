@@ -36,7 +36,7 @@ const Header = () => {
     // أصلحنا px-10 لتكون متجاوبة وأزلنا font-tajawal (يجب أن يكون في globals.css)
     <header className="fixed top-4 translate-x-13 lg:translate-x-0 z-50 w-full px-4 sm:px-10">
       <div
-        className="w-full rounded-3xl border border-gray-200/80
+        className="w-full rounded-3xl border border-transparent
         bg-transparent shadow-lg backdrop-blur-xl dark:border-gray-700/80
         dark:bg-gray-950/80 p-5"
       >
@@ -126,7 +126,7 @@ const Header = () => {
           {/* Center: Navigation Links */}
           <nav className='flex  gap-8'>
            {navLinks.map((item)=>(
-              <a href={item.href}>
+              <a  href={item.href}>
                 <div  key={item.label}  className="text-2xl font-medium text-gray-700 dark:text-gray-300
                hover:text-purple-600 mt-4 ">
                 {item.label}

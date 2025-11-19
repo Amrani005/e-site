@@ -7,12 +7,12 @@ export const navLinks = [
         label: "الرئيسية" 
     },
     { 
-        href: "#portfolio",
+        href: "/colection",
         label: " قائمة المنتجات" 
     },
     { 
-        href: "#faq", 
-        label: "الأسئلة الشائعة" 
+        href: "/about", 
+        label: " عنا" 
     },
 ];
 export const serviceSection= [
@@ -36,6 +36,18 @@ export const serviceSection= [
         title: "تطوير المواقع",
         description: "تصميم وتطوير مواقع احترافية متجاوبة.",
       },
+];
+export const category=[
+  {
+    label:'Men'
+  },
+  {
+    label:'Women'
+  },
+  {
+    label:'Kids'
+  },
+  
 ];
 export const portfolioSection = [
   {
