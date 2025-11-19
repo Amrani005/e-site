@@ -30,8 +30,8 @@ const ProductInfo = () => {
   };
 
   return (
-    <section className="py-20 sm:py-32 bg-transparent dark:bg-gray-900 min-h-screen text-black 
-    -translate-x-7 lg:translate-x-0 mt-20">
+    <section className="py-20 sm:py-32 bg-transparent dark:bg-gray-800 min-h-screen text-black 
+    -translate-x-7 lg:translate-x-0 mt-20 ">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
         <Link // 3. Link موجود

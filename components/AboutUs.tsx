@@ -8,12 +8,12 @@ const AboutUs = () => {
 
   return (
     <motion.div
-      className=" bg-gray-50 font-tajawal w- -translate-x-10  "
+      className="  font-tajawal  -translate-x-5 lg:translate-x-0 "
       dir="rtl" // Set direction to Right-to-Left for Arabic
-      // Removed: initial="hidden" and animate="visible"
+      // Removed: initial="hidden" and imate="visible"
     >
       {/* 1. HERO SECTION: Title and Motto */}
-      <div className="flex flex-col  py-30 bg-gray-50  text-purple-600   ">
+      <div className="flex flex-col  py-30 bg-gray-50  text-purple-600 translate-x-  ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mt-20">
           <motion.h1 
             // Removed: variants={sectionItem}
@@ -110,12 +110,12 @@ const AboutUs = () => {
       </motion.div>
 
       {/* 4. CALL TO ACTION (CTA) */}
-      <motion.div className="py-16 bg-zinc-800 text-center">
+      <motion.div className="py-16  text-center ">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-3xl font-bold text-purple-600 mb-4">
             انضم إلى الحركة
           </h2>
-          <p className="text-lg text-zinc-300 mb-8">
+          <p className="text-lg text-zinc-600 mb-8">
             اكتشف أحدث مجموعتنا المستدامة واختبر الفرق بنفسك.
           </p>
           <a

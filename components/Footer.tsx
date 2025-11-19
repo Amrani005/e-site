@@ -4,7 +4,8 @@ import React from 'react';
 const Footer = () => {
   return (
     // 1. Footer container: Black background, white text, full width
-    <footer className="bg-gray-900 border text-purple-500 w-full">
+    <footer className="  text-purple-400 w-full
+     contain-content lg:w-full -translate-x-5">
       
       {/* 2. Main Footer Content Area: NAD STORE & Description */}
       {/* py-16 for vertical padding, container for centered content */}
@@ -32,7 +33,7 @@ const Footer = () => {
 
       {/* 3. Copyright Bar (Bottom-most section) */}
       {/* Subtle border and smaller padding for the very bottom line */}
-      <div className=" py-3 px-4 text-center text-sm bg-gray-900">
+      <div className=" py-3 px-4 text-center text-sm ">
         <div className="container mx-auto">
           {/* Copyright Text (Arabic Text) */}
           <p className="text-gray-500" dir="rtl">

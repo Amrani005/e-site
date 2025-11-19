@@ -86,7 +86,7 @@ const Selections = () => {
   }
 
   return (
-    <div className="min-h-screen w-full -translate-x-10 lg:translate-x-0 bg-gray-50 p-4 lg:p-10 font-tajawal">
+    <div className="min-h-screen w-full -translate-x-3 lg:translate-x-0  p-4 lg:p-10 font-tajawal">
       
       {/* Header Section */}
       <div className="mb-10 text-center lg:text-left">
