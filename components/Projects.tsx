@@ -85,7 +85,7 @@ const Projects = () => {
           منتجاتنا
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 
-w-full h-full -translate-x-14 ">
+            w-full h-full -translate-x-14 ">
           {products.map((item) => (
             <Link 
               key={item.id}
@@ -100,37 +100,58 @@ w-full h-full -translate-x-14 ">
                 }
               }}
               // التنسيق الأصلي 3:
-              className="project-card  flex h-96 flex-col 
-                         justify-end rounded-2xl shadow-lg overflow-hidden
-                         cursor-pointer group "
+              className=" "
             >
-              <img
-                src={item.images[0]?.src || ''}
-                alt={item.name}
-                
-                className="z-0 bg-gradient-to-t from-black/70 to-transparent
-                           transition-transform duration-300 group-hover:scale-110
-                           absolute inset-0 w-full h-full object-cover -my-5"
-              />
-                
-              <div className="absolute bottom-0 left-0 right-0 z-10 p-6 text-center
-                bg-gradient-to-t from-black/70 to-transparent transition-opacity
-                 duration-300 group-hover:from-black/90p"
-              >
-                <div>
-                {/* التنسيق الأصلي 6: */}
-                  <h3 className="text-4xl font-bold text-white translate-y-30 lg:translate-x-0 ">
-                    {item.name}
-                  </h3>
-                  {item.price ? (
-                    <p className="text-3xl text-white font-light translate-y-15">
-                      {item.price} د.ج
-                    </p>
-                  ) : (
-                    <p className="text-sm text-gray-200">السعر غير متوفر</p>
-                  )}
-                </div>
-              </div>
+              <div 
+                        key={item.id} 
+                        className="flex group flex-col bg-white rounded-3xl overflow-hidden
+                            shadow-sm hover:shadow-xl hover:shadow-purple-200/50 
+                            transition-all duration-300 border border-zinc-100 
+                            cursor-pointer"
+                    >
+                        {/* Image Area - Uses the first image from the WooCommerce object */}
+                        <div className="h-64 bg-zinc-200 relative overflow-hidden">
+                            {/* Check if images exist and use the first one's source */}
+                            {item.images && item.images.length > 0 ? (
+                                <img 
+                                    src={item.images[0].src} 
+                                    alt={item.name}
+                                    className='w-full h-full object-cover hover:scale-[1.1] duration-300' 
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                                    No Image
+                                </div>
+                            )}
+                            
+                            {/* Hover Badge */}
+                            <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-zinc-800 opacity-0 group-hover:opacity-100 transition-opacity">
+                                Quick View
+                            </div>
+                        </div>
+
+                        {/* Card Content */}
+                        <div className="p-6">
+                            <div className="flex justify-between items-start mb-2">
+                                <h3 className="font-bold text-lg text-zinc-800 group-hover:text-purple-600 transition-colors">
+                                    {item.name}
+                                </h3>
+                            </div>
+                            
+                            <div className="flex justify-between items-center mt-4">
+                                {/* WooCommerce price is a string/number, rendered as is */}
+                                <p className="text-xl font-bold text-zinc-900">
+                                    {/* Format price to show currency if not already included */}
+                                    {item.price ? `$${item.price}` : 'N/A'} 
+                                </p>
+                                
+                                {/* Add Button */}
+                                <button className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-all">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
             </Link>
           ))}
         </div>
