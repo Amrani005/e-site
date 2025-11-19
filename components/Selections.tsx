@@ -1,6 +1,7 @@
 'use client'
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 // 1. Mock Data & Types
 // This interface defines the structure of a product from WooCommerce
@@ -162,6 +163,21 @@ const Selections = () => {
             {/* --- CORE CHANGE: MAPPING OVER FETCHED 'products' --- */}
             {products.length > 0 ? (
                 products.map((product) => (
+                   <Link 
+                                key={product.id}
+                                href={{
+                                  pathname: "/productinfo", 
+                                  query: {
+                                    id: product.id,
+                                    title: product.name,
+                                    price: product.price,
+                                    image: product.images[0]?.src || '',
+                                    description: product.description 
+                                  }
+                                }}
+                                // التنسيق الأصلي 3:
+                                className=" "
+                              >
                     <div 
                         key={product.id} 
                         className="flex group flex-col bg-white rounded-3xl overflow-hidden
@@ -212,6 +228,8 @@ const Selections = () => {
                             </div>
                         </div>
                     </div>
+                  </Link>
+                    
                 ))
             ) : (
                 <div className="col-span-full text-center py-10 text-zinc-600">
