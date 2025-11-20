@@ -34,7 +34,7 @@ const Header = () => {
 
   return (
     // أصلحنا px-10 لتكون متجاوبة وأزلنا font-tajawal (يجب أن يكون في globals.css)
-    <header className="fixed top-4 translate-x-5 lg:translate-x-0 z-50 w-full px-4 sm:px-10">
+    <header className="fixed top-4 translate-x-10 lg:translate-x-0 z-50 w-full px-4 sm:px-10">
       <div
         className="w-full rounded-3xl border border-transparent
         bg-transparent shadow-lg backdrop-blur-xl dark:border-gray-700/80
@@ -88,7 +88,7 @@ const Header = () => {
           duration-300 transition-all ease-in-out">
             {navLinks.map((item)=>(
               <a href={item.href}>
-                <div className="text-lg font-medium text-gray-700 dark:text-gray-300
+                <div className="text-lg font-medium text-purple-700 dark:text-gray-300
                hover:text-purple-600 mt-4">
                 {item.label}
               </div>

@@ -182,7 +182,8 @@ const Cart = () => {
     <section className="py-20 sm:py-32 bg-transparent dark:bg-gray-900
      min-h-screen text-white -translate-x-10 lg:translate-x-0">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-6xl mb-12 pt-10 font-bold tracking-tight text-center text-purple-700 dark:text-purple-400">
+        <h2 className="text-6xl mb-12 pt-10 font-bold tracking-tight text-center 
+        translate-x-4 lg:translate-x-0 text-purple-700 dark:text-purple-400">
           سلة التسوق
         </h2>
 
@@ -201,14 +202,14 @@ const Cart = () => {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start translate-x-4">
             <div className="lg:col-span-2 flex flex-col gap-6">
               {cartItems.map((item) => (
                 <div 
                   key={item.id.toString()}
                   className="flex flex-col sm:flex-row gap-4 bg-gray-800 p-4 rounded-lg shadow-lg items-start text-right"
                 >
-                  <div className="relative w-full sm:w-32 h-32 flex-shrink-0 rounded-md overflow-hidden">
+                  <div className="relative w-full sm:w-32 h-32  flex-shrink-0 rounded-md overflow-hidden">
                     <Image 
                       src={item.image} 
                       alt={item.title} 

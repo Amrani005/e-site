@@ -8,12 +8,12 @@ const AboutUs = () => {
 
   return (
     <motion.div
-      className="  font-tajawal  -translate-x-5 lg:translate-x-0 "
+      className="  font-tajawal  -translate-x-10 lg:translate-x-0 "
       dir="rtl" // Set direction to Right-to-Left for Arabic
       // Removed: initial="hidden" and imate="visible"
     >
       {/* 1. HERO SECTION: Title and Motto */}
-      <div className="flex flex-col  py-30 bg-gray-50  text-purple-600 translate-x-  ">
+      <div className="flex flex-col translate-x-5 py-30 bg-gray-50  text-purple-600 translate-x-  ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mt-20">
           <motion.h1 
             // Removed: variants={sectionItem}
@@ -31,7 +31,7 @@ const AboutUs = () => {
       </div>
 
       {/* 2. MISSION & VALUES SECTION */}
-      <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto translate-x-5 py-16 px-4 sm:px-6 lg:px-8">
         <motion.div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-zinc-800 mb-4">
             مهمتنا
@@ -71,7 +71,7 @@ const AboutUs = () => {
       </div>
       
       {/* 3. HISTORY TIMELINE/IMAGE BLOCK */}
-      <motion.div className="bg-white py-20">
+      <motion.div className="bg-white py-20 translate-x-5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:grid lg:grid-cols-2 lg:gap-16 items-center">
           
           {/* Text Content */}
@@ -110,7 +110,7 @@ const AboutUs = () => {
       </motion.div>
 
       {/* 4. CALL TO ACTION (CTA) */}
-      <motion.div className="py-16  text-center ">
+      <motion.div className="py-16  text-center translate-x-5 ">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-purple-600 mb-4">
             انضم إلى الحركة

@@ -6,8 +6,10 @@ import { div } from 'motion/react-client'
 
 const page = () => {
   return (
-    <div className='mt-50'>
-        <Header/>
+    <div className='lg:w-full  w-[100%]  flex flex-col mt-50'>
+       
+          <Header/>
+        
         <Selections/>
         <Footer/>
     </div>

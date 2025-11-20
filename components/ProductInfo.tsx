@@ -31,22 +31,22 @@ const ProductInfo = () => {
 
   return (
     <section className="py-20 sm:py-32 bg-transparent dark:bg-gray-800 min-h-screen text-black 
-    -translate-x-7 lg:translate-x-0 mt-20 ">
+    -translate-x-10 lg:translate-x-0 mt-20 ">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
         <Link // 3. Link موجود
           href="/"
-          className="flex items-center gap-2 text-purple-400 font-medium mb-8 group w-fit"
+          className="flex items-center gap-2  text-purple-400 font-medium mb-8 group w-fit"
         >
           {/* الكلاس الكامل هنا */}
           <ArrowRight className="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-1"/>
           <span>الرجوع إلى المنتجات</span>
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 translate-x-5 lg:translate-x-0 gap-12 items-start">
           
           {/* 4. الحل: استخدام <img> العادي */}
-          <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-2xl shadow-lg overflow-hidden">
+          <div className="relative w-full h-[300px]  sm:h-[400px] lg:h-[500px] rounded-2xl shadow-lg overflow-hidden">
             {image ? (
               <img
                 src={image}
