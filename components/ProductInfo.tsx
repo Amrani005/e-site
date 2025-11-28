@@ -100,27 +100,11 @@ const ProductInfo = () => {
             </p>
             {/* الكلاس الكامل هنا */}
             <div className='flex gap-5 m-10'>
-              {sizes.map((item)=>(
-                
-                <span key={item.size} className={`border-2 border-zinc-300 
-                   w-20 h-20 rounded-full p-4 bg-zinc-200 text-black text-3xl
-                 hover:text-purple-400 duration-300 font-bold flex 
-                  items-center justify-center cursor-pointer ${selectedSize === item.size
-                  ?
-                  'border-purple-400 text-purple-400 ring-4 ring-purple-300'
-                  :
-                 'border-zinc-300 hover:border-purple-400 hover:text-purple-400'}`} 
-                   onClick={()=>handleSelectedSize(item.size)}>
-                  {item.size}
-                </span>
               
-                
-              ))}
-
             </div>
             {/* الكلاس الكامل هنا */}
             <button
-              onClick={()=> {selectedSize ? handleAddToCart() : handleCheckout}}
+              onClick={()=> {handleAddToCart() }}
               className="mt-auto w-full flex items-center justify-center gap-3 
                          px-8 py-4 bg-purple-700 text-white
                          text-lg font-semibold rounded-xl shadow-lg

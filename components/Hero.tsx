@@ -17,18 +17,18 @@ const Hero = () => {
           {/* 1. قسم المحتوى النصي */}
           <div className="flex flex-col justify-center text-center lg:text-right">
             {/* عنوان فرعي صغير */}
-            <span className="text-sm font-semibold uppercase text-blue-500 dark:text-blue-400">
-              تشكيلة الصيف الجديدة
-            </span>
+           <span className="text-sm font-semibold uppercase text-blue-500 dark:text-blue-400">
+الموسم الدراسي الجديد              
+           </span>
             
             {/* العنوان الرئيسي الكبير */}
             <h1 className="mt-4 text-4xl font-extrabold text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
-              اكتشف الأناقة التي تليق بك
+              طريق النجاح والتفوق <br /> يبدأ بكتاب
             </h1>
             
             {/* وصف قصير */}
             <p className="mt-6 text-lg text-gray-600 dark:text-gray-300 max-w-lg mx-auto lg:mx-0 lg:ml-auto">
-              من القطع الأساسية اليومية إلى إطلالات السهرة. اكتشف أحدث التصاميم المصنوعة من أجود الخامات.
+              اكتشف مجموعتنا المختارة من الكتب التعليمية والمصادر الموثوقة التي تضمن لأطفالك مستقبلاً مشرقاً وتفوقاً دراسياً مستمراً.
             </p>
             
             {/* زر الدعوة للعمل (CTA) */}
@@ -53,7 +53,7 @@ const Hero = () => {
               في مشروع Next.js حقيقي، يجب إعادة استخدام <Image>
             */}
             <img
-              src="cloteh3 (1).jpg"
+              src="kotob.jpeg"
               alt="عارضة أزياء ترتدي ملابس عصرية"
               // لقد أضفنا الكلاسات التالية لتقليد سلوك 'fill' و 'object-cover'
               className="rounded-2xl absolute inset-0 w-full h-full 

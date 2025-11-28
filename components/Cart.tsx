@@ -206,7 +206,9 @@ const Cart = () => {
         city: cityName, // إرسال اسم الولاية الصحيح
         country: "DZ",
         phone: customerPhone,
+        delivry:deliveryType,
         state: selectedWilayaID.toString() // اختياري
+        
       },
       shipping: {
         first_name: customerName,

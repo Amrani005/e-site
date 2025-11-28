@@ -145,7 +145,7 @@ const Projects = () => {
                                 {/* WooCommerce price is a string/number, rendered as is */}
                                 <p className="text-xl font-bold text-zinc-900">
                                     {/* Format price to show currency if not already included */}
-                                    {item.price ? `$${item.price}` : 'N/A'} 
+                                    {item.price ? `د.ج ${item.price}` : 'N/A'} 
                                 </p>
                                 
                                 {/* Add Button */}
