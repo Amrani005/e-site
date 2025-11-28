@@ -1,11 +1,21 @@
 'use client';
-import React from 'react';
+import React, { use, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link'; // 1. Link موجود
 // 2. تم حذف Image
 import { ArrowRight, ShoppingCart } from 'lucide-react';
+import { button, div } from 'motion/react-client';
+import { sizes } from '..';
+import { useState } from 'react';
+
+
+
 
 const ProductInfo = () => {
+
+  const [selectedSize, setSelectedSize] = useState<string | null>(null); 
+  const [message,setMessage] = useState<string>('');
+
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
   const title = searchParams.get('title');
@@ -13,14 +23,22 @@ const ProductInfo = () => {
   const image = searchParams.get('image');
   const description = searchParams.get('description');
 
+  const handleCheckout = ()=> {
+    if(!selectedSize){
+      setMessage("الرجاء اختيار المقاس أولاً!");
+      return;
+    }
+  }
+  
+
   // ... (دالة handleAddToCart - لا تغيير)
   const handleAddToCart = () => {
     const product = { 
-      id: id, title, price, image, description, quantity: 1
+      id: id, title, price, image, description, quantity: 1,size:selectedSize
     };
     const oldCart = JSON.parse(localStorage.getItem("cart") || "[]");
     const existingItemIndex = oldCart.findIndex((item: any) => item.id === id);
-    if (existingItemIndex > -1) {
+    if (existingItemIndex > -1 ) {
       alert("المنتج موجود بالفعل في السلة!");
     } else {
       oldCart.push(product);
@@ -28,6 +46,15 @@ const ProductInfo = () => {
     }
     localStorage.setItem("cart", JSON.stringify(oldCart));
   };
+  
+  const handleSelectedSize = (size:string) =>{
+    
+      setSelectedSize(size);
+    
+    
+  }
+  
+  
 
   return (
     <section className="py-20 sm:py-32 bg-transparent dark:bg-gray-800 min-h-screen text-black 
@@ -72,13 +99,28 @@ const ProductInfo = () => {
               {price ? `${price} د.ج` : 'السعر غير متوفر'}
             </p>
             {/* الكلاس الكامل هنا */}
-            <div 
-              className="text-lg text-gray-300 leading-relaxed mb-10 prose prose-invert"
-              dangerouslySetInnerHTML={{ __html: description || 'لا يتوفر وصف.' }}
-            />
+            <div className='flex gap-5 m-10'>
+              {sizes.map((item)=>(
+                
+                <span key={item.size} className={`border-2 border-zinc-300 
+                   w-20 h-20 rounded-full p-4 bg-zinc-200 text-black text-3xl
+                 hover:text-purple-400 duration-300 font-bold flex 
+                  items-center justify-center cursor-pointer ${selectedSize === item.size
+                  ?
+                  'border-purple-400 text-purple-400 ring-4 ring-purple-300'
+                  :
+                 'border-zinc-300 hover:border-purple-400 hover:text-purple-400'}`} 
+                   onClick={()=>handleSelectedSize(item.size)}>
+                  {item.size}
+                </span>
+              
+                
+              ))}
+
+            </div>
             {/* الكلاس الكامل هنا */}
             <button
-              onClick={handleAddToCart}
+              onClick={()=> {selectedSize ? handleAddToCart() : handleCheckout}}
               className="mt-auto w-full flex items-center justify-center gap-3 
                          px-8 py-4 bg-purple-700 text-white
                          text-lg font-semibold rounded-xl shadow-lg
@@ -89,6 +131,11 @@ const ProductInfo = () => {
               <ShoppingCart className="h-6 w-6" />
               <span>إضافة إلى السلة</span>
             </button>
+            { !selectedSize &&
+             <div className='mt-4 text-center text-lg text-red-500'>
+              {message}
+             </div>
+            }
           </div>
         </div>
       </div>

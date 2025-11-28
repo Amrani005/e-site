@@ -126,7 +126,7 @@ const Header = () => {
           {/* Center: Navigation Links */}
           <nav className='flex  gap-8'>
            {navLinks.map((item)=>(
-              <a  href={item.href}>
+              <a key={item.label}  href={item.href}>
                 <div  key={item.label}  className="text-2xl font-medium text-gray-700 dark:text-gray-300
                hover:text-purple-600 mt-4 ">
                 {item.label}

@@ -13,6 +13,7 @@ export interface WooProduct {
   images: { src: string }[];
   description: string;
   slug: string;
+  
 }
 
 const Projects = () => {
@@ -97,7 +98,8 @@ const Projects = () => {
                   title: item.name,
                   price: item.price,
                   image: item.images[0]?.src || '',
-                  description: item.description 
+                  description: item.description ,
+                  
                 }
               }}
               // التنسيق الأصلي 3:

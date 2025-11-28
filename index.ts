@@ -15,6 +15,20 @@ export const navLinks = [
         label: " عنا" 
     },
 ];
+export const sizes =[
+  {
+    size:'S'
+  },
+  {
+    size:'M'
+  },
+  {
+    size:'L'
+  },
+  {
+    size:'XL'
+  },
+];
 export const serviceSection= [
     {
         icon: Monitor, // We use a string key for the icon
