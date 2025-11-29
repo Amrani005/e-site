@@ -282,7 +282,9 @@ const ProductInfo = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 translate-x-5 lg:translate-x-0 gap-12 items-start">
           
           {/* --- Left Column: Images Slider --- */}
-          <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-2xl shadow-lg overflow-hidden group  top-24">
+          <div className="relative w-full h-[300px] sm:h-[400px]
+           lg:h-[500px] rounded-2xl shadow-lg overflow-hidden group 
+            top-24 mb-20 lg:mb-0">
             {images.length > 0 ? (
               <>
                 <img
@@ -328,7 +330,9 @@ const ProductInfo = () => {
                 <div className="w-8 h-8 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
               </div>
             )}
+            
           </div>
+          
 
           {/* --- Right Column: Form --- */}
           <div className="flex flex-col h-full pt-4 text-right">
