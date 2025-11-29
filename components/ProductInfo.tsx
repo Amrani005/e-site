@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight, CreditCard, MapPin, Truck } from 'lucide-react';
+import { img } from 'motion/react-client';
 
 // --- 1. Wilaya Data ---
 interface WilayaData {
@@ -331,6 +332,18 @@ const ProductInfo = () => {
               </div>
             )}
             
+          </div>
+
+          <div className='grid grid-cols-4 gap-2 mt-4'>
+             {images.map((item, index) => (
+              <img
+                
+                src={item}
+                className="w-20 h-20 object-cover rounded-md flex flex-cols-4 "
+                onClick={() => setCurrentImageIndex(index)}
+                
+              />
+             ))}
           </div>
           
 
