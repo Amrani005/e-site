@@ -282,13 +282,14 @@ const ProductInfo = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 translate-x-5 lg:translate-x-0 gap-12 items-start">
           
           {/* --- Left Column: Images Slider --- */}
-          <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-2xl shadow-lg overflow-hidden group sticky top-24">
+          <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-2xl shadow-lg overflow-hidden group  top-24">
             {images.length > 0 ? (
               <>
                 <img
                   src={images[currentImageIndex]}
                   alt={title || 'Product Image'}
-                  className="w-full h-full object-cover transition-all duration-500 ease-in-out"
+                  className="w-full h-full object-cover transition-all 
+                  duration-500 ease-in-out"
                 />
                 {images.length > 1 && (
                   <>
