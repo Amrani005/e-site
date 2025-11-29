@@ -363,7 +363,7 @@ const ProductInfo = () => {
                   value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)}
                 />
                 <input 
-                  type="text" placeholder="* العنوان (الحي، الشارع...)" className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white"
+                  type="text" placeholder="البلدية" className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white"
                   value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)}
                 />
                 
