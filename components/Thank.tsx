@@ -11,27 +11,30 @@ const ThankYouContent = () => {
   const orderId = searchParams.get('orderId'); // Get the ID from the URL
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-4 text-center">
-      <div className="bg-gray-800 p-8 sm:p-12 rounded-3xl shadow-2xl border border-gray-700 max-w-lg w-full relative overflow-hidden">
+    <div className="min-h-screen dark:bg-black bg-white flex flex-col 
+    items-center justify-center p-4 text-center">
+      <div className="bg-white dark:bg-black p-8 sm:p-12 rounded-3xl 
+      shadow-2xl border border-white dark:borde-black  max-w-lg w-full
+       relative overflow-hidden">
         
         {/* Decorative background blur */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 blur-3xl rounded-full"></div>
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full"></div>
 
         <div className="relative z-10 flex flex-col items-center">
-          <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mb-6">
+          <div className="w-20 h-20 bg-green-00/20 rounded-full flex items-center justify-center mb-6">
             <CheckCircle2 className="w-10 h-10 text-green-500" />
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-black text-white mb-2">
+          <h1 className="text-3xl sm:text-4xl font-black dark:text-white text-black mb-2">
             شكراً لطلبك!
           </h1>
-          <p className="text-gray-400 text-lg mb-8">
+          <p className="dark:text-gray-400 text-black  text-lg mb-8">
             تم استلام طلبك بنجاح وسنتصل بك قريباً للتأكيد.
           </p>
 
           <div className="bg-gray-900/50 rounded-xl p-4 w-full mb-8 border border-gray-700">
-            <p className="text-gray-500 text-sm mb-1">رقم الطلب</p>
+            <p className=" dark:text-gray-500 text-black  text-sm mb-1">رقم الطلب</p>
             <p className="text-2xl font-mono font-bold text-purple-400 tracking-wider">
               {orderId || '---'}
             </p>
