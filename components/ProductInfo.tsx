@@ -1,15 +1,15 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation'; // 1. Import useRouter
 import Link from 'next/link';
 import { 
   ArrowRight, ChevronLeft, ChevronRight, CreditCard, 
   MapPin, Truck, AlertOctagon, Gift, CheckCircle2, XCircle 
 } from 'lucide-react';
 
-// --- 1. CONFIGURATION DATA (SCALABLE SECTIONS) ---
+// ... [Keep your CONFIGURATION DATA and WILAYA DATA exactly the same as before] ...
 
-// A. The "What's in the box" items (From Screenshots 2, 3, 4)
+// ... [Paste the boxItems array here] ...
 const boxItems = [
   {
     id: 1,
@@ -17,7 +17,7 @@ const boxItems = [
     title: "المرجع الأسطوري: LAROUSSE",
     description: "موسوعة مصورة بشرح مبسط. الصور تجعل ابنك يحب المادة ويفهمها وحده.",
     isGift: false,
-    image: "/path-to-larousse-img.png" // Replace with actual image path if available
+    image: "/path-to-larousse-img.png" 
   },
   {
     id: 2,
@@ -29,29 +29,29 @@ const boxItems = [
   },
   {
     id: 3,
-    number: "Gift", // Special marker for layout
+    number: "Gift", 
     title: "كتاب التمارين: Le Robert - 1000 Questions",
     description: "قيمته 700 دج، تحصلين عليه مجاناً! لكي يصبح ولدك يلعب بصعوبات الفرنسية قبل الامتحان بأسئلة وأجوبة.",
-    isGift: true, // Triggers yellow badge styling
+    isGift: true, 
     image: "/path-to-robert-img.png"
   }
 ];
 
-// B. The Scenarios (From Screenshot 5)
+// ... [Paste the scenarios array here] ...
 const scenarios = [
   {
     type: 'bad',
-    icon: <XCircle className="w-6 h-6 text-red-500" />,
+    icon: <XCircle className="w-6 h-6 sm:w-8 sm:h-8 text-red-500 shrink-0" />,
     text: "السيناريو المرعب: وجه ابنك حزين، نقطة كارثية، المعدل ينزل."
   },
   {
     type: 'good',
-    icon: <CheckCircle2 className="w-6 h-6 text-green-500" />,
+    icon: <CheckCircle2 className="w-6 h-6 sm:w-8 sm:h-8 text-green-500 shrink-0" />,
     text: "السيناريو الذي نحققه لكِ: ثقة عالية، إجابات صحيحة، ونقطة ترفع الرأس!"
   }
 ];
 
-// --- 2. WILAYA DATA ---
+// ... [Paste the wilayasData array here] ...
 interface WilayaData {
   IDWilaya: number;
   Wilaya: string;
@@ -122,6 +122,7 @@ const wilayasData: WilayaData[] = [
 ];
 
 const ProductInfo = () => {
+  const router = useRouter(); // 2. Initialize Router
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
   const title = searchParams.get('title');
@@ -143,7 +144,8 @@ const ProductInfo = () => {
   const [finalTotal, setFinalTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<string>('');
-  const [isSuccess, setIsSuccess] = useState(false);
+  
+  // Removed isSuccess state since we are redirecting
 
   useEffect(() => {
     if (!id) return;
@@ -182,8 +184,6 @@ const ProductInfo = () => {
   }, [selectedWilayaID, deliveryType, price]);
 
   const handleCheckout = async () => {
-    // Optional: Only check size if sizing buttons exist
-    // if (!selectedSize) { setMessage("الرجاء اختيار المقاس أولاً!"); return; }
     if (!customerName || !customerPhone || !customerAddress || !selectedWilayaID) {
       setMessage("الرجاء ملء جميع معلومات التوصيل (الولاية مطلوبة).");
       return;
@@ -251,10 +251,8 @@ const ProductInfo = () => {
       );
       const responseData = await response.json();
       if (response.ok) {
-        setIsSuccess(true);
-        setMessage("✅ تم إرسال طلبك بنجاح! رقم الطلب: " + responseData.id);
-        setCustomerName("");
-        setCustomerPhone("");
+        // 3. Redirect to the new Thank You page
+        router.push(`/thank-you?orderId=${responseData.id}`);
       } else {
         setMessage(`❌ فشل: ${responseData.message || 'حدث خطأ غير معروف'}`);
       }
@@ -267,20 +265,6 @@ const ProductInfo = () => {
 
   const nextImage = () => { setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1)); };
   const prevImage = () => { setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1)); };
-
-  if (isSuccess) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen text-center bg-gray-900 text-white p-4">
-        <div className="bg-gray-800 p-10 rounded-2xl shadow-2xl">
-          <h3 className="text-4xl font-bold text-green-400 mb-4">شكراً لك!</h3>
-          <p className="text-xl text-gray-300 mb-6">{message}</p>
-          <Link href="/" className="px-8 py-3 bg-purple-600 rounded-xl hover:bg-purple-700 transition">
-            العودة للصفحة الرئيسية
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <section className="py-20 sm:py-32 bg-transparent min-h-screen text-black dark:text-white -translate-x-10 lg:translate-x-0 mt-20">
@@ -332,8 +316,8 @@ const ProductInfo = () => {
                     <img
                         key={index}
                         src={item}
-                        className={`w-full aspect-square object-cover
-                           rounded-md cursor-pointer  transition-all`}
+                        alt="Thumbnail"
+                        className={`w-full aspect-square object-cover rounded-md cursor-pointer border-2 transition-all ${currentImageIndex === index ? 'border-purple-500 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`}
                         onClick={() => setCurrentImageIndex(index)}
                     />
                     ))}
@@ -363,7 +347,7 @@ const ProductInfo = () => {
                   value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)}
                 />
                 <input 
-                  type="text" placeholder="البلدية" className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white"
+                  type="text" placeholder="اليلدية" className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white"
                   value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)}
                 />
                 
@@ -454,7 +438,10 @@ const ProductInfo = () => {
           </div>
         </div>
 
-        
+        {/* =========================================================
+            3. MARKETING SECTIONS (Center)
+           ========================================================= */}
+
         <div className="flex flex-col gap-12 max-w-4xl mx-auto px-2 lg:px-0 mb-32" dir="rtl">
             
             {/* A. WARNING SECTION (Dark Blue Box) */}
@@ -463,7 +450,7 @@ const ProductInfo = () => {
                 <div className="flex justify-center mb-6">
                     <AlertOctagon className="w-16 h-16 text-pink-500 fill-pink-500/20" />
                 </div>
-                <h2 className="text-2xl sm:text-4xl font-black text-white dark:text-white mb-4 leading-tight">
+                <h2 className="text-2xl sm:text-4xl font-black text-[#1e293b] dark:text-white mb-4 leading-tight">
                     تحذير للأمهات: هل أنت جاهزة لرؤية نقطة الفرنسية في كشف النقاط؟
                 </h2>
                 <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
@@ -471,20 +458,34 @@ const ProductInfo = () => {
                 </p>
             </div>
 
-            <span className='text-2xl'>
-                <h1 className='font-bold mb-5'>تخيلي السيناريو يوم استلام كشف النقاط:</h1> 
+             {/* IMAGE BETWEEN WARNING AND SCENARIOS */}
+             <div className="relative w-full aspect-video sm:aspect-[2/1] rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-gray-700">
+                <img 
+                  src="/images/mother-child-banner.jpg" 
+                  alt="Mother helping child study" 
+                  className="w-full h-full object-cover"
+                />
+            </div>
 
-❌ السيناريو المرعب: وجه ابنك حزين، نقطة كارثية، المعدل ينزل.
-
-<p className='mt-3'>✅ السيناريو الذي نحققه لكِ: ثقة عالية، إجابات صحيحة، ونقطة ترفع الرأس! </p>
-
-الحل الجذري وصل
-            </span>
+            {/* B. SCENARIOS (Comparison) */}
+            <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 sm:p-12 shadow-lg border border-gray-200 dark:border-gray-700 mt-0">
+                <h3 className="text-2xl sm:text-3xl font-bold text-center text-[#0B1829] dark:text-white mb-10">
+                    تخيلي السيناريو يوم استلام كشف النقاط:
+                </h3>
+                <div className="space-y-6">
+                    {scenarios.map((scenario, index) => (
+                        <div key={index} className="flex gap-4 items-start">
+                           <div className="mt-1 shrink-0">{scenario.icon}</div>
+                           <p className={`text-xl font-medium ${scenario.type === 'bad' ? 'text-gray-500 line-through decoration-red-500/50' : 'text-[#0B1829] dark:text-white'}`}>
+                               {scenario.text}
+                           </p>
+                        </div>
+                    ))}
+                </div>
+            </div>
             
-            <img src='kotob.jpeg' alt="" />
-
-            {/* B. "WHAT'S INSIDE THE BOX" SECTION (Mapping) */}
-            <div className="space-y-8">
+            {/* C. "WHAT'S INSIDE THE BOX" SECTION (Mapping) */}
+            <div className="space-y-8 mt-12">
                 <h2 className="text-4xl sm:text-5xl font-black text-center text-[#0B1829] dark:text-white mb-12">
                     ماذا يوجد داخل الصندوق؟
                 </h2>
@@ -518,23 +519,6 @@ const ProductInfo = () => {
                                     </p>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* C. SCENARIOS (Comparison) */}
-            <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 sm:p-12 shadow-lg border border-gray-200 dark:border-gray-700 mt-8">
-                <h3 className="text-2xl sm:text-3xl font-bold text-center text-[#0B1829] dark:text-white mb-10">
-                    تخيلي السيناريو يوم استلام كشف النقاط:
-                </h3>
-                <div className="space-y-6">
-                    {scenarios.map((scenario, index) => (
-                        <div key={index} className="flex gap-4 items-start">
-                           <div className="mt-1 shrink-0">{scenario.icon}</div>
-                           <p className={`text-xl font-medium ${scenario.type === 'bad' ? 'text-gray-500 line-through decoration-red-500/50' : 'text-[#0B1829] dark:text-white'}`}>
-                               {scenario.text}
-                           </p>
                         </div>
                     ))}
                 </div>
