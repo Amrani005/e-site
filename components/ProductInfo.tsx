@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight, CreditCard, MapPin, Truck } from 'lucide-react';
 
-// --- 1. Wilaya Data (Moved from Cart) ---
+// --- 1. Wilaya Data ---
 interface WilayaData {
   IDWilaya: number;
   Wilaya: string;
@@ -80,8 +80,9 @@ const ProductInfo = () => {
   const title = searchParams.get('title');
   const price = searchParams.get('price');
   const rawImage = searchParams.get('image');
-  const description = searchParams.get('description');
-  const images = rawImage ? rawImage.split(',') : [];
+  
+  // Initialize with the URL image (placeholder), will update after fetch
+  const [images, setImages] = useState<string[]>(rawImage ? rawImage.split(',') : []);
 
   // Product UI States
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -103,7 +104,37 @@ const ProductInfo = () => {
   const [message, setMessage] = useState<string>('');
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // --- 3. Calculation Logic ---
+  // --- 3. NEW: Fetch Gallery Images from WooCommerce ---
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchProductGallery = async () => {
+      const url = process.env.NEXT_PUBLIC_WOO_URL;
+      const key = process.env.NEXT_PUBLIC_WOO_KEY;
+      const secret = process.env.NEXT_PUBLIC_WOO_SECRET;
+
+      if (!url || !key || !secret) return;
+
+      try {
+        const response = await fetch(
+          `${url}/wp-json/wc/v3/products/${id}?consumer_key=${key}&consumer_secret=${secret}`
+        );
+        const data = await response.json();
+        
+        // If the product has images in the database, update the state
+        if (data.images && data.images.length > 0) {
+           const galleryUrls = data.images.map((img: any) => img.src);
+           setImages(galleryUrls);
+        }
+      } catch (error) {
+        console.error("Failed to fetch gallery:", error);
+      }
+    };
+
+    fetchProductGallery();
+  }, [id]);
+
+  // --- 4. Calculation Logic ---
   useEffect(() => {
     const productPrice = parseFloat(price?.replace(/,/g, '') || '0');
     
@@ -124,10 +155,12 @@ const ProductInfo = () => {
 
   }, [selectedWilayaID, deliveryType, price]);
 
-  // --- 4. Checkout Handler ---
+  // --- 5. Checkout Handler ---
   const handleCheckout = async () => {
-    // Validation
-   
+    if (!selectedSize) {
+      setMessage("الرجاء اختيار المقاس أولاً!");
+      return;
+    }
     if (!customerName || !customerPhone || !customerAddress || !selectedWilayaID) {
       setMessage("الرجاء ملء جميع معلومات التوصيل (الولاية مطلوبة).");
       return;
@@ -136,7 +169,6 @@ const ProductInfo = () => {
     setIsLoading(true);
     setMessage("");
 
-    // Prepare Data for WooCommerce
     const selectedWilayaData = wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID));
     const cityName = selectedWilayaData ? selectedWilayaData.Wilaya : "";
 
@@ -198,7 +230,6 @@ const ProductInfo = () => {
       if (response.ok) {
         setIsSuccess(true);
         setMessage("✅ تم إرسال طلبك بنجاح! رقم الطلب: " + responseData.id);
-        // Optional: Clear form
         setCustomerName("");
         setCustomerPhone("");
       } else {
@@ -211,7 +242,6 @@ const ProductInfo = () => {
     setIsLoading(false);
   };
 
-  // Slider Logic
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
@@ -220,10 +250,9 @@ const ProductInfo = () => {
   };
   const handleSelectedSize = (size: string) => {
     setSelectedSize(size);
-    setMessage(""); // Clear error when size selected
+    setMessage(""); 
   };
 
-  // --- Render Success State ---
   if (isSuccess) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-center bg-gray-900 text-white p-4">
@@ -238,7 +267,6 @@ const ProductInfo = () => {
     );
   }
 
-  // --- Main Render ---
   return (
     <section className="py-20 sm:py-32 bg-transparent min-h-screen text-black dark:text-white -translate-x-10 lg:translate-x-0 mt-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -253,28 +281,32 @@ const ProductInfo = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 translate-x-5 lg:translate-x-0 gap-12 items-start">
           
-          {/* --- Left Column: Images --- */}
-          <div className="flex w-full h-[300px] sm:h-[400px] lg:h-[500px] 
-          rounded-2xl shadow-lg overflow-hidden group  top-24">
+          {/* --- Left Column: Images Slider --- */}
+          <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-2xl shadow-lg overflow-hidden group sticky top-24">
             {images.length > 0 ? (
               <>
                 <img
                   src={images[currentImageIndex]}
                   alt={title || 'Product Image'}
-                  className="w-full h-full object-cover transition-all 
-                  duration-500 ease-in-out"
+                  className="w-full h-full object-cover transition-all duration-500 ease-in-out"
                 />
                 {images.length > 1 && (
                   <>
                     <button 
                       onClick={prevImage}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      className="absolute left-4 top-1/2 -translate-y-1/2
+                       bg-black/50 hover:bg-black/70 text-white
+                        p-2 rounded-full  group-hover:opacity-100
+                         transition-opacity duration-300"
                     >
                       <ChevronLeft className="w-6 h-6" />
                     </button>
                     <button 
                       onClick={nextImage}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      className="absolute right-4 top-1/2 -translate-y-1/2
+                       bg-black/50 hover:bg-black/70 text-white p-2
+                        rounded-full  group-hover:opacity-100 
+                        transition-opacity duration-300"
                     >
                       <ChevronRight className="w-6 h-6" />
                     </button>
@@ -291,12 +323,13 @@ const ProductInfo = () => {
               </>
             ) : (
               <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                <p className="text-white">لا توجد صورة</p>
+                 {/* Show a loader while fetching images */}
+                <div className="w-8 h-8 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
               </div>
             )}
           </div>
 
-          {/* --- Right Column: Product Info + Checkout Form --- */}
+          {/* --- Right Column: Form --- */}
           <div className="flex flex-col h-full pt-4 text-right">
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-purple-400 mb-4">
               {title || 'اسم المنتج'}
@@ -305,10 +338,19 @@ const ProductInfo = () => {
               {price ? `${price} د.ج` : 'السعر غير متوفر'}
             </p>
             
-            {/* Size Selectors (Placeholder/Example) */}
-            
+            {/* Size Selectors */}
+            <div className='flex gap-4 mb-8 justify-end'>
+              {['S', 'M', 'L', 'XL'].map(size => (
+                  <button
+                    key={size}
+                    onClick={() => handleSelectedSize(size)}
+                    className={`px-4 py-2 rounded-lg border-2 ${selectedSize === size ? 'border-purple-500 bg-purple-500/20 text-purple-500' : 'border-gray-500 text-gray-500'}`}
+                  >
+                    {size}
+                  </button>
+              ))}
+            </div>
 
-            {/* --- CHECKOUT FORM START --- */}
             <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-inner border border-gray-200 dark:border-gray-700">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-700 pb-3">معلومات الطلب</h3>
               
@@ -326,7 +368,6 @@ const ProductInfo = () => {
                   value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)}
                 />
                 
-                {/* Wilaya Select */}
                 <select
                   value={selectedWilayaID}
                   onChange={(e) => setSelectedWilayaID(Number(e.target.value))}
@@ -340,7 +381,6 @@ const ProductInfo = () => {
                   ))}
                 </select>
 
-                {/* Delivery Type */}
                 {selectedWilayaID && (
                   <div className="mt-4 p-4 bg-white dark:bg-gray-700/50 rounded-lg border border-gray-300 dark:border-gray-600">
                     <h4 className="text-lg font-semibold mb-3 text-purple-600 dark:text-purple-300">طريقة التوصيل:</h4>
@@ -382,7 +422,6 @@ const ProductInfo = () => {
                 )}
               </div>
 
-              {/* Price Summary */}
               <div className="space-y-2 mb-8">
                 <div className="flex justify-between items-center text-gray-600 dark:text-gray-300">
                   <span>سعر المنتج</span>
@@ -400,7 +439,6 @@ const ProductInfo = () => {
                 </div>
               </div>
 
-              {/* Checkout Button */}
               <button
                 onClick={handleCheckout}
                 disabled={isLoading}
@@ -428,8 +466,6 @@ const ProductInfo = () => {
                 </div>
               )}
             </div>
-            {/* --- CHECKOUT FORM END --- */}
-
           </div>
         </div>
       </div>
