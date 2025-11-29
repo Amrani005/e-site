@@ -285,7 +285,7 @@ const ProductInfo = () => {
           {/* --- Left Column: Images Slider --- */}
           <div className="relative w-full h-[300px] sm:h-[400px]
            lg:h-[500px] rounded-2xl shadow-lg overflow-hidden group 
-            top-24 mb-20 lg:mb-0">
+            top-24 mb-20 ">
             {images.length > 0 ? (
               <>
                 <img
@@ -334,12 +334,13 @@ const ProductInfo = () => {
             
           </div>
 
-          <div className='grid grid-cols-4 gap-2 mt-4'>
+          <div className='grid grid-cols-4 gap-2 mt-4 lg:translate-y-30'>
              {images.map((item, index) => (
               <img
                 
                 src={item}
-                className="w-20 h-20 object-cover rounded-md flex flex-cols-4 "
+                className="w-20 h-20 lg:w-50 lg:h-50 
+                 object-cover rounded-md flex flex-cols-4 "
                 onClick={() => setCurrentImageIndex(index)}
                 
               />
