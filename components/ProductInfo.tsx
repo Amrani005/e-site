@@ -2,10 +2,56 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight, ChevronLeft, ChevronRight, CreditCard, MapPin, Truck } from 'lucide-react';
-import { img } from 'motion/react-client';
+import { 
+  ArrowRight, ChevronLeft, ChevronRight, CreditCard, 
+  MapPin, Truck, AlertOctagon, Gift, CheckCircle2, XCircle 
+} from 'lucide-react';
 
-// --- 1. Wilaya Data ---
+// --- 1. CONFIGURATION DATA (SCALABLE SECTIONS) ---
+
+// A. The "What's in the box" items (From Screenshots 2, 3, 4)
+const boxItems = [
+  {
+    id: 1,
+    number: "1",
+    title: "المرجع الأسطوري: LAROUSSE",
+    description: "موسوعة مصورة بشرح مبسط. الصور تجعل ابنك يحب المادة ويفهمها وحده.",
+    isGift: false,
+    image: "/path-to-larousse-img.png" // Replace with actual image path if available
+  },
+  {
+    id: 2,
+    number: "2",
+    title: "سلسلة MAXI POCHE (4 كتب)",
+    description: "قواميس شاملة للترجمة (عربي/فرنسي) وللإثراء اللغوي (فرنسي/فرنسي). كل ما يحتاجه التلميذ.",
+    isGift: false,
+    image: "/path-to-maxi-img.png"
+  },
+  {
+    id: 3,
+    number: "Gift", // Special marker for layout
+    title: "كتاب التمارين: Le Robert - 1000 Questions",
+    description: "قيمته 700 دج، تحصلين عليه مجاناً! لكي يصبح ولدك يلعب بصعوبات الفرنسية قبل الامتحان بأسئلة وأجوبة.",
+    isGift: true, // Triggers yellow badge styling
+    image: "/path-to-robert-img.png"
+  }
+];
+
+// B. The Scenarios (From Screenshot 5)
+const scenarios = [
+  {
+    type: 'bad',
+    icon: <XCircle className="w-6 h-6 text-red-500" />,
+    text: "السيناريو المرعب: وجه ابنك حزين، نقطة كارثية، المعدل ينزل."
+  },
+  {
+    type: 'good',
+    icon: <CheckCircle2 className="w-6 h-6 text-green-500" />,
+    text: "السيناريو الذي نحققه لكِ: ثقة عالية، إجابات صحيحة، ونقطة ترفع الرأس!"
+  }
+];
+
+// --- 2. WILAYA DATA ---
 interface WilayaData {
   IDWilaya: number;
   Wilaya: string;
@@ -82,47 +128,35 @@ const ProductInfo = () => {
   const price = searchParams.get('price');
   const rawImage = searchParams.get('image');
   
-  // Initialize with the URL image (placeholder), will update after fetch
   const [images, setImages] = useState<string[]>(rawImage ? rawImage.split(',') : []);
-
-  // Product UI States
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // --- 2. Checkout & Form States ---
+  // Form States
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
   const [selectedWilayaID, setSelectedWilayaID] = useState<number | "">("");
   const [deliveryType, setDeliveryType] = useState<"Domicile" | "Stopdesk">("Domicile");
   
-  // Financial States
   const [shippingTotal, setShippingTotal] = useState(0);
   const [finalTotal, setFinalTotal] = useState(0);
-  
-  // Logic States
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<string>('');
   const [isSuccess, setIsSuccess] = useState(false);
 
-  // --- 3. NEW: Fetch Gallery Images from WooCommerce ---
   useEffect(() => {
     if (!id) return;
-
     const fetchProductGallery = async () => {
       const url = process.env.NEXT_PUBLIC_WOO_URL;
       const key = process.env.NEXT_PUBLIC_WOO_KEY;
       const secret = process.env.NEXT_PUBLIC_WOO_SECRET;
-
       if (!url || !key || !secret) return;
-
       try {
         const response = await fetch(
           `${url}/wp-json/wc/v3/products/${id}?consumer_key=${key}&consumer_secret=${secret}`
         );
         const data = await response.json();
-        
-        // If the product has images in the database, update the state
         if (data.images && data.images.length > 0) {
            const galleryUrls = data.images.map((img: any) => img.src);
            setImages(galleryUrls);
@@ -131,37 +165,25 @@ const ProductInfo = () => {
         console.error("Failed to fetch gallery:", error);
       }
     };
-
     fetchProductGallery();
   }, [id]);
 
-  // --- 4. Calculation Logic ---
   useEffect(() => {
     const productPrice = parseFloat(price?.replace(/,/g, '') || '0');
-    
     let shippingCost = 0;
     if (selectedWilayaID) {
       const wilayaData = wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID));
       if (wilayaData) {
-        if (deliveryType === 'Domicile') {
-          shippingCost = parseFloat(wilayaData.Domicile) || 0;
-        } else {
-          shippingCost = parseFloat(wilayaData.Stopdesk) || 0;
-        }
+        shippingCost = deliveryType === 'Domicile' ? parseFloat(wilayaData.Domicile) : parseFloat(wilayaData.Stopdesk);
       }
     }
-
-    setShippingTotal(shippingCost);
-    setFinalTotal(productPrice + shippingCost);
-
+    setShippingTotal(shippingCost || 0);
+    setFinalTotal(productPrice + (shippingCost || 0));
   }, [selectedWilayaID, deliveryType, price]);
 
-  // --- 5. Checkout Handler ---
   const handleCheckout = async () => {
-    if (!selectedSize) {
-      setMessage("الرجاء اختيار المقاس أولاً!");
-      return;
-    }
+    // Optional: Only check size if sizing buttons exist
+    // if (!selectedSize) { setMessage("الرجاء اختيار المقاس أولاً!"); return; }
     if (!customerName || !customerPhone || !customerAddress || !selectedWilayaID) {
       setMessage("الرجاء ملء جميع معلومات التوصيل (الولاية مطلوبة).");
       return;
@@ -176,7 +198,7 @@ const ProductInfo = () => {
     const line_items = [{
       product_id: id,
       quantity: 1,
-      meta_data: [{ key: "Size", value: selectedSize }]
+      meta_data: selectedSize ? [{ key: "Size", value: selectedSize }] : []
     }];
 
     const shipping_lines = [{
@@ -243,16 +265,8 @@ const ProductInfo = () => {
     setIsLoading(false);
   };
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
-  const handleSelectedSize = (size: string) => {
-    setSelectedSize(size);
-    setMessage(""); 
-  };
+  const nextImage = () => { setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1)); };
+  const prevImage = () => { setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1)); };
 
   if (isSuccess) {
     return (
@@ -280,75 +294,54 @@ const ProductInfo = () => {
           <span>الرجوع إلى المنتجات</span>
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 translate-x-5 lg:translate-x-0 gap-12 items-start">
+        {/* --- MAIN PRODUCT GRID --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 translate-x-5 lg:translate-x-0 gap-12 items-start mb-24">
           
-          {/* --- Left Column: Images Slider --- */}
-          <div className="relative w-full h-[300px] sm:h-[400px]
-           lg:h-[500px] rounded-2xl shadow-lg overflow-hidden group 
-            top-24 mb-20 ">
-            {images.length > 0 ? (
-              <>
-                <img
-                  src={images[currentImageIndex]}
-                  alt={title || 'Product Image'}
-                  className="w-full h-full object-cover transition-all 
-                  duration-500 ease-in-out"
-                />
-                {images.length > 1 && (
-                  <>
-                    <button 
-                      onClick={nextImage}
-                      className="absolute left-4 top-1/2 -translate-y-1/2
-                       bg-black/50 hover:bg-black/70 text-white
-                        p-2 rounded-full  group-hover:opacity-100
-                         transition-opacity duration-300"
-                    >
-                      <ChevronLeft className="w-6 h-6" />
-                    </button>
-                    <button 
-                      onClick={prevImage}
-                      className="absolute right-4 top-1/2 -translate-y-1/2
-                       bg-black/50 hover:bg-black/70 text-white p-2
-                        rounded-full  group-hover:opacity-100 
-                        transition-opacity duration-300"
-                    >
-                      <ChevronRight className="w-6 h-6" />
-                    </button>
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                      {images.map((_, idx) => (
-                        <div 
-                          key={idx} 
-                          className={`w-2 h-2 rounded-full transition-all ${idx === currentImageIndex ? 'bg-white w-4' : 'bg-white/50'}`}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )}
-              </>
-            ) : (
-              <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                 {/* Show a loader while fetching images */}
-                <div className="w-8 h-8 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
-              </div>
-            )}
+          {/* Left Column: Images Slider */}
+          <div className="flex flex-col gap-4  top-24">
+            <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-2xl shadow-lg overflow-hidden group">
+              {images.length > 0 ? (
+                <>
+                  <img
+                    src={images[currentImageIndex]}
+                    alt={title || 'Product Image'}
+                    className="w-full h-full object-cover transition-all duration-500 ease-in-out"
+                  />
+                  {images.length > 1 && (
+                    <>
+                      <button onClick={prevImage} className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full group-hover:opacity-100 transition-opacity duration-300">
+                        <ChevronLeft className="w-6 h-6" />
+                      </button>
+                      <button onClick={nextImage} className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full group-hover:opacity-100 transition-opacity duration-300">
+                        <ChevronRight className="w-6 h-6" />
+                      </button>
+                    </>
+                  )}
+                </>
+              ) : (
+                <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+                  <div className="w-8 h-8 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
+                </div>
+              )}
+            </div>
+            
+            {/* Thumbnails */}
+            
+                <div className='grid grid-cols-4 gap-2'>
+                    {images.map((item, index) => (
+                    <img
+                        key={index}
+                        src={item}
+                        className={`w-full aspect-square object-cover
+                           rounded-md cursor-pointer  transition-all`}
+                        onClick={() => setCurrentImageIndex(index)}
+                    />
+                    ))}
+                </div>
             
           </div>
 
-          <div className='grid grid-cols-4 gap-2 mt-4 lg:translate-y-30'>
-             {images.map((item, index) => (
-              <img
-                
-                src={item}
-                className="w-20 h-20 lg:w-50 lg:h-50 
-                 object-cover rounded-md flex flex-cols-4 "
-                onClick={() => setCurrentImageIndex(index)}
-                
-              />
-             ))}
-          </div>
-          
-
-          {/* --- Right Column: Form --- */}
+          {/* Right Column: Form */}
           <div className="flex flex-col h-full pt-4 text-right">
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-purple-400 mb-4">
               {title || 'اسم المنتج'}
@@ -357,9 +350,6 @@ const ProductInfo = () => {
               {price ? `${price} د.ج` : 'السعر غير متوفر'}
             </p>
             
-            {/* Size Selectors */}
-           
-
             <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-inner border border-gray-200 dark:border-gray-700">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-700 pb-3">معلومات الطلب</h3>
               
@@ -396,11 +386,7 @@ const ProductInfo = () => {
                     
                     <label className={`flex items-center justify-between p-3 rounded cursor-pointer mb-2 border transition-all ${deliveryType === 'Domicile' ? 'border-purple-500 bg-purple-100 dark:bg-purple-900/20' : 'border-gray-300 dark:border-gray-600'}`}>
                       <div className="flex items-center gap-3">
-                        <input 
-                          type="radio" name="delivery" 
-                          checked={deliveryType === 'Domicile'} onChange={() => setDeliveryType('Domicile')}
-                          className="w-4 h-4 text-purple-600"
-                        />
+                        <input type="radio" name="delivery" checked={deliveryType === 'Domicile'} onChange={() => setDeliveryType('Domicile')} className="w-4 h-4 text-purple-600" />
                         <div className="flex items-center gap-2 text-black dark:text-white">
                           <Truck size={18} />
                           <span>توصيل للمنزل</span>
@@ -413,11 +399,7 @@ const ProductInfo = () => {
 
                     <label className={`flex items-center justify-between p-3 rounded cursor-pointer border transition-all ${deliveryType === 'Stopdesk' ? 'border-purple-500 bg-purple-100 dark:bg-purple-900/20' : 'border-gray-300 dark:border-gray-600'}`}>
                       <div className="flex items-center gap-3">
-                        <input 
-                          type="radio" name="delivery" 
-                          checked={deliveryType === 'Stopdesk'} onChange={() => setDeliveryType('Stopdesk')}
-                          className="w-4 h-4 text-purple-600"
-                        />
+                         <input type="radio" name="delivery" checked={deliveryType === 'Stopdesk'} onChange={() => setDeliveryType('Stopdesk')} className="w-4 h-4 text-purple-600" />
                          <div className="flex items-center gap-2 text-black dark:text-white">
                           <MapPin size={18} />
                           <span>استلام من المكتب</span>
@@ -451,13 +433,7 @@ const ProductInfo = () => {
               <button
                 onClick={handleCheckout}
                 disabled={isLoading}
-                className="w-full flex items-center justify-center gap-3 
-                           px-8 py-4 bg-purple-700 text-white
-                           text-lg font-semibold rounded-xl shadow-lg
-                           hover:bg-purple-800 focus:outline-none focus:ring-4
-                           focus:ring-purple-300 dark:focus:ring-purple-800
-                           transition-all duration-300 transform hover:-translate-y-1
-                           disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-purple-700 text-white text-lg font-semibold rounded-xl shadow-lg hover:bg-purple-800 focus:outline-none focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-800 transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
                   <div className="w-6 h-6 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
@@ -477,6 +453,97 @@ const ProductInfo = () => {
             </div>
           </div>
         </div>
+
+        
+        <div className="flex flex-col gap-12 max-w-4xl mx-auto px-2 lg:px-0 mb-32" dir="rtl">
+            
+            {/* A. WARNING SECTION (Dark Blue Box) */}
+            <div className="bg-[#0B1829] rounded-2xl p-8 sm:p-12 text-center shadow-xl border border-gray-800 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full"></div>
+                <div className="flex justify-center mb-6">
+                    <AlertOctagon className="w-16 h-16 text-pink-500 fill-pink-500/20" />
+                </div>
+                <h2 className="text-2xl sm:text-4xl font-black text-[#1e293b] dark:text-white mb-4 leading-tight">
+                    تحذير للأمهات: هل أنت جاهزة لرؤية نقطة الفرنسية في كشف النقاط؟
+                </h2>
+                <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
+                    الاختبارات على الأبواب.. والفرنسية مازالت "الكابوس" الذي يهدد معدل ابنك؟
+                </p>
+            </div>
+            
+            <img src='kotob.jpeg' alt="" />
+
+            {/* B. "WHAT'S INSIDE THE BOX" SECTION (Mapping) */}
+            <div className="space-y-8">
+                <h2 className="text-4xl sm:text-5xl font-black text-center text-[#0B1829] dark:text-white mb-12">
+                    ماذا يوجد داخل الصندوق؟
+                </h2>
+
+                <div className="space-y-6">
+                    {boxItems.map((item) => (
+                        <div key={item.id} className="relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow">
+                            
+                            {/* The "Free Gift" Badge logic */}
+                            {item.isGift && (
+                                <div className="absolute top-0 left-8 -translate-y-1/2 bg-[#FFC107] text-[#0B1829] px-6 py-2 rounded-full font-bold flex items-center gap-2 shadow-lg z-10">
+                                    <Gift className="w-5 h-5" />
+                                    <span>هدية مجانية</span>
+                                </div>
+                            )}
+
+                            <div className="flex flex-col sm:flex-row gap-6 items-start">
+                                {/* Number Box */}
+                                {!item.isGift && (
+                                    <div className="bg-blue-500 text-white w-12 h-12 flex items-center justify-center rounded-xl text-2xl font-bold shrink-0 shadow-blue-500/30 shadow-lg">
+                                        {item.number}
+                                    </div>
+                                )}
+                                
+                                <div className="flex-1 space-y-3">
+                                    <h3 className="text-2xl sm:text-3xl font-black text-[#0B1829] dark:text-blue-400">
+                                        {item.title}
+                                    </h3>
+                                    <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
+                                        {item.description}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* C. SCENARIOS (Comparison) */}
+            <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 sm:p-12 shadow-lg border border-gray-200 dark:border-gray-700 mt-8">
+                <h3 className="text-2xl sm:text-3xl font-bold text-center text-[#0B1829] dark:text-white mb-10">
+                    تخيلي السيناريو يوم استلام كشف النقاط:
+                </h3>
+                <div className="space-y-6">
+                    {scenarios.map((scenario, index) => (
+                        <div key={index} className="flex gap-4 items-start">
+                           <div className="mt-1 shrink-0">{scenario.icon}</div>
+                           <p className={`text-xl font-medium ${scenario.type === 'bad' ? 'text-gray-500 line-through decoration-red-500/50' : 'text-[#0B1829] dark:text-white'}`}>
+                               {scenario.text}
+                           </p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* D. MEGA PRO TITLE */}
+            <div className="text-center space-y-4 mt-8">
+                <h2 className="text-3xl sm:text-5xl font-black text-[#0B1829] dark:text-white">
+                    الحل الجذري وصل بين يديك!
+                </h2>
+                <div className="inline-block bg-orange-100 dark:bg-orange-900/30 px-6 py-3 rounded-xl">
+                    <p className="text-xl sm:text-2xl text-orange-600 dark:text-orange-400 font-bold">
+                        🔥 باقة الإنقاذ المدرسي الشاملة 🔥
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
       </div>
     </section>
   );
