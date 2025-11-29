@@ -293,7 +293,7 @@ const ProductInfo = () => {
                 {images.length > 1 && (
                   <>
                     <button 
-                      onClick={prevImage}
+                      onClick={nextImage}
                       className="absolute left-4 top-1/2 -translate-y-1/2
                        bg-black/50 hover:bg-black/70 text-white
                         p-2 rounded-full  group-hover:opacity-100
@@ -302,7 +302,7 @@ const ProductInfo = () => {
                       <ChevronLeft className="w-6 h-6" />
                     </button>
                     <button 
-                      onClick={nextImage}
+                      onClick={prevImage}
                       className="absolute right-4 top-1/2 -translate-y-1/2
                        bg-black/50 hover:bg-black/70 text-white p-2
                         rounded-full  group-hover:opacity-100 
