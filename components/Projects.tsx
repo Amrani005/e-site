@@ -107,10 +107,10 @@ const Projects = () => {
             >
               <div 
                         key={item.id} 
-                        className="flex group flex-col bg-white rounded-3xl overflow-hidden
+                        className="flex group flex-col bg-white dark:bg-transparent rounded-3xl overflow-hidden
                             shadow-sm hover:shadow-xl hover:shadow-purple-200/50 
                             transition-all duration-300 border border-zinc-100 
-                            cursor-pointer"
+                            cursor-pointer "
                     >
                         {/* Image Area - Uses the first image from the WooCommerce object */}
                         <div className="h-64 bg-zinc-200 relative overflow-hidden">
@@ -136,20 +136,20 @@ const Projects = () => {
                         {/* Card Content */}
                         <div className="p-6">
                             <div className="flex justify-between items-start mb-2">
-                                <h3 className="font-bold text-lg text-zinc-800 group-hover:text-purple-600 transition-colors">
+                                <h3 className="font-bold text-lg dark:text-purple-700 text-zinc-800 group-hover:text-purple-600 transition-colors">
                                     {item.name}
                                 </h3>
                             </div>
                             
                             <div className="flex justify-between items-center mt-4">
                                 {/* WooCommerce price is a string/number, rendered as is */}
-                                <p className="text-xl font-bold text-zinc-900">
+                                <p className="text-xl font-bold text-zinc-900 dark:text-white">
                                     {/* Format price to show currency if not already included */}
                                     {item.price ? `د.ج ${item.price}` : 'N/A'} 
                                 </p>
                                 
                                 {/* Add Button */}
-                                <button className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-all">
+                                <button className="w-10 h-10 rounded-full dark:bg-black bg-zinc-100 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition-all">
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
                                 </button>
                             </div>

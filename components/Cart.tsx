@@ -257,7 +257,7 @@ const Cart = () => {
   // UI للسلة الفارغة
   if (cartItems.length === 0 && !message.startsWith('✅')) {
     return (
-      <section className="py-20 sm:py-32 bg-transparent -translate-x-8 dark:bg-gray-900 min-h-screen text-white flex flex-col items-center justify-center text-center">
+      <section className="py-20 sm:py-32 bg-transparent -translate-x-8 min-h-screen text-white flex flex-col items-center justify-center text-center">
         <ShoppingBag size={80} className="text-purple-400 mb-6" />
         <h2 className="text-4xl font-bold text-purple-400 mb-4">سلة التسوق فارغة</h2>
         <p className="text-lg text-gray-300 mb-8">لم تقم بإضافة أي منتجات حتى الآن.</p>
@@ -270,7 +270,7 @@ const Cart = () => {
 
   // UI للسلة الممتلئة
   return (
-    <section className="py-20 sm:py-32 bg-transparent dark:bg-gray-900 min-h-screen text-white -translate-x-10 lg:translate-x-0">
+    <section className="py-20 sm:py-32 bg-transparent  min-h-screen text-white -translate-x-10 lg:translate-x-0">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-6xl mb-12 pt-10 font-bold tracking-tight text-center translate-x-4 lg:translate-x-0 text-purple-700 dark:text-purple-400">
           سلة التسوق
