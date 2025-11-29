@@ -458,14 +458,24 @@ const ProductInfo = () => {
                 </p>
             </div>
 
+            <span  className='font-normal text-2xl'>
+                <h1 className='font-bold mb-5 text-3xl'>تخيلي السيناريو يوم استلام كشف النقاط:</h1>
+
+❌ السيناريو المرعب: وجه ابنك حزين، نقطة كارثية، المعدل ينزل.
+
+ <p className='mt-3 mb-4'> ✅السيناريو الذي نحققه لكِ: ثقة عالية، إجابات صحيحة، ونقطة ترفع الرأس! </p>
+
+الحل الجذري وصل
+            </span>
+
              {/* IMAGE BETWEEN WARNING AND SCENARIOS */}
-             <div className="relative w-full aspect-video sm:aspect-[2/1] rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-gray-700">
+             
                 <img 
-                  src="/images/mother-child-banner.jpg" 
+                  src="kotob.jpeg" 
                   alt="Mother helping child study" 
                   className="w-full h-full object-cover"
                 />
-            </div>
+            
 
             {/* B. SCENARIOS (Comparison) */}
             <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 sm:p-12 shadow-lg border border-gray-200 dark:border-gray-700 mt-0">
@@ -483,6 +493,8 @@ const ProductInfo = () => {
                     ))}
                 </div>
             </div>
+
+            
             
             {/* C. "WHAT'S INSIDE THE BOX" SECTION (Mapping) */}
             <div className="space-y-8 mt-12">
