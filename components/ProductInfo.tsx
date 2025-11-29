@@ -450,7 +450,7 @@ const ProductInfo = () => {
                 <div className="flex justify-center mb-6">
                     <AlertOctagon className="w-16 h-16 text-pink-500 fill-pink-500/20" />
                 </div>
-                <h2 className="text-2xl sm:text-4xl font-black text-[#1e293b] dark:text-white mb-4 leading-tight">
+                <h2 className="text-2xl sm:text-4xl font-black text-white dark:text-white mb-4 leading-tight">
                     تحذير للأمهات: هل أنت جاهزة لرؤية نقطة الفرنسية في كشف النقاط؟
                 </h2>
                 <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
