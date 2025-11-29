@@ -463,13 +463,23 @@ const ProductInfo = () => {
                 <div className="flex justify-center mb-6">
                     <AlertOctagon className="w-16 h-16 text-pink-500 fill-pink-500/20" />
                 </div>
-                <h2 className="text-2xl sm:text-4xl font-black text-[#1e293b] dark:text-white mb-4 leading-tight">
+                <h2 className="text-2xl sm:text-4xl font-black text-white dark:text-white mb-4 leading-tight">
                     تحذير للأمهات: هل أنت جاهزة لرؤية نقطة الفرنسية في كشف النقاط؟
                 </h2>
                 <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
                     الاختبارات على الأبواب.. والفرنسية مازالت "الكابوس" الذي يهدد معدل ابنك؟
                 </p>
             </div>
+
+            <span className='text-2xl'>
+                <h1 className='font-bold mb-5'>تخيلي السيناريو يوم استلام كشف النقاط:</h1> 
+
+❌ السيناريو المرعب: وجه ابنك حزين، نقطة كارثية، المعدل ينزل.
+
+✅ السيناريو الذي نحققه لكِ: ثقة عالية، إجابات صحيحة، ونقطة ترفع الرأس!
+
+الحل الجذري وصل
+            </span>
             
             <img src='kotob.jpeg' alt="" />
 
