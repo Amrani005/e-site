@@ -127,10 +127,7 @@ const ProductInfo = () => {
   // --- 4. Checkout Handler ---
   const handleCheckout = async () => {
     // Validation
-    if (!selectedSize) {
-      setMessage("الرجاء اختيار المقاس أولاً!");
-      return;
-    }
+   
     if (!customerName || !customerPhone || !customerAddress || !selectedWilayaID) {
       setMessage("الرجاء ملء جميع معلومات التوصيل (الولاية مطلوبة).");
       return;
