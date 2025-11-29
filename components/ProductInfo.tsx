@@ -339,17 +339,7 @@ const ProductInfo = () => {
             </p>
             
             {/* Size Selectors */}
-            <div className='flex gap-4 mb-8 justify-end'>
-              {['S', 'M', 'L', 'XL'].map(size => (
-                  <button
-                    key={size}
-                    onClick={() => handleSelectedSize(size)}
-                    className={`px-4 py-2 rounded-lg border-2 ${selectedSize === size ? 'border-purple-500 bg-purple-500/20 text-purple-500' : 'border-gray-500 text-gray-500'}`}
-                  >
-                    {size}
-                  </button>
-              ))}
-            </div>
+           
 
             <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-inner border border-gray-200 dark:border-gray-700">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-700 pb-3">معلومات الطلب</h3>
