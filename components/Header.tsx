@@ -37,7 +37,7 @@ const Header = () => {
     <header className="fixed top-4 translate-x-10 lg:translate-x-0 z-50 w-full px-4 sm:px-10">
       <div
         className="w-full rounded-3xl border border-transparent
-        bg-transparent shadow-lg backdrop-blur-xl dark:border-gray-700/80
+        bg-transparent  shadow-lg backdrop-blur-lg  dark:border-gray-700/80
         dark:bg-gray-950/80 p-5"
       >
         {/* Mobile Header (based on your NEW screenshot)
@@ -68,7 +68,7 @@ const Header = () => {
 
           {/* Right: Logo */}
           <Link href="/" className="flex items-center gap-2" prefetch={false}>
-            <span className="text-2xl font-mono font-bold text-purple-700 dark:text-white">
+            <span className="text-4xl  font-bold text-purple-700 dark:text-white">
                 iSite
             </span>
             

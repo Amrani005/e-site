@@ -1,15 +1,14 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation'; // 1. Import useRouter
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   ArrowRight, ChevronLeft, ChevronRight, CreditCard, 
   MapPin, Truck, AlertOctagon, Gift, CheckCircle2, XCircle 
 } from 'lucide-react';
 
-// ... [Keep your CONFIGURATION DATA and WILAYA DATA exactly the same as before] ...
+// --- DATA CONFIGURATION ---
 
-// ... [Paste the boxItems array here] ...
 const boxItems = [
   {
     id: 1,
@@ -37,7 +36,6 @@ const boxItems = [
   }
 ];
 
-// ... [Paste the scenarios array here] ...
 const scenarios = [
   {
     type: 'bad',
@@ -51,7 +49,6 @@ const scenarios = [
   }
 ];
 
-// ... [Paste the wilayasData array here] ...
 interface WilayaData {
   IDWilaya: number;
   Wilaya: string;
@@ -121,18 +118,10 @@ const wilayasData: WilayaData[] = [
   { "IDWilaya": 58, "Wilaya": "Meniaa", "Domicile": "950", "Stopdesk": "0", "Annuler": "200" }
 ];
 
-
-const feedbackImages = [
-  "/der1.jpeg", 
-  "/der2.jpeg",
-  "/der3.jpeg",
-  "/der4.jpeg",
-   
-   
-];
+// --- COMPONENT ---
 
 const ProductInfo = () => {
-  const router = useRouter(); // 2. Initialize Router
+  const router = useRouter(); 
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
   const title = searchParams.get('title');
@@ -155,8 +144,6 @@ const ProductInfo = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<string>('');
   
-  // Removed isSuccess state since we are redirecting
-
   useEffect(() => {
     if (!id) return;
     const fetchProductGallery = async () => {
@@ -261,7 +248,6 @@ const ProductInfo = () => {
       );
       const responseData = await response.json();
       if (response.ok) {
-        // 3. Redirect to the new Thank You page
         router.push(`/thank-you?orderId=${responseData.id}`);
       } else {
         setMessage(`❌ فشل: ${responseData.message || 'حدث خطأ غير معروف'}`);
@@ -277,8 +263,10 @@ const ProductInfo = () => {
   const prevImage = () => { setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1)); };
 
   return (
-    <section className="py-20 sm:py-32 bg-transparent min-h-screen text-black dark:text-white -translate-x-10 lg:translate-x-0 mt-20">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 ">
+    // FIX: Removed '-translate-x-10' which broke mobile layout. Added 'overflow-x-hidden' to wrapper.
+    <section className="py-20 sm:py-32 bg-transparent min-h-screen
+     text-black  dark:text-white mt-20 relative z-0">
+      <div className="container mx-3 px-5 sm:px-6 lg:px-8">
         
         <Link
           href="/"
@@ -289,10 +277,11 @@ const ProductInfo = () => {
         </Link>
 
         {/* --- MAIN PRODUCT GRID --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 translate-x-5 lg:translate-x-0 gap-12 items-start mb-24">
+        {/* FIX: Removed 'translate-x' classes that shifted content off-screen on mobile */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-24">
           
           {/* Left Column: Images Slider */}
-          <div className="flex flex-col gap-4  top-24">
+          <div className="flex flex-col gap-4 top-24">
             <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-2xl shadow-lg overflow-hidden group">
               {images.length > 0 ? (
                 <>
@@ -319,44 +308,29 @@ const ProductInfo = () => {
               )}
             </div>
 
-               
-            
             {/* Thumbnails */}
-            
-                <div className='grid grid-cols-4 gap-2'>
-                    {images.map((item, index) => (
-                    <img
-                        key={index}
-                        src={item}
-                        alt="Thumbnail"
-                        className={`w-full aspect-square object-cover rounded-md 
-                          cursor-pointer border-2 transition-all
-                          ${currentImageIndex === index ? 'border-purple-500 opacity-100'
-                          :
-                          'border-transparent opacity-60 hover:opacity-100'}`}
-                        onClick={() => setCurrentImageIndex(index)}
-                    />
-                    ))}
-                </div>
-            
+             <div className='grid grid-cols-4 gap-2'>
+                  {images.map((item, index) => (
+                  <img
+                      key={index}
+                      src={item}
+                      alt="Thumbnail"
+                      className={`w-full aspect-square object-cover rounded-md 
+                        cursor-pointer border-2 transition-all
+                        ${currentImageIndex === index ? 'border-purple-500 opacity-100'
+                        :
+                        'border-transparent opacity-60 hover:opacity-100'}`}
+                      onClick={() => setCurrentImageIndex(index)}
+                  />
+                  ))}
+              </div>
           </div>
 
-          
-                
-                    
-            <img 
+           <img 
               src="/der18.jpeg"
-                            
               className="w-full h-full object-cover 
               transition-transform duration-500 group-hover:scale-110 lg:hidden"
               />
-            <div className="absolute inset-0 bg-black/0
-             group-hover:bg-black/20 transition-colors duration-300">
-
-            </div>
-                    
-                
-            
 
           {/* Right Column: Form */}
           <div className="flex flex-col h-full pt-4 text-right">
@@ -370,7 +344,8 @@ const ProductInfo = () => {
               {price ? `${price} د.ج` : 'السعر غير متوفر'}
             </p>
             
-            <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-inner border border-gray-200 dark:border-gray-700">
+            {/* FIX: Added 'relative' and 'z-20' to force this above any background elements */}
+            <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-inner border border-gray-200 dark:border-gray-700 relative z-20">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-700 pb-3">معلومات الطلب</h3>
               
               <div className="flex flex-col gap-4 mb-6 text-right">
@@ -419,10 +394,10 @@ const ProductInfo = () => {
 
                     <label className={`flex items-center justify-between p-3 rounded cursor-pointer border transition-all ${deliveryType === 'Stopdesk' ? 'border-purple-500 bg-purple-100 dark:bg-purple-900/20' : 'border-gray-300 dark:border-gray-600'}`}>
                       <div className="flex items-center gap-3">
-                         <input type="radio" name="delivery" checked={deliveryType === 'Stopdesk'} onChange={() => setDeliveryType('Stopdesk')} className="w-4 h-4 text-purple-600" />
-                         <div className="flex items-center gap-2 text-black dark:text-white">
-                          <MapPin size={18} />
-                          <span>استلام من المكتب</span>
+                          <input type="radio" name="delivery" checked={deliveryType === 'Stopdesk'} onChange={() => setDeliveryType('Stopdesk')} className="w-4 h-4 text-purple-600" />
+                          <div className="flex items-center gap-2 text-black dark:text-white">
+                           <MapPin size={18} />
+                           <span>استلام من المكتب</span>
                         </div>
                       </div>
                       <span className="font-bold text-purple-600 dark:text-purple-400">
@@ -475,32 +450,26 @@ const ProductInfo = () => {
         </div>
 
         <img 
-              src="/der17.jpeg"
-                            
-              className="w-full h-full object-cover 
-              transition-transform duration-500 group-hover:scale-110 
-              -translate-y-20 lg:translate-y-0 border-1 border-purple-500 rounded-2xl shadow-lg
-              translate-x-5 lg:translate-x-0"
-              />
-              <p className='text-4xl font-bold font-tajawal m-5 text-center -mt-10 lg:mt-0 mb-20'>توصيل سريع إلى كل الولايات قبل ما<p className='text-red-700 font-extrabold text-5xl m-3'>تندم/ي</p>  يوم الأبواب المفتوحة</p>
+            src="/der17.jpeg"
+            className="w-full h-full object-cover 
+            transition-transform duration-500 group-hover:scale-110 
+            -translate-y-20 lg:translate-y-0 border-1 border-purple-500 rounded-2xl shadow-lg"
+            />
+        <div className='text-4xl font-bold font-tajawal m-5 text-center -mt-10 lg:mt-0 mb-20'>توصيل سريع إلى كل الولايات قبل ما<span className='text-red-700 font-extrabold text-5xl m-3'>تندم/ي</span>  يوم الأبواب المفتوحة</div>
 
         <div className="w-full mb-24">
             <h2 className="text-3xl font-bold text-center text-[#0B1829] dark:text-white mb-8">
                 أمهات جربن باقاتنا.. وهذه كانت النتيجة! ⭐️⭐️⭐️⭐️⭐️
             </h2>
-            
-            {/* Horizontal Scrollable Row (Mobile) or Grid (Desktop) */}
-           
         </div>
 
         {/* =========================================================
             3. MARKETING SECTIONS (Center)
            ========================================================= */}
 
-        <div className="flex flex-col gap-12 max-w-4xl mx-auto px-2 
-        lg:px-0 mb-32 translate-x-5 lg:translate-x-0" dir="rtl">
+        <div className="flex flex-col gap-12 max-w-4xl mx-auto px-2 lg:px-0 mb-32" dir="rtl">
             
-            {/* A. WARNING SECTION (Dark Blue Box) */}
+            {/* A. WARNING SECTION */}
             <div className="bg-[#0B1829] rounded-2xl p-8 sm:p-12 text-center shadow-xl border border-gray-800 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full"></div>
                 <div className="flex justify-center mb-6">
@@ -514,7 +483,7 @@ const ProductInfo = () => {
                 </p>
             </div>
               
-
+            {/* Scenarios */}
               <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 sm:p-12 shadow-lg border border-gray-200 dark:border-gray-700 mt-0">
                 <h3 className="text-2xl sm:text-3xl font-bold text-center text-[#0B1829] dark:text-white mb-10">
                     تخيلي السيناريو يوم استلام كشف النقاط:
@@ -531,22 +500,14 @@ const ProductInfo = () => {
                 </div>
             </div>
 
-
              {/* IMAGE BETWEEN WARNING AND SCENARIOS */}
-             
                 <img 
                   src="kotob.jpeg" 
                   alt="Mother helping child study" 
                   className="w-full h-full object-cover"
                 />
 
-
-            
-
-            
-            
-            
-            {/* C. "WHAT'S INSIDE THE BOX" SECTION (Mapping) */}
+            {/* C. "WHAT'S INSIDE THE BOX" SECTION */}
             <div className="space-y-8 mt-12">
                 <h2 className="text-4xl sm:text-5xl font-black text-center text-[#0B1829] dark:text-white mb-12">
                     ماذا يوجد داخل الصندوق؟
@@ -556,7 +517,6 @@ const ProductInfo = () => {
                     {boxItems.map((item) => (
                         <div key={item.id} className="relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow">
                             
-                            {/* The "Free Gift" Badge logic */}
                             {item.isGift && (
                                 <div className="absolute top-0 left-8 -translate-y-1/2 bg-[#FFC107] text-[#0B1829] px-6 py-2 rounded-full font-bold flex items-center gap-2 shadow-lg z-10">
                                     <Gift className="w-5 h-5" />
@@ -565,7 +525,6 @@ const ProductInfo = () => {
                             )}
 
                             <div className="flex flex-col sm:flex-row gap-6 items-start">
-                                {/* Number Box */}
                                 {!item.isGift && (
                                     <div className="bg-blue-500 text-white w-12 h-12 flex items-center justify-center rounded-xl text-2xl font-bold shrink-0 shadow-blue-500/30 shadow-lg">
                                         {item.number}
@@ -586,9 +545,6 @@ const ProductInfo = () => {
                 </div>
             </div>
 
-
-            
-
             {/* D. MEGA PRO TITLE */}
             <div className="text-center space-y-4 mt-8">
                 <h2 className="text-3xl sm:text-5xl font-black text-[#0B1829] dark:text-white">
@@ -600,8 +556,6 @@ const ProductInfo = () => {
                     </p>
                 </div>
             </div>
-               
-               
         </div>
 
       </div>
