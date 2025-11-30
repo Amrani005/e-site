@@ -343,15 +343,18 @@ const ProductInfo = () => {
 
           
                 
-                    <div  >
-                        <img 
-                            src="/der18.jpeg"
+                    
+            <img 
+              src="/der18.jpeg"
                             
-                            className="w-full h-full object-cover 
-                            transition-transform duration-500 group-hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
-                    </div>
+              className="w-full h-full object-cover 
+              transition-transform duration-500 group-hover:scale-110"
+              />
+            <div className="absolute inset-0 bg-black/0
+             group-hover:bg-black/20 transition-colors duration-300">
+
+            </div>
+                    
                 
             
 
@@ -467,6 +470,16 @@ const ProductInfo = () => {
             </div>
           </div>
         </div>
+
+        <img 
+              src="/der17.jpeg"
+                            
+              className="w-full h-full object-cover 
+              transition-transform duration-500 group-hover:scale-110 
+              -translate-y-20 lg:translate-y-0 border-1 border-purple-500 rounded-2xl shadow-lg
+              translate-x-5 lg:translate-x-0"
+              />
+              <p className='text-4xl font-bold font-tajawal m-5 text-center -mt-10 lg:mt-0 mb-20'>توصيل سريع إلى كل الولايات قبل ما<p className='text-red-700 font-extrabold text-5xl m-3'>تندم/ي</p>  يوم الأبواب المفتوحة</p>
 
         <div className="w-full mb-24">
             <h2 className="text-3xl font-bold text-center text-[#0B1829] dark:text-white mb-8">
