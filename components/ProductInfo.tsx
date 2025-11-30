@@ -317,7 +317,11 @@ const ProductInfo = () => {
                         key={index}
                         src={item}
                         alt="Thumbnail"
-                        className={`w-full aspect-square object-cover rounded-md cursor-pointer border-2 transition-all ${currentImageIndex === index ? 'border-purple-500 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                        className={`w-full aspect-square object-cover rounded-md 
+                          cursor-pointer border-2 transition-all
+                          ${currentImageIndex === index ? 'border-purple-500 opacity-100'
+                          :
+                          'border-transparent opacity-60 hover:opacity-100'}`}
                         onClick={() => setCurrentImageIndex(index)}
                     />
                     ))}

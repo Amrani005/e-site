@@ -6,6 +6,8 @@ import { Tajawal,Inter,Poppins } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from 'next-themes';
 import Script from 'next/script';
+import { GoogleAnalytics } from '@next/third-parties/google';
+
 
 
 const geistSans = Geist({
@@ -67,6 +69,7 @@ export default function RootLayout({
         </ThemeProvider> 
         
       </body>
+      <GoogleAnalytics gaId="G-KD4WF4VZM6" />
     </html>
   );
 }
