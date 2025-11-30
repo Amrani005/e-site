@@ -348,7 +348,7 @@ const ProductInfo = () => {
               src="/der18.jpeg"
                             
               className="w-full h-full object-cover 
-              transition-transform duration-500 group-hover:scale-110"
+              transition-transform duration-500 group-hover:scale-110 lg:hidden"
               />
             <div className="absolute inset-0 bg-black/0
              group-hover:bg-black/20 transition-colors duration-300">
@@ -363,6 +363,9 @@ const ProductInfo = () => {
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-purple-400 mb-4">
               {title || 'اسم المنتج'}
             </h2>
+            <p className="text-3xl font-light line-through  text-zinc-500 dark:text-white mb-6">
+              4500.00 د.ج
+            </p>
             <p className="text-3xl font-semibold text-black dark:text-white mb-6">
               {price ? `${price} د.ج` : 'السعر غير متوفر'}
             </p>
@@ -483,7 +486,7 @@ const ProductInfo = () => {
 
         <div className="w-full mb-24">
             <h2 className="text-3xl font-bold text-center text-[#0B1829] dark:text-white mb-8">
-                أمهات جربن الباقة.. وهذه كانت النتيجة! ⭐️⭐️⭐️⭐️⭐️
+                أمهات جربن باقاتنا.. وهذه كانت النتيجة! ⭐️⭐️⭐️⭐️⭐️
             </h2>
             
             {/* Horizontal Scrollable Row (Mobile) or Grid (Desktop) */}
@@ -494,7 +497,8 @@ const ProductInfo = () => {
             3. MARKETING SECTIONS (Center)
            ========================================================= */}
 
-        <div className="flex flex-col gap-12 max-w-4xl mx-auto px-2 lg:px-0 mb-32" dir="rtl">
+        <div className="flex flex-col gap-12 max-w-4xl mx-auto px-2 
+        lg:px-0 mb-32 translate-x-5 lg:translate-x-0" dir="rtl">
             
             {/* A. WARNING SECTION (Dark Blue Box) */}
             <div className="bg-[#0B1829] rounded-2xl p-8 sm:p-12 text-center shadow-xl border border-gray-800 relative overflow-hidden">
@@ -509,30 +513,9 @@ const ProductInfo = () => {
                     الاختبارات على الأبواب.. والفرنسية مازالت "الكابوس" الذي يهدد معدل ابنك؟
                 </p>
             </div>
+              
 
-            <span  className='font-normal text-2xl'>
-                <h1 className='font-bold mb-5 text-3xl'>تخيلي السيناريو يوم استلام كشف النقاط:</h1>
-
-❌ السيناريو المرعب: وجه ابنك حزين، نقطة كارثية، المعدل ينزل.
-
- <p className='mt-3 mb-4'> ✅السيناريو الذي نحققه لكِ: ثقة عالية، إجابات صحيحة، ونقطة ترفع الرأس! </p>
-
-الحل الجذري وصل
-            </span>
-
-             {/* IMAGE BETWEEN WARNING AND SCENARIOS */}
-             
-                <img 
-                  src="kotob.jpeg" 
-                  alt="Mother helping child study" 
-                  className="w-full h-full object-cover"
-                />
-
-
-            
-
-            {/* B. SCENARIOS (Comparison) */}
-            <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 sm:p-12 shadow-lg border border-gray-200 dark:border-gray-700 mt-0">
+              <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 sm:p-12 shadow-lg border border-gray-200 dark:border-gray-700 mt-0">
                 <h3 className="text-2xl sm:text-3xl font-bold text-center text-[#0B1829] dark:text-white mb-10">
                     تخيلي السيناريو يوم استلام كشف النقاط:
                 </h3>
@@ -548,6 +531,19 @@ const ProductInfo = () => {
                 </div>
             </div>
 
+
+             {/* IMAGE BETWEEN WARNING AND SCENARIOS */}
+             
+                <img 
+                  src="kotob.jpeg" 
+                  alt="Mother helping child study" 
+                  className="w-full h-full object-cover"
+                />
+
+
+            
+
+            
             
             
             {/* C. "WHAT'S INSIDE THE BOX" SECTION (Mapping) */}
