@@ -277,10 +277,8 @@ const ProductInfo = () => {
   const prevImage = () => { setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1)); };
 
   return (
-    <section className="py-20 sm:py-32 bg-transparent min-h-screen
-     text-black dark:text-white -translate-x-20 lg:translate-x-0 
-     mt-20">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 sm:py-32 bg-transparent min-h-screen text-black dark:text-white -translate-x-10 lg:translate-x-0 mt-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 ">
         
         <Link
           href="/"
@@ -320,6 +318,8 @@ const ProductInfo = () => {
                 </div>
               )}
             </div>
+
+               
             
             {/* Thumbnails */}
             
@@ -340,6 +340,20 @@ const ProductInfo = () => {
                 </div>
             
           </div>
+
+          
+                
+                    <div  >
+                        <img 
+                            src="/der18.jpeg"
+                            
+                            className="w-full h-full object-cover 
+                            transition-transform duration-500 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
+                    </div>
+                
+            
 
           {/* Right Column: Form */}
           <div className="flex flex-col h-full pt-4 text-right">
@@ -455,32 +469,19 @@ const ProductInfo = () => {
         </div>
 
         <div className="w-full mb-24">
-            <h2 className="text-3xl font-bold text-center text-[#0B1829]
-             dark:text-white mb-8 translate-x-">
+            <h2 className="text-3xl font-bold text-center text-[#0B1829] dark:text-white mb-8">
                 أمهات جربن الباقة.. وهذه كانت النتيجة! ⭐️⭐️⭐️⭐️⭐️
             </h2>
             
             {/* Horizontal Scrollable Row (Mobile) or Grid (Desktop) */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4  translate-x-3 lg:translate-x-0">
-                {feedbackImages.map((imgSrc, index) => (
-                    <div key={index} className="rounded-xl overflow-hidden shadow-md border border-gray-200 dark:border-gray-700 aspect-[3/4] relative group cursor-pointer">
-                        <img 
-                            src={imgSrc} 
-                            alt={`Client feedback ${index + 1}`} 
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
-                    </div>
-                ))}
-            </div>
+           
         </div>
 
         {/* =========================================================
             3. MARKETING SECTIONS (Center)
            ========================================================= */}
 
-        <div className="flex flex-col gap-12 max-w-4xl mx-auto px-2 lg:px-0 mb-32 
-        translate-x-3 lg:translate-x-0" dir="rtl">
+        <div className="flex flex-col gap-12 max-w-4xl mx-auto px-2 lg:px-0 mb-32" dir="rtl">
             
             {/* A. WARNING SECTION (Dark Blue Box) */}
             <div className="bg-[#0B1829] rounded-2xl p-8 sm:p-12 text-center shadow-xl border border-gray-800 relative overflow-hidden">
