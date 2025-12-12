@@ -296,7 +296,7 @@ const Cart = () => {
                       <p className="text-lg font-semibold text-purple-400">{item.price} د.ج</p>
                       <h3 className="text-xl sm:text-3xl font-mono text-purple-400 mb-1">{item.size}</h3>
                     </div>
-                    <div className="flex justify-between items-center mt-4 w-full">
+                    <div className="flex   items-center mt-4 w-full">
                       <button onClick={() => handleRemoveItem(item.id)} className="text-red-500 hover:text-red-400 transition-colors" aria-label="إزالة المنتج">
                         <Trash2 size={20} />
                       </button>
