@@ -407,17 +407,12 @@ const ProductInfo = () => {
 
                         {selectedWilayaID && (
                             <div className="bg-orange-50 p-4 rounded-xl border border-orange-100">
-                                <p className="text-orange-800 font-bold mb-3 text-sm">اختر طريقة التوصيل:</p>
-                                <div className="space-y-2">
-                                    <label className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${deliveryType === 'Domicile' ? 'bg-white border-orange-500 shadow-sm' : 'border-transparent hover:bg-white'}`}>
-                                        <div className="flex items-center gap-2"><input type="radio" checked={deliveryType === 'Domicile'} onChange={() => setDeliveryType('Domicile')} className="text-orange-600"/> <Truck size={16}/> <span>للمنزل</span></div>
-                                        <span className="font-bold">{wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID))?.Domicile} د.ج</span>
-                                    </label>
-                                    <label className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${deliveryType === 'Stopdesk' ? 'bg-white border-orange-500 shadow-sm' : 'border-transparent hover:bg-white'}`}>
-                                        <div className="flex items-center gap-2"><input type="radio" checked={deliveryType === 'Stopdesk'} onChange={() => setDeliveryType('Stopdesk')} className="text-orange-600"/> <MapPin size={16}/> <span>للمكتب</span></div>
-                                        <span className="font-bold">{wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID))?.Stopdesk} د.ج</span>
-                                    </label>
-                                </div>
+                                 <div className="bg-emerald-50 border-2 border-emerald-500 border-dashed rounded-xl p-3 my-4 text-center shadow-sm animate-pulse-slow">
+  <h1 className='text-emerald-800 text-xl sm:text-2xl font-black font-tajawal flex items-center justify-center gap-2'>
+    <Truck className="w-6 h-6" />
+    التوصيل مجاني 69 ولاية!! 🇩🇿
+  </h1>
+</div>
                             </div>
                         )}
 
