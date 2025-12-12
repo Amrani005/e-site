@@ -38,8 +38,8 @@ const Header = () => {
      w-full px-4 sm:px-10">
       <div
         className="w-full rounded-3xl border border-transparent
-        bg-transparent  shadow-lg backdrop-blur-lg  dark:border-gray-700/80
-        dark:bg-gray-950/80 p-"
+        bg-transparent  shadow-lg backdrop-blur-lg  
+        "
       >
         {/* Mobile Header (based on your NEW screenshot)
           Visible on small screens, hidden on 'md' and up
@@ -69,7 +69,7 @@ const Header = () => {
 
           {/* Right: Logo */}
           <Link href="/" className="flex items-center gap-2" prefetch={false}>
-            <span className="text-s font-bold  font-mono text-blue-600 dark:text-white">
+            <span className="text-s font-bold  font-mono text-blue-600 ">
                 Likolin Kitaboh
             </span>
             
@@ -152,7 +152,7 @@ const Header = () => {
             </div>
             
             <Link href="/" className="flex items-center gap-2" prefetch={false}>
-              <span className="text-lg font-bold  font-mono text-blue-600 dark:text-white">
+              <span className="text-lg font-bold  font-mono text-blue-600 ">
                 Likolin Kitaboh
             </span>
               

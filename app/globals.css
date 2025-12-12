@@ -21,14 +21,11 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: ;
     --text-color: #ededed;
   }
 }
-.dark {
-  --bg-color: #0a0a0a;
-  --text-color: #f3f4f6;
-}
+
 
 
 /* 3. --- هذا هو الإصلاح --- */

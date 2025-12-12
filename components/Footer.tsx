@@ -4,7 +4,7 @@ import React from 'react';
 const Footer = () => {
   return (
     // 1. Footer container: Black background, white text, full width
-    <footer className="  text-purple-400 w-full
+    <footer className="  text-orange-600 w-full
      contain-content lg:w-full -translate-x-5">
       
       {/* 2. Main Footer Content Area: NAD STORE & Description */}
@@ -13,8 +13,9 @@ const Footer = () => {
         <div className="container mx-auto text-center max-w-4xl">
           
           {/* Title: NAD STORE (Centered, large, uppercase) */}
-          <h2 className="text-3xl font-extrabold tracking-widest mb-8 uppercase ">
-            ISITE STORE
+          <h2 className="text-3xl uppercase font-extrabold tracking-widest
+           mb-8 uppercase ">
+            Likoline Kitaboh
           </h2>
           
           {/* Description Block (Arabic Text) */}
@@ -24,7 +25,7 @@ const Footer = () => {
               className="text-lg text-gray-400 leading-relaxed font-medium" 
               dir="rtl"
             >
-              متجركم **isite store** يوفر لكم أفضل المنتجات التقنية الحديثة بأسعار مميزة
+              متجركم **Likoline Kitaboh** يوفر لكم أفضل المنتجات التقنية الحديثة بأسعار مميزة
             </p>
           </div>
           
@@ -37,7 +38,7 @@ const Footer = () => {
         <div className="container mx-auto">
           {/* Copyright Text (Arabic Text) */}
           <p className="text-gray-500" dir="rtl">
-            حقوق النشر &copy; محفوظة لموقع iSite
+            حقوق النشر &copy; محفوظة لموقع Likoline Kitaboh
           </p>
         </div>
       </div>
