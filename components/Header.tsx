@@ -34,11 +34,12 @@ const Header = () => {
 
   return (
     // أصلحنا px-10 لتكون متجاوبة وأزلنا font-tajawal (يجب أن يكون في globals.css)
-    <header className="fixed top-4 translate-x-10 lg:translate-x-0 z-50 w-full px-4 sm:px-10">
+    <header className="fixed top-4 translate-x-10 lg:translate-x-0 z-50
+     w-full px-4 sm:px-10">
       <div
         className="w-full rounded-3xl border border-transparent
         bg-transparent  shadow-lg backdrop-blur-lg  dark:border-gray-700/80
-        dark:bg-gray-950/80 p-5"
+        dark:bg-gray-950/80 p-"
       >
         {/* Mobile Header (based on your NEW screenshot)
           Visible on small screens, hidden on 'md' and up
@@ -58,7 +59,7 @@ const Header = () => {
               "
           >
             {/* 3. تبديل الأيقونة بناءً على الحالة */}
-            {isMenuOpen ? <X size={40} className='rotate-180 hover:text-purple-600 duration-300 transition-transform ease-in-out' /> : <Menu size={40} className=' duration-300 transition-transform  ease-in-out text-purple-700 ' />}
+            {isMenuOpen ? <X size={40} className='rotate-180 hover:text-purple-600 duration-300 transition-transform ease-in-out' /> : <Menu size={40} className=' duration-300 transition-transform  ease-in-out text-orange-600 ' />}
           </button>
           <Link href='/cart'>
           <ThemeToggle />
@@ -68,17 +69,11 @@ const Header = () => {
 
           {/* Right: Logo */}
           <Link href="/" className="flex items-center gap-2" prefetch={false}>
-            <span className="text-4xl  font-bold text-purple-700 dark:text-white">
-                iSite
+            <span className="text-s font-bold  font-mono text-blue-600 dark:text-white">
+                Likolin Kitaboh
             </span>
             
-            <Image
-              src="/Gemini_Generated_Image_a9b5i1a9b5i1a9b5.png" // تأكد من وضع أيقونة اللوجو هنا
-              alt=" "
-              width={50}
-              height={50}
-              className="h-12 w-12 cursor-pointer bg-white"
-            />
+            
           </Link>
         </div>
 
@@ -100,9 +95,9 @@ const Header = () => {
               <Link
                 href="/contact"
                 className="inline-flex w-full items-center justify-center
-                 rounded-full bg-purple-600 px-6 py-3 text-base 
+                 rounded-full bg-orange-600 px-6 py-3 text-base 
                   text-white shadow-sm transition-colors
-                  hover:bg-purple-700 hover:scale-[1.1] duration-300"
+                   duration-300"
                 prefetch={false}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -143,9 +138,9 @@ const Header = () => {
               <Link
               href="/contact"
               className="inline-flex items-center
-               justify-center rounded-full bg-purple-600 px-6 py-2.5
+               justify-center rounded-full bg-orange-600 px-6 py-2.5
                 text-base font-semibold text-white shadow-sm
-                 transition-colors hover:bg-purple-700 
+                 transition-colors hover:bg-orange-700 
                  focus-visible:outline focus-visible:outline-2 
                  focus-visible:outline-offset-2
                   focus-visible:outline-purple-600
@@ -157,17 +152,10 @@ const Header = () => {
             </div>
             
             <Link href="/" className="flex items-center gap-2" prefetch={false}>
-              <span className="text-xl font-mono font-bold text-purple-700 dark:text-white">
-                 iSite
-
-              </span>
-              <Image
-                src="/Gemini_Generated_Image_a9b5i1a9b5i1a9b5.png" // تأكد من وضع أيقونة اللوجو هنا
-                alt="بيكسلات لوجو"
-                width={50}
-                height={50}
-                className="h-13 w-13 bg-white"
-              />
+              <span className="text-lg font-bold  font-mono text-blue-600 dark:text-white">
+                Likolin Kitaboh
+            </span>
+              
             </Link>
           </div>
         </div>

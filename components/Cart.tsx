@@ -258,12 +258,10 @@ const Cart = () => {
   if (cartItems.length === 0 && !message.startsWith('✅')) {
     return (
       <section className="py-20 sm:py-32 bg-transparent -translate-x-8 min-h-screen text-white flex flex-col items-center justify-center text-center">
-        <ShoppingBag size={80} className="text-purple-400 mb-6" />
-        <h2 className="text-4xl font-bold text-purple-400 mb-4">سلة التسوق فارغة</h2>
+        <ShoppingBag size={80} className="text-orange-600 mb-6" />
+        <h2 className="text-4xl font-bold text-orange-600 mb-4">سلة التسوق فارغة</h2>
         <p className="text-lg text-gray-300 mb-8">لم تقم بإضافة أي منتجات حتى الآن.</p>
-        <Link href="/" className="flex items-center justify-center gap-3 px-8 py-4 bg-purple-700 text-white text-lg font-semibold rounded-xl shadow-lg hover:bg-purple-800 transition-all">
-          متابعة التسوق
-        </Link>
+       
       </section>
     );
   }
@@ -280,9 +278,7 @@ const Cart = () => {
           <div className="text-center bg-gray-800 p-10 rounded-lg shadow-lg">
             <h3 className="text-3xl font-bold text-green-400 mb-4">شكراً لك!</h3>
             <p className="text-xl text-gray-300">{message}</p>
-            <Link href="/" className="mt-8 inline-flex items-center justify-center gap-3 px-8 py-4 bg-purple-700 text-white text-lg font-semibold rounded-xl shadow-lg hover:bg-purple-800 transition-all">
-              العودة للرئيسية
-            </Link>
+            
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start translate-x-4">

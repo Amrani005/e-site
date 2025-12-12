@@ -1,11 +1,18 @@
 'use client';
+
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Cairo, Tajawal } from 'next/font/google'; 
 import { 
   ArrowRight, ChevronLeft, ChevronRight, CreditCard, 
-  MapPin, Truck, AlertOctagon, Gift, CheckCircle2, XCircle 
+  MapPin, Truck, AlertOctagon, Gift, CheckCircle2, XCircle, 
+  Map, Star, ShieldCheck, Flame, Minus, Plus 
 } from 'lucide-react';
+
+// --- 1. FONTS SETUP ---
+const cairo = Cairo({ subsets: ['arabic'], weight: ['400', '700', '900'] });
+const tajawal = Tajawal({ subsets: ['arabic'], weight: ['400', '500', '700', '800'] });
 
 // --- DATA CONFIGURATION ---
 
@@ -16,7 +23,7 @@ const boxItems = [
     title: "المرجع الأسطوري: LAROUSSE",
     description: "موسوعة مصورة بشرح مبسط. الصور تجعل ابنك يحب المادة ويفهمها وحده.",
     isGift: false,
-    image: "/path-to-larousse-img.png" 
+    icon: "🎨" 
   },
   {
     id: 2,
@@ -24,27 +31,27 @@ const boxItems = [
     title: "سلسلة MAXI POCHE (4 كتب)",
     description: "قواميس شاملة للترجمة (عربي/فرنسي) وللإثراء اللغوي (فرنسي/فرنسي). كل ما يحتاجه التلميذ.",
     isGift: false,
-    image: "/path-to-maxi-img.png"
+    icon: "📚"
   },
   {
     id: 3,
     number: "Gift", 
-    title: "كتاب التمارين: Le Robert - 1000 Questions",
-    description: "قيمته 700 دج، تحصلين عليه مجاناً! لكي يصبح ولدك يلعب بصعوبات الفرنسية قبل الامتحان بأسئلة وأجوبة.",
+    title: "كتاب التمارين: 1000 Questions",
+    description: "لكي يصبح ولدك يلعب بصعوبات الفرنسية قبل الامتحان بأسئلة وأجوبة.",
     isGift: true, 
-    image: "/path-to-robert-img.png"
+    icon: "🎁"
   }
 ];
 
 const scenarios = [
   {
     type: 'bad',
-    icon: <XCircle className="w-6 h-6 sm:w-8 sm:h-8 text-red-500 shrink-0" />,
+    icon: <XCircle className="w-8 h-8 text-red-500 shrink-0" />,
     text: "السيناريو المرعب: وجه ابنك حزين، نقطة كارثية، المعدل ينزل."
   },
   {
     type: 'good',
-    icon: <CheckCircle2 className="w-6 h-6 sm:w-8 sm:h-8 text-green-500 shrink-0" />,
+    icon: <CheckCircle2 className="w-8 h-8 text-green-500 shrink-0" />,
     text: "السيناريو الذي نحققه لكِ: ثقة عالية، إجابات صحيحة، ونقطة ترفع الرأس!"
   }
 ];
@@ -118,6 +125,7 @@ const wilayasData: WilayaData[] = [
   { "IDWilaya": 58, "Wilaya": "Meniaa", "Domicile": "950", "Stopdesk": "0", "Annuler": "200" }
 ];
 
+
 // --- COMPONENT ---
 
 const ProductInfo = () => {
@@ -139,11 +147,25 @@ const ProductInfo = () => {
   const [selectedWilayaID, setSelectedWilayaID] = useState<number | "">("");
   const [deliveryType, setDeliveryType] = useState<"Domicile" | "Stopdesk">("Domicile");
   
+  // COUNTING SYSTEM STATES
+  const [count, setCount] = useState(1);
   const [shippingTotal, setShippingTotal] = useState(0);
   const [finalTotal, setFinalTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<string>('');
+
+  // 1. IMPROVED INCREMENT/DECREMENT LOGIC
+  const increment = () => {
+     setCount((prev) => prev + 1);
+  }
   
+  const decrement = () => {
+     if(count > 1 ) {
+        setCount((prev) => prev - 1);
+     }
+  }
+ 
+  // Fetch Gallery Logic
   useEffect(() => {
     if (!id) return;
     const fetchProductGallery = async () => {
@@ -167,6 +189,7 @@ const ProductInfo = () => {
     fetchProductGallery();
   }, [id]);
 
+  // 2. UPDATED PRICING LOGIC (With Multiplier)
   useEffect(() => {
     const productPrice = parseFloat(price?.replace(/,/g, '') || '0');
     let shippingCost = 0;
@@ -177,9 +200,12 @@ const ProductInfo = () => {
       }
     }
     setShippingTotal(shippingCost || 0);
-    setFinalTotal(productPrice + (shippingCost || 0));
-  }, [selectedWilayaID, deliveryType, price]);
+    
+    // FORMULA: (Price * Count) + Shipping
+    setFinalTotal((productPrice * count) + (shippingCost || 0));
+  }, [selectedWilayaID, deliveryType, price, count]); // Added 'count' as dependency
 
+  // 3. UPDATED CHECKOUT LOGIC (Sending Quantity)
   const handleCheckout = async () => {
     if (!customerName || !customerPhone || !customerAddress || !selectedWilayaID) {
       setMessage("الرجاء ملء جميع معلومات التوصيل (الولاية مطلوبة).");
@@ -194,7 +220,7 @@ const ProductInfo = () => {
 
     const line_items = [{
       product_id: id,
-      quantity: 1,
+      quantity: count, // UPDATED: Sending the count state
       meta_data: selectedSize ? [{ key: "Size", value: selectedSize }] : []
     }];
 
@@ -263,303 +289,248 @@ const ProductInfo = () => {
   const prevImage = () => { setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1)); };
 
   return (
-    // FIX: Removed '-translate-x-10' which broke mobile layout. Added 'overflow-x-hidden' to wrapper.
-    <section className="py-20 sm:py-32 bg-transparent min-h-screen
-     text-black  dark:text-white mt-20 relative z-0">
-      <div className="container mx-3 px-5 sm:px-6 lg:px-8">
-        
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-purple-400 font-medium mb-8 group w-fit"
-        >
-          <ArrowRight className="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-1" />
-          <span>الرجوع إلى المنتجات</span>
-        </Link>
-
-        {/* --- MAIN PRODUCT GRID --- */}
-        {/* FIX: Removed 'translate-x' classes that shifted content off-screen on mobile */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-24">
-          
-          {/* Left Column: Images Slider */}
-          <div className="flex flex-col gap-4 top-24">
-            <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] rounded-2xl shadow-lg overflow-hidden group">
-              {images.length > 0 ? (
-                <>
-                  <img
-                    src={images[currentImageIndex]}
-                    alt={title || 'Product Image'}
-                    className="w-full h-full object-cover transition-all duration-500 ease-in-out"
-                  />
-                  {images.length > 1 && (
-                    <>
-                      <button onClick={prevImage} className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full group-hover:opacity-100 transition-opacity duration-300">
-                        <ChevronLeft className="w-6 h-6" />
-                      </button>
-                      <button onClick={nextImage} className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full group-hover:opacity-100 transition-opacity duration-300">
-                        <ChevronRight className="w-6 h-6" />
-                      </button>
-                    </>
-                  )}
-                </>
-              ) : (
-                <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                  <div className="w-8 h-8 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
-                </div>
-              )}
-            </div>
-
-            {/* Thumbnails */}
-             <div className='grid grid-cols-4 gap-2'>
-                  {images.map((item, index) => (
-                  <img
-                      key={index}
-                      src={item}
-                      alt="Thumbnail"
-                      className={`w-full aspect-square object-cover rounded-md 
-                        cursor-pointer border-2 transition-all
-                        ${currentImageIndex === index ? 'border-purple-500 opacity-100'
-                        :
-                        'border-transparent opacity-60 hover:opacity-100'}`}
-                      onClick={() => setCurrentImageIndex(index)}
-                  />
-                  ))}
-              </div>
-          </div>
-
-           <img 
-              src="/der18.jpeg"
-              className="w-full h-full object-cover 
-              transition-transform duration-500 group-hover:scale-110 lg:hidden"
-              />
-
-          {/* Right Column: Form */}
-          <div className="flex flex-col h-full pt-4 text-right">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-purple-400 mb-4">
-              {title || 'اسم المنتج'}
-            </h2>
-            <p className="text-3xl font-light line-through  text-zinc-500 dark:text-white mb-6">
-              4500.00 د.ج
-            </p>
-            <p className="text-3xl font-semibold text-black dark:text-white mb-6">
-              {price ? `${price} د.ج` : 'السعر غير متوفر'}
-            </p>
+    <div className={`min-h-screen bg-white mr-5 ${tajawal.className} overflow-x-hidden text-right`} dir="rtl">
+      
+      {/* --- 1. HERO SECTION --- */}
+      <section className="pt-24 pb-12 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto mt-10 ">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             
-            {/* FIX: Added 'relative' and 'z-20' to force this above any background elements */}
-            <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-2xl shadow-inner border border-gray-200 dark:border-gray-700 relative z-20">
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 border-b border-gray-300 dark:border-gray-700 pb-3">معلومات الطلب</h3>
-              
-              <div className="flex flex-col gap-4 mb-6 text-right">
-                <input 
-                  type="text" placeholder="* الاسم الكامل" className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white"
-                  value={customerName} onChange={(e) => setCustomerName(e.target.value)}
-                />
-                <input 
-                  type="tel" placeholder="* رقم الهاتف" className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white"
-                  value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)}
-                />
-                <input 
-                  type="text" placeholder="اليلدية" className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white"
-                  value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)}
-                />
+            {/* RIGHT SIDE (Mobile Top): Hook + Images */}
+            <div className="order-1 lg:order-1 flex flex-col gap-6">
                 
-                <select
-                  value={selectedWilayaID}
-                  onChange={(e) => setSelectedWilayaID(Number(e.target.value))}
-                  className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white text-right"
-                >
-                  <option value="" disabled>* اختر الولاية</option>
-                  {wilayasData.map((w) => (
-                    <option key={w.IDWilaya} value={w.IDWilaya}>
-                      {w.IDWilaya} - {w.Wilaya}
-                    </option>
-                  ))}
-                </select>
-
-                {selectedWilayaID && (
-                  <div className="mt-4 p-4 bg-white dark:bg-gray-700/50 rounded-lg border border-gray-300 dark:border-gray-600">
-                    <h4 className="text-lg font-semibold mb-3 text-purple-600 dark:text-purple-300">طريقة التوصيل:</h4>
-                    
-                    <label className={`flex items-center justify-between p-3 rounded cursor-pointer mb-2 border transition-all ${deliveryType === 'Domicile' ? 'border-purple-500 bg-purple-100 dark:bg-purple-900/20' : 'border-gray-300 dark:border-gray-600'}`}>
-                      <div className="flex items-center gap-3">
-                        <input type="radio" name="delivery" checked={deliveryType === 'Domicile'} onChange={() => setDeliveryType('Domicile')} className="w-4 h-4 text-purple-600" />
-                        <div className="flex items-center gap-2 text-black dark:text-white">
-                          <Truck size={18} />
-                          <span>توصيل للمنزل</span>
-                        </div>
-                      </div>
-                      <span className="font-bold text-purple-600 dark:text-purple-400">
-                        {wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID))?.Domicile || 0} د.ج
-                      </span>
-                    </label>
-
-                    <label className={`flex items-center justify-between p-3 rounded cursor-pointer border transition-all ${deliveryType === 'Stopdesk' ? 'border-purple-500 bg-purple-100 dark:bg-purple-900/20' : 'border-gray-300 dark:border-gray-600'}`}>
-                      <div className="flex items-center gap-3">
-                          <input type="radio" name="delivery" checked={deliveryType === 'Stopdesk'} onChange={() => setDeliveryType('Stopdesk')} className="w-4 h-4 text-purple-600" />
-                          <div className="flex items-center gap-2 text-black dark:text-white">
-                           <MapPin size={18} />
-                           <span>استلام من المكتب</span>
-                        </div>
-                      </div>
-                      <span className="font-bold text-purple-600 dark:text-purple-400">
-                        {wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID))?.Stopdesk || 0} د.ج
-                      </span>
-                    </label>
-                  </div>
-                )}
-              </div>
-
-              <div className="space-y-2 mb-8">
-                <div className="flex justify-between items-center text-gray-600 dark:text-gray-300">
-                  <span>سعر المنتج</span>
-                  <span>{price} د.ج</span>
-                </div>
-                <div className="flex justify-between items-center text-gray-600 dark:text-gray-300">
-                  <span>تكلفة الشحن</span>
-                  <span className={shippingTotal > 0 ? "text-purple-500" : "text-gray-500"}>
-                    {shippingTotal > 0 ? `${shippingTotal} د.ج` : "---"}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-3xl font-bold text-gray-900 dark:text-white pt-4 border-t border-gray-300 dark:border-gray-700 mt-2">
-                  <span>الإجمالي</span>
-                  <span className="text-purple-600 dark:text-purple-400">{finalTotal.toLocaleString()} د.ج</span>
-                </div>
-              </div>
-
-              <button
-                onClick={handleCheckout}
-                disabled={isLoading}
-                className="w-full flex items-center justify-center gap-3 px-8 py-4 bg-purple-700 text-white text-lg font-semibold rounded-xl shadow-lg hover:bg-purple-800 focus:outline-none focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-800 transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <div className="w-6 h-6 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
-                ) : (
-                  <>
-                    <CreditCard className="h-6 w-6" />
-                    <span>تأكيد الطلب الآن</span>
-                  </>
-                )}
-              </button>
-
-              {message && !message.startsWith('✅') && (
-                <div className='mt-4 text-center text-lg text-red-500 font-medium'>
-                  {message}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <img 
-            src="/der17.jpeg"
-            className="w-full h-full object-cover 
-            transition-transform duration-500 group-hover:scale-110 
-            -translate-y-20 lg:translate-y-0 border-1 border-purple-500 rounded-2xl shadow-lg"
-            />
-        <div className='text-4xl font-bold font-tajawal m-5 text-center -mt-10 lg:mt-0 mb-20'>توصيل سريع إلى كل الولايات قبل ما<span className='text-red-700 font-extrabold text-5xl m-3'>تندم/ي</span>  يوم الأبواب المفتوحة</div>
-
-        <div className="w-full mb-24">
-            <h2 className="text-3xl font-bold text-center text-[#0B1829] dark:text-white mb-8">
-                أمهات جربن باقاتنا.. وهذه كانت النتيجة! ⭐️⭐️⭐️⭐️⭐️
-            </h2>
-        </div>
-
-        {/* =========================================================
-            3. MARKETING SECTIONS (Center)
-           ========================================================= */}
-
-        <div className="flex flex-col gap-12 max-w-4xl mx-auto px-2 lg:px-0 mb-32" dir="rtl">
-            
-            {/* A. WARNING SECTION */}
-            <div className="bg-[#0B1829] rounded-2xl p-8 sm:p-12 text-center shadow-xl border border-gray-800 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full"></div>
-                <div className="flex justify-center mb-6">
-                    <AlertOctagon className="w-16 h-16 text-pink-500 fill-pink-500/20" />
-                </div>
-                <h2 className="text-2xl sm:text-4xl font-black text-white dark:text-white mb-4 leading-tight">
-                    تحذير للأمهات: هل أنت جاهزة لرؤية نقطة الفرنسية في كشف النقاط؟
-                </h2>
-                <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
-                    الاختبارات على الأبواب.. والفرنسية مازالت "الكابوس" الذي يهدد معدل ابنك؟
-                </p>
-            </div>
-              
-            {/* Scenarios */}
-              <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 sm:p-12 shadow-lg border border-gray-200 dark:border-gray-700 mt-0">
-                <h3 className="text-2xl sm:text-3xl font-bold text-center text-[#0B1829] dark:text-white mb-10">
-                    تخيلي السيناريو يوم استلام كشف النقاط:
-                </h3>
-                <div className="space-y-6">
-                    {scenarios.map((scenario, index) => (
-                        <div key={index} className="flex gap-4 items-start">
-                           <div className="mt-1 shrink-0">{scenario.icon}</div>
-                           <p className={`text-xl font-medium ${scenario.type === 'bad' ? 'text-gray-500 line-through decoration-red-500/50' : 'text-[#0B1829] dark:text-white'}`}>
-                               {scenario.text}
-                           </p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-             {/* IMAGE BETWEEN WARNING AND SCENARIOS */}
-                <img 
-                  src="kotob.jpeg" 
-                  alt="Mother helping child study" 
-                  className="w-full h-full object-cover"
-                />
-
-            {/* C. "WHAT'S INSIDE THE BOX" SECTION */}
-            <div className="space-y-8 mt-12">
-                <h2 className="text-4xl sm:text-5xl font-black text-center text-[#0B1829] dark:text-white mb-12">
-                    ماذا يوجد داخل الصندوق؟
-                </h2>
-
-                <div className="space-y-6">
-                    {boxItems.map((item) => (
-                        <div key={item.id} className="relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow">
-                            
-                            {item.isGift && (
-                                <div className="absolute top-0 left-8 -translate-y-1/2 bg-[#FFC107] text-[#0B1829] px-6 py-2 rounded-full font-bold flex items-center gap-2 shadow-lg z-10">
-                                    <Gift className="w-5 h-5" />
-                                    <span>هدية مجانية</span>
-                                </div>
-                            )}
-
-                            <div className="flex flex-col sm:flex-row gap-6 items-start">
-                                {!item.isGift && (
-                                    <div className="bg-blue-500 text-white w-12 h-12 flex items-center justify-center rounded-xl text-2xl font-bold shrink-0 shadow-blue-500/30 shadow-lg">
-                                        {item.number}
-                                    </div>
-                                )}
-                                
-                                <div className="flex-1 space-y-3">
-                                    <h3 className="text-2xl sm:text-3xl font-black text-[#0B1829] dark:text-blue-400">
-                                        {item.title}
-                                    </h3>
-                                    <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-                                        {item.description}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* D. MEGA PRO TITLE */}
-            <div className="text-center space-y-4 mt-8">
-                <h2 className="text-3xl sm:text-5xl font-black text-[#0B1829] dark:text-white">
-                    الحل الجذري وصل بين يديك!
-                </h2>
-                <div className="inline-block bg-orange-100 dark:bg-orange-900/30 px-6 py-3 rounded-xl">
-                    <p className="text-xl sm:text-2xl text-orange-600 dark:text-orange-400 font-bold">
-                        🔥 باقة الإنقاذ المدرسي الشاملة 🔥
+                {/* HEADLINE */}
+                <div className="text-center lg:text-right">
+                    <h1 className={`${cairo.className} text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-tight mb-4`}>
+                        خايفة وليدك يكمل العام <br/>
+                        <span className="text-red-600 relative inline-block">
+                            ضعيف في الفرنسية؟ 😟
+                            <span className="absolute bottom-0 left-0 w-full h-2 bg-red-100 -z-10"></span>
+                        </span>
+                    </h1>
+                    <p className="text-lg text-slate-600 mb-6 max-w-lg mx-auto lg:mx-0">
+                        الحل راهو في جيبه! اكتشفي باقة <strong className="text-orange-600">Le Mega Pro</strong> + هدية التحدي الحصرية.
                     </p>
                 </div>
-            </div>
-        </div>
 
+                {/* PAIN BAR */}
+                <div className="bg-red-50 border-2 border-dashed border-red-300 rounded-xl p-4 text-center lg:text-right animate-pulse-slow">
+                    <p className="text-red-700 font-bold flex items-center justify-center lg:justify-start gap-2 text-sm sm:text-base">
+                        <AlertOctagon className="w-6 h-6 shrink-0" />
+                        كتب ثقيلة.. مصطلحات واعرين.. والنتيجة: التلميذ يكره المادة!
+                    </p>
+                </div>
+
+                {/* IMAGE GALLERY */}
+                <div className="relative w-full aspect-[4/3] rounded-2xl shadow-2xl overflow-hidden border-4 border-white">
+                  {images.length > 0 ? (
+                    <>
+                      <img
+                        src={images[currentImageIndex]}
+                        alt={title || 'Product'}
+                        className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                      />
+                      {images.length > 1 && (
+                        <>
+                          <button onClick={prevImage} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-900 p-2 rounded-full shadow-lg transition-all"><ChevronLeft /></button>
+                          <button onClick={nextImage} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-900 p-2 rounded-full shadow-lg transition-all"><ChevronRight /></button>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <div className="w-full h-full bg-slate-200 flex items-center justify-center text-slate-400">Loading Images...</div>
+                  )}
+                </div>
+                
+                {/* Thumbnails */}
+                <div className='flex gap-2 overflow-x-auto pb-2'>
+                    {images.map((item, index) => (
+                    <img key={index} src={item} onClick={() => setCurrentImageIndex(index)}
+                        className={`w-20 h-20 object-cover rounded-lg cursor-pointer border-2 transition-all ${currentImageIndex === index ? 'border-orange-500 scale-105' : 'border-transparent opacity-70'}`}
+                    />
+                    ))}
+                </div>
+            </div>
+
+            {/* LEFT SIDE: THE FORM */}
+            <div className="order-2 lg:order-2 bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden sticky top-4">
+               {/* Pricing Header */}
+               <div className="bg-slate-900 text-white p-6 text-center">
+                  <h3 className={`${cairo.className} text-xl font-bold mb-2`}>عرض خاص للأولياء الحريصين 💎</h3>
+                  <div className="flex items-center justify-center gap-4">
+                      <span className="text-slate-400 line-through text-lg">5100 د.ج</span>
+                      <span className="text-green-400 text-4xl font-black">{price} د.ج</span>
+                  </div>
+                  <p className="text-sm text-slate-400 mt-2">السعر شامل 5 كتب + هدية التحدي</p>
+               </div>
+
+               {/* Form Body */}
+               <div className="p-6 sm:p-8 space-y-4">
+                    <div className="space-y-4">
+                        <input type="text" placeholder="الاسم الكامل" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+                            value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
+                        
+                        <input type="tel" placeholder="رقم الهاتف (للاتصال)" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+                            value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} />
+                        
+                        <div className="grid grid-cols-2 gap-3">
+                             <select value={selectedWilayaID} onChange={(e) => setSelectedWilayaID(Number(e.target.value))}
+                                className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                                <option value="" disabled>الولاية</option>
+                                {wilayasData.map((w) => (<option key={w.IDWilaya} value={w.IDWilaya}>{w.IDWilaya} - {w.Wilaya}</option>))}
+                            </select>
+                            <input type="text" placeholder="البلدية" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none"
+                                value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} />
+                        </div>
+
+                        {selectedWilayaID && (
+                            <div className="bg-orange-50 p-4 rounded-xl border border-orange-100">
+                                <p className="text-orange-800 font-bold mb-3 text-sm">اختر طريقة التوصيل:</p>
+                                <div className="space-y-2">
+                                    <label className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${deliveryType === 'Domicile' ? 'bg-white border-orange-500 shadow-sm' : 'border-transparent hover:bg-white'}`}>
+                                        <div className="flex items-center gap-2"><input type="radio" checked={deliveryType === 'Domicile'} onChange={() => setDeliveryType('Domicile')} className="text-orange-600"/> <Truck size={16}/> <span>للمنزل</span></div>
+                                        <span className="font-bold">{wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID))?.Domicile} د.ج</span>
+                                    </label>
+                                    <label className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all ${deliveryType === 'Stopdesk' ? 'bg-white border-orange-500 shadow-sm' : 'border-transparent hover:bg-white'}`}>
+                                        <div className="flex items-center gap-2"><input type="radio" checked={deliveryType === 'Stopdesk'} onChange={() => setDeliveryType('Stopdesk')} className="text-orange-600"/> <MapPin size={16}/> <span>للمكتب</span></div>
+                                        <span className="font-bold">{wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID))?.Stopdesk} د.ج</span>
+                                    </label>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 4. QUANTITY SELECTOR UI */}
+                        <div className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+                           <span className="font-bold text-slate-700">الكمية:</span>
+                           <div className="flex items-center gap-4 bg-white px-2 py-1 rounded-lg border border-slate-200 shadow-sm">
+                              <button onClick={decrement} className="w-8 h-8 flex items-center justify-center bg-slate-100 rounded hover:bg-slate-200 text-slate-600 transition-colors">
+                                 <Minus size={16} />
+                              </button>
+                              <span className="font-bold text-xl w-6 text-center">{count}</span>
+                              <button onClick={increment} className="w-8 h-8 flex items-center justify-center bg-orange-100 rounded hover:bg-orange-200 text-orange-600 transition-colors">
+                                 <Plus size={16} />
+                              </button>
+                           </div>
+                        </div>
+
+                        {/* Order Summary */}
+                        <div className="pt-4 border-t border-slate-100 space-y-2">
+                           {count > 1 && (
+                              <div className="flex justify-between items-center text-sm text-slate-500">
+                                 <span>سعر الباقات ({count}x):</span>
+                                 <span>{parseFloat(price?.replace(/,/g, '') || '0') * count} د.ج</span>
+                              </div>
+                           )}
+                           <div className="flex justify-between items-center text-xl font-bold text-slate-900">
+                               <span>المجموع الكلي:</span>
+                               <span className="text-orange-600">{finalTotal.toLocaleString()} د.ج</span>
+                           </div>
+                        </div>
+
+                        {/* BIG ORANGE BUTTON */}
+                        <button onClick={handleCheckout} disabled={isLoading}
+                            className="w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xl font-black rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2">
+                             {isLoading ? <span className="animate-spin text-2xl">↻</span> : <><ShieldCheck /> اضغط هنا للطلب</>}
+                        </button>
+                        <p className="text-center text-xs text-slate-400">الدفع عند الاستلام (Main à main) - ضمان 100%</p>
+                        
+                        {message && <p className="text-center text-red-500 font-bold bg-red-50 p-2 rounded">{message}</p>}
+                    </div>
+               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- 2. THE SECRET WEAPON (THE MAP) --- */}
+      <section className="py-12 px-4 bg-yellow-50 border-y-4 border-yellow-400">
+         <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-block bg-orange-600 text-white px-4 py-1 rounded-full text-sm font-bold mb-4 shadow-md animate-bounce">
+               🎁 هدية مجانية حصرية
+            </div>
+            <h2 className={`${cairo.className} text-3xl sm:text-4xl font-black text-slate-900 mb-4`}>
+                🗺️ خارطة طريق البطل (تحدي 30 يوم)
+            </h2>
+            <p className="text-xl text-slate-700 leading-relaxed max-w-2xl mx-auto mb-8">
+               ماشي مجرد جدول.. هذه <strong>لعبة</strong> تخلي وليدك "يحوس" وقتاش يفتح القاموس باش يعمر الخانة ويلون النجمة! <br/>
+               <span className="text-sm opacity-80">(توصلك مطبوعة مع الباقة)</span>
+            </p>
+            
+            <div className="flex justify-center gap-2 text-yellow-500">
+                {[1,2,3,4,5].map(i => <Star key={i} className="w-8 h-8 fill-yellow-400" />)}
+            </div>
+         </div>
+      </section>
+
+      {/* --- 3. WHAT'S INSIDE --- */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-5xl mx-auto">
+           <h2 className={`${cairo.className} text-3xl font-black text-center text-slate-900 mb-12`}>
+               واش كاين داخل "باقة الإنقاذ"؟ 📦
+           </h2>
+
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {boxItems.map((item) => (
+                 <div key={item.id} className={`p-6 rounded-2xl border-2 transition-all hover:shadow-lg ${item.isGift ? 'bg-yellow-50 border-yellow-400' : 'bg-slate-50 border-slate-100 hover:border-blue-200'}`}>
+                    <div className="flex items-start gap-4">
+                       <span className="text-4xl">{item.icon}</span>
+                       <div>
+                          <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
+                          <p className="text-slate-600 leading-relaxed">{item.description}</p>
+                       </div>
+                    </div>
+                 </div>
+              ))}
+           </div>
+        </div>
+      </section>
+
+      {/* --- 4. SCENARIOS --- */}
+      <section className="py-16 px-4 bg-slate-900 text-white">
+          <div className="max-w-4xl mx-auto">
+             <h2 className={`${cairo.className} text-3xl font-bold text-center mb-10`}>تخيلي السيناريو يوم كشف النقاط...</h2>
+             <div className="grid gap-6">
+                {scenarios.map((scenario, idx) => (
+                   <div key={idx} className={`flex items-center gap-4 p-6 rounded-xl ${scenario.type === 'bad' ? 'bg-slate-800 opacity-70' : 'bg-green-900/40 border border-green-500'}`}>
+                      {scenario.icon}
+                      <p className={`text-lg ${scenario.type === 'bad' ? 'line-through text-slate-400' : 'font-bold text-white'}`}>{scenario.text}</p>
+                   </div>
+                ))}
+             </div>
+          </div>
+      </section>
+
+      {/* --- 5. SOCIAL PROOF --- */}
+      <section className="py-16 px-4 bg-[#f8fafc] text-center">
+         <h2 className="text-2xl font-bold text-slate-800 mb-8">
+         ⭐️⭐️⭐️⭐️⭐️ أمهات جربن باقاتنا</h2>
+
+         <div className="grid grid-cols-3 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+             <img src="/der1.jpeg" width={240} height={120} />
+             <img src="/der5.jpeg" width={240} height={120} />
+             <img src="/der3.jpeg" width={240} height={120} />
+             <img src="/der4.jpeg" width={240} height={120} />
+             <img src="/der6.jpeg" width={240} height={120} />
+             <img src="/der7.jpeg" width={240} height={120} />
+             <img src="/der8.jpeg" width={240} height={120} />
+             <img src="/der9.jpeg" width={240} height={120} />
+             <img src="/der10.jpeg" width={240} height={120} />
+             <img src="/der11.jpeg" width={240} height={120} />
+             <img src="/der13.jpeg" width={240} height={120} />
+             <img src="/der14.jpeg" width={240} height={120} />
+         </div>
+      </section>
+
+      {/* --- 6. FLOATING CTA --- */}
+      <div className="fixed bottom-0  left-5 w-full bg-white border-t border-slate-200 p-4  lg:hidden z-50 shadow-[0_-5px_15px_rgba(0,0,0,0.1)]">
+         <button onClick={handleCheckout} 
+            className="w-full bg-orange-600 text-white font-bold py-3
+             rounded-xl shadow-lg flex items-center justify-center gap-2 ">
+            <CreditCard size={20} /> اطلبي الباقة الآن ({price} د.ج)
+         </button>
       </div>
-    </section>
+
+    </div>
   );
 };
 
