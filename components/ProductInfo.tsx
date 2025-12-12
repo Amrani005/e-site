@@ -62,6 +62,10 @@ interface WilayaData {
   Domicile: string;
   Stopdesk: string;
   Annuler: string;
+  
+}
+export interface WooProduct{
+  price:number;
 }
 
 const wilayasData: WilayaData[] = [
@@ -133,9 +137,11 @@ const ProductInfo = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
   const title = searchParams.get('title');
-  const price = searchParams.get('price');
   const rawImage = searchParams.get('image');
   
+  // 1. ADDED: State for Price
+  const [price, setPrice] = useState<number>(0);
+
   const [images, setImages] = useState<string[]>(rawImage ? rawImage.split(',') : []);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -165,10 +171,10 @@ const ProductInfo = () => {
      }
   }
  
-  // Fetch Gallery Logic
+  // Fetch Gallery AND PRICE Logic
   useEffect(() => {
     if (!id) return;
-    const fetchProductGallery = async () => {
+    const fetchProductData = async () => {
       const url = process.env.NEXT_PUBLIC_WOO_URL;
       const key = process.env.NEXT_PUBLIC_WOO_KEY;
       const secret = process.env.NEXT_PUBLIC_WOO_SECRET;
@@ -178,20 +184,31 @@ const ProductInfo = () => {
           `${url}/wp-json/wc/v3/products/${id}?consumer_key=${key}&consumer_secret=${secret}`
         );
         const data = await response.json();
+        
+        // Handle Images
         if (data.images && data.images.length > 0) {
            const galleryUrls = data.images.map((img: any) => img.src);
            setImages(galleryUrls);
         }
+
+        // 2. Handle Price (FETCHED FROM WOOCOMMERCE)
+        if (data.price) {
+            setPrice(parseFloat(data.price));
+        }
+
       } catch (error) {
-        console.error("Failed to fetch gallery:", error);
+        console.error("Failed to fetch product data:", error);
       }
     };
-    fetchProductGallery();
+    fetchProductData();
   }, [id]);
 
-  // 2. UPDATED PRICING LOGIC (With Multiplier)
+  // 3. UPDATED PRICING LOGIC (Uses Fetched Price)
   useEffect(() => {
-    const productPrice = parseFloat(price?.replace(/,/g, '') || '0');
+    // OLD: const productPrice = parseFloat(price?.replace(/,/g, '') || '0');
+    // NEW: Use state price
+    const productPrice = price;
+
     let shippingCost = 0;
     if (selectedWilayaID) {
       const wilayaData = wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID));
@@ -203,9 +220,9 @@ const ProductInfo = () => {
     
     // FORMULA: (Price * Count) + Shipping
     setFinalTotal((productPrice * count) + (shippingCost || 0));
-  }, [selectedWilayaID, deliveryType, price, count]); // Added 'count' as dependency
+  }, [selectedWilayaID, deliveryType, price, count]); 
 
-  // 3. UPDATED CHECKOUT LOGIC (Sending Quantity)
+  // 4. UPDATED CHECKOUT LOGIC
   const handleCheckout = async () => {
     if (!customerName || !customerPhone || !customerAddress || !selectedWilayaID) {
       setMessage("الرجاء ملء جميع معلومات التوصيل (الولاية مطلوبة).");
@@ -220,7 +237,10 @@ const ProductInfo = () => {
 
     const line_items = [{
       product_id: id,
-      quantity: count, // UPDATED: Sending the count state
+      quantity: count,
+      // If we fetched the price, we don't necessarily need to send 'total' manually unless overwriting,
+      // but WooCommerce usually calculates it from ID. 
+      // However, if you want to enforce exact pricing or metadata:
       meta_data: selectedSize ? [{ key: "Size", value: selectedSize }] : []
     }];
 
@@ -358,7 +378,9 @@ const ProductInfo = () => {
                <div className="bg-slate-900 text-white p-6 text-center">
                   <h3 className={`${cairo.className} text-xl font-bold mb-2`}>عرض خاص للأولياء الحريصين 💎</h3>
                   <div className="flex items-center justify-center gap-4">
+                      {/* Optional: Add Regular Price here if API provides it */}
                       <span className="text-slate-400 line-through text-lg">5100 د.ج</span>
+                      {/* 5. DISPLAY FETCHED PRICE */}
                       <span className="text-green-400 text-4xl font-black">{price} د.ج</span>
                   </div>
                   <p className="text-sm text-slate-400 mt-2">السعر شامل 5 كتب + هدية التحدي</p>
@@ -418,12 +440,14 @@ const ProductInfo = () => {
                            {count > 1 && (
                               <div className="flex justify-between items-center text-sm text-slate-500">
                                  <span>سعر الباقات ({count}x):</span>
-                                 <span>{parseFloat(price?.replace(/,/g, '') || '0') * count} د.ج</span>
+                                 {/* DISPLAY SUB-TOTAL */}
+                                 <span>{price * count} د.ج</span>
                               </div>
                            )}
                            <div className="flex justify-between items-center text-xl font-bold text-slate-900">
                                <span>المجموع الكلي:</span>
-                               <span className="text-orange-600">{finalTotal.toLocaleString()} د.ج</span>
+                               {/* DISPLAY FINAL TOTAL */}
+                               <span className="text-orange-600">{finalTotal} د.ج</span>
                            </div>
                         </div>
 
@@ -473,12 +497,12 @@ const ProductInfo = () => {
               {boxItems.map((item) => (
                  <div key={item.id} className={`p-6 rounded-2xl border-2 transition-all hover:shadow-lg ${item.isGift ? 'bg-yellow-50 border-yellow-400' : 'bg-slate-50 border-slate-100 hover:border-blue-200'}`}>
                     <div className="flex items-start gap-4">
-                       <span className="text-4xl">{item.icon}</span>
-                       <div>
-                          <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
-                          <p className="text-slate-600 leading-relaxed">{item.description}</p>
-                       </div>
-                    </div>
+                        <span className="text-4xl">{item.icon}</span>
+                        <div>
+                           <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
+                           <p className="text-slate-600 leading-relaxed">{item.description}</p>
+                        </div>
+                     </div>
                  </div>
               ))}
            </div>
