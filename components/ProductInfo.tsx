@@ -219,7 +219,7 @@ const ProductInfo = () => {
     setShippingTotal(shippingCost || 0);
     
     // FORMULA: (Price * Count) + Shipping
-    setFinalTotal((productPrice * count) + (shippingCost || 0));
+    setFinalTotal((productPrice * count) );
   }, [selectedWilayaID, deliveryType, price, count]); 
 
   // 4. UPDATED CHECKOUT LOGIC
