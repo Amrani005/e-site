@@ -4,7 +4,7 @@
 /* 2. إعدادات الألوان والمتغيرات الخاصة بك */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #ffffff;
 }
 
 @theme inline {
@@ -21,7 +21,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: ;
+    --background: #ededed;
     --text-color: #ededed;
   }
 }

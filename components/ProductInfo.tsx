@@ -309,7 +309,7 @@ const ProductInfo = () => {
   const prevImage = () => { setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1)); };
 
   return (
-    <div className={`min-h-screen bg-white mr-5 ${tajawal.className} overflow-x-hidden text-right`} dir="rtl">
+    <div className={`min-h-screen  mr-5 ${tajawal.className} overflow-x-hidden text-right`} dir="rtl">
       
       {/* --- 1. HERO SECTION --- */}
       <section className="pt-24 pb-12 px-4 sm:px-6">
