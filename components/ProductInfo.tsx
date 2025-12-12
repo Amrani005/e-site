@@ -388,20 +388,20 @@ const ProductInfo = () => {
 
                {/* Form Body */}
                <div className="p-6 sm:p-8 space-y-4">
-                    <div className="space-y-4">
-                        <input type="text" placeholder="الاسم الكامل" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+                    <div className="space-y-4 ">
+                        <input type="text" placeholder="الاسم الكامل" className="w-full placeholder-zinc-400  p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition-all"
                             value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
                         
-                        <input type="tel" placeholder="رقم الهاتف (للاتصال)" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+                        <input type="tel" placeholder="رقم الهاتف (للاتصال)" className="w-full placeholder-zinc-400  p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition-all"
                             value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} />
                         
                         <div className="grid grid-cols-2 gap-3">
                              <select value={selectedWilayaID} onChange={(e) => setSelectedWilayaID(Number(e.target.value))}
-                                className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
-                                <option value="" disabled>الولاية</option>
+                                className="w-full p-4 bg-slate-50 text-zinc-400 borde border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
+                                <option value="" disabled >الولاية</option>
                                 {wilayasData.map((w) => (<option key={w.IDWilaya} value={w.IDWilaya}>{w.IDWilaya} - {w.Wilaya}</option>))}
                             </select>
-                            <input type="text" placeholder="البلدية" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none"
+                            <input type="text" placeholder="البلدية" className="w-full placeholder-zinc-400  p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none"
                                 value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} />
                         </div>
 
@@ -428,7 +428,7 @@ const ProductInfo = () => {
                               <button onClick={decrement} className="w-8 h-8 flex items-center justify-center bg-slate-100 rounded hover:bg-slate-200 text-slate-600 transition-colors">
                                  <Minus size={16} />
                               </button>
-                              <span className="font-bold text-xl w-6 text-center">{count}</span>
+                              <span className="font-bold text-xl text-black w-6 text-center">{count}</span>
                               <button onClick={increment} className="w-8 h-8 flex items-center justify-center bg-orange-100 rounded hover:bg-orange-200 text-orange-600 transition-colors">
                                  <Plus size={16} />
                               </button>
