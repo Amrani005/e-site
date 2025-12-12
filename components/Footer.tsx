@@ -15,7 +15,7 @@ const Footer = () => {
           {/* Title: NAD STORE (Centered, large, uppercase) */}
           <h2 className="text-3xl uppercase font-extrabold tracking-widest
            mb-8 uppercase ">
-            Likoline Kitaboh
+            Likolin Kitaboh
           </h2>
           
           {/* Description Block (Arabic Text) */}
