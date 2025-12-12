@@ -379,7 +379,7 @@ const ProductInfo = () => {
                   <h3 className={`${cairo.className} text-xl font-bold mb-2`}>عرض خاص للأولياء الحريصين 💎</h3>
                   <div className="flex items-center justify-center gap-4">
                       {/* Optional: Add Regular Price here if API provides it */}
-                      <span className="text-slate-400 line-through text-lg">5100 د.ج</span>
+                      <span className="text-slate-400 line-through text-lg">4700 د.ج</span>
                       {/* 5. DISPLAY FETCHED PRICE */}
                       <span className="text-green-400 text-4xl font-black">{price} د.ج</span>
                   </div>
@@ -512,7 +512,7 @@ const ProductInfo = () => {
       </section>
 
       {/* --- 4. SCENARIOS --- */}
-      <section className="py-16 px-4 bg-slate-900 text-white">
+      <section className="py-16 px-4 bg-slate-900 text-white rounded-3xl">
           <div className="max-w-4xl mx-auto">
              <h2 className={`${cairo.className} text-3xl font-bold text-center mb-10`}>تخيلي السيناريو يوم كشف النقاط...</h2>
              <div className="grid gap-6">
@@ -525,6 +525,14 @@ const ProductInfo = () => {
              </div>
           </div>
       </section>
+      <p className='text-3xl font-tajawal text-black text-center mt-10
+      font-bold'>🗺️خارطة الكنز</p>
+      <img src="/map.jpeg" className='border rounded-3xl mt-5 '
+       />
+      
+        
+      
+      
 
       {/* --- 5. SOCIAL PROOF --- */}
       <section className="py-16 px-4 bg-[#f8fafc] text-center">
@@ -546,6 +554,8 @@ const ProductInfo = () => {
              <img src="/der14.jpeg" width={240} height={120} />
          </div>
       </section>
+
+      
 
       {/* --- 6. FLOATING CTA --- */}
       <div className="fixed bottom-0  left-5 w-full bg-white border-t border-slate-200 p-4  lg:hidden z-50 shadow-[0_-5px_15px_rgba(0,0,0,0.1)]">
