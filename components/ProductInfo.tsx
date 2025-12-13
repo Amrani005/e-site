@@ -216,7 +216,7 @@ const ProductInfo = () => {
         shippingCost = deliveryType === 'Domicile' ? parseFloat(wilayaData.Domicile) : parseFloat(wilayaData.Stopdesk);
       }
     }
-    setShippingTotal(shippingCost || 0);
+    setShippingTotal(0);
     
     // FORMULA: (Price * Count) + Shipping
     setFinalTotal((productPrice * count) );
