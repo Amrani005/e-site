@@ -1,15 +1,26 @@
 'use server'
-import {db} from "@/lib/db";
-import {revalidatePath} from "next/cache";
 
-export  async function deleteProducts(formData : FormData) {
+import { db } from "@/lib/db";
+import { revalidatePath } from "next/cache";
 
-    const productId = formData.get("id") as string;
+export async function deleteProducts(formData: FormData) {
+    try {
+        const productId = formData.get("id") as string;
 
-    await db.product.delete({
-        where:{
-            id: productId,
-        }
-    })
-    revalidatePath("/dashboard/products")
+        if (!productId) return;
+
+        // 1. حذف المنتج من قاعدة البيانات
+        await db.product.delete({
+            where: {
+                id: productId,
+            }
+        });
+
+        // 2. غسيل الكاش في كل مكان! (هذا هو السلاح السري)
+        revalidatePath("/dashboard/products");
+        revalidatePath("/"); // 👈 لتدمير الشبح من الواجهة الرئيسية
+        
+    } catch (error) {
+        console.error("❌ حدث خطأ أثناء الحذف:", error);
+    }
 }
