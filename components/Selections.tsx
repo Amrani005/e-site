@@ -1,89 +1,28 @@
 'use client'
-import React, { useRef, useEffect, useState } from 'react';
+
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { db } from '@/lib/db';
 
-// 1. Mock Data & Types
-// This interface defines the structure of a product from WooCommerce
-export interface WooProduct {
-  id: number;
-  name: string;
-  price: string;
-  images: { src: string }[];
-  description: string;
-  slug: string;
-}
+export default  function Selections({products}:{products:any[]}){
 
-// Mock categories are kept as they are static filter options
-const mockCategories = [
+
+  // Mock categories are kept as they are static filter options
+ const mockCategories = [
   { id: 1, label: 'All' },
   { id: 2, label: 'New Arrivals' },
   { id: 3, label: 'Best Sellers' },
   { id: 4, label: 'Discounted' },
 ];
 
-const Selections = () => {
-  // 1. State and Ref definitions moved inside the component
-  const sectionRef = useRef(null);
-  const [products, setProducts] = useState<WooProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   // 2. useEffect for fetching products
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setIsLoading(true);
-      setError(null);
-      
-      // IMPORTANT: In a real Next.js app, define these variables inside the component
-      // or handle the environment access securely.
-      const url = process.env.NEXT_PUBLIC_WOO_URL;
-      const key = process.env.NEXT_PUBLIC_WOO_KEY;
-      const secret = process.env.NEXT_PUBLIC_WOO_SECRET;
-      
-      if (!url || !key || !secret) {
-        console.error("WooCommerce API Keys غير موجودة. تأكد من إعداد .env.local بشكل صحيح.");
-        setError("خطأ في إعداد المفاتيح.");
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          `${url}/wp-json/wc/v3/products?consumer_key=${key}&consumer_secret=${secret}`
-        );
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data: WooProduct[] = await response.json();
-        setProducts(data);
-      } catch (err) {
-        console.error("فشل في جلب المنتجات:", err);
-        setError("تعذر جلب المنتجات. تحقق من الاتصال بـ WooCommerce.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchProducts();
-  }, []);
+  
+    
 
   // --- Render Logic ---
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 font-tajawal">
-        <p className="text-xl text-purple-600">جاري تحميل المنتجات...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen -translate-x-10 flex items-center justify-center bg-gray-50 font-tajawal">
-        <p className="text-xl text-red-600">خطأ: {error}</p>
-      </div>
-    );
-  }
+  
 
   return (
     <div className="min-h-screen w-full -translate-x-10 lg:translate-x-0  p-4 lg:p-10 font-tajawal">
@@ -154,10 +93,8 @@ const Selections = () => {
         {/* RIGHT CONTENT: Product Grid */}
         <main className="w-full lg:w-3/4">
           
-          <motion.div 
-             initial={{ opacity: 0 ,y:100 }}
-             animate={{ opacity: 1,y:0 }}
-             transition={{ delay: 0.2 }}
+          <div 
+             
              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {/* --- CORE CHANGE: MAPPING OVER FETCHED 'products' --- */}
@@ -165,20 +102,14 @@ const Selections = () => {
                 products.map((product) => (
                    <Link 
                                 key={product.id}
-                                href={{
-                                  pathname: "/productinfo", 
-                                  query: {
-                                    id: product.id,
-                                    title: product.name,
-                                    price: product.price,
-                                    image: product.images[0]?.src || '',
-                                    description: product.description 
-                                  }
-                                }}
+                                href={`/productinfo/${product.id}`}
                                 // التنسيق الأصلي 3:
                                 className=" "
                               >
-                    <div 
+                    <motion.div 
+                        initial={{ opacity: 0 ,y:100 }}
+                        whileInView={{ opacity: 1,y:0 }}
+                        transition={{ delay: 0.2 }}
                         key={product.id} 
                         className="flex group flex-col bg-white rounded-3xl overflow-hidden
                             shadow-sm hover:shadow-xl hover:shadow-purple-200/50 
@@ -187,10 +118,9 @@ const Selections = () => {
                     >
                         {/* Image Area - Uses the first image from the WooCommerce object */}
                         <div className="h-64 bg-zinc-200 relative overflow-hidden">
-                            {/* Check if images exist and use the first one's source */}
-                            {product.images && product.images.length > 0 ? (
+                            {product.imageUrl && product.imageUrl.length > 0 ? (
                                 <img 
-                                    src={product.images[0].src} 
+                                    src={product.imageUrl} 
                                     alt={product.name}
                                     className='w-full h-full object-cover hover:scale-[1.1] duration-300' 
                                 />
@@ -227,7 +157,7 @@ const Selections = () => {
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
                   </Link>
                     
                 ))
@@ -236,7 +166,7 @@ const Selections = () => {
                     لا توجد منتجات متاحة حاليًا.
                 </div>
             )}
-          </motion.div>
+          </div>
         </main>
 
       </div>
@@ -244,4 +174,7 @@ const Selections = () => {
   );
 };
 
-export default Selections;
+
+
+
+

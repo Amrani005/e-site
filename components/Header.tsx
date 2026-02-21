@@ -55,7 +55,7 @@ const Header = () => {
             // 3. إضافة onClick لفتح وإغلاق القائمة
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="p-2 text-gray-800 
-              dark:text-gray-200 dark:hover:text-purple-400 cursor-pointer
+              dark:text-gray-200  cursor-pointer
               "
           >
             {/* 3. تبديل الأيقونة بناءً على الحالة */}
@@ -69,7 +69,7 @@ const Header = () => {
 
           {/* Right: Logo */}
           <Link href="/" className="flex items-center gap-2" prefetch={false}>
-            <span className="text-s font-bold  font-mono text-blue-600 ">
+            <span className="text-xl font-bold  font-tajawal text-orange-600 ">
                 Likolin Kitaboh
             </span>
             

@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
+import { getProductById, placeOrder, saveDraftOrder, deletDraft } from "@/actions/shop"; 
 import { Cairo, Tajawal } from 'next/font/google'; 
 import { 
   ArrowRight, ChevronLeft, ChevronRight, CreditCard, 
-  MapPin, Truck, AlertOctagon, Gift, CheckCircle2, XCircle, 
-  Map, Star, ShieldCheck, Flame, Minus, Plus 
+  MapPin, Truck, AlertOctagon, CheckCircle2, XCircle, 
+  Minus, Plus, ShieldCheck, Star, 
+  UserCircle, BookOpen, Palette // 👈 أيقونات جديدة تناسب منتجاتك
 } from 'lucide-react';
 
 // --- 1. FONTS SETUP ---
@@ -15,61 +16,48 @@ const cairo = Cairo({ subsets: ['arabic'], weight: ['400', '700', '900'] });
 const tajawal = Tajawal({ subsets: ['arabic'], weight: ['400', '500', '700', '800'] });
 
 // --- DATA CONFIGURATION ---
-
+// 👈 هنا قمنا بتحديث المنتجات لربطها بمشكلة تأخر النطق والتعلم
 const boxItems = [
-  {
-    id: 1,
-    number: "1",
-    title: "المرجع الأسطوري: LAROUSSE",
-    description: "موسوعة مصورة بشرح مبسط. الصور تجعل ابنك يحب المادة ويفهمها وحده.",
-    isGift: false,
-    icon: "🎨" 
+  { 
+    id: 1, 
+    title: "كتاب جسم الإنسان التفاعلي + مجسمات", 
+    description: "يخلي وليدك يتعلم أسماء أعضاء الجسم بطريقة ملموسة، ويشجعه ينطقها وهو يركب في المجسمات، مما ينمي مهاراته الحركية والذهنية في نفس الوقت.", 
+    isGift: false, 
+    icon: <UserCircle className="w-8 h-8 text-blue-500" /> 
   },
-  {
-    id: 2,
-    number: "2",
-    title: "سلسلة MAXI POCHE (4 كتب)",
-    description: "قواميس شاملة للترجمة (عربي/فرنسي) وللإثراء اللغوي (فرنسي/فرنسي). كل ما يحتاجه التلميذ.",
-    isGift: false,
-    icon: "📚"
+  { 
+    id: 2, 
+    title: "قصتين كرتونيتين (سلسلة الفتى الماهر)", 
+    description: "صور كرتونية جذابة تشد انتباه الطفل وتزيد تركيزه. القراءة المشتركة تبني رصيده اللغوي بكلمات جديدة وتخليه يحاول يقلد الأصوات والأحداث.", 
+    isGift: false, 
+    icon: <BookOpen className="w-8 h-8 text-purple-500" /> 
   },
-  {
-    id: 3,
-    number: "Gift", 
-    title: "خارطة طريق البطل",
-     description:"لعبة تخلي وليدك يحوس وقتاش يفتح القاموس باش يعمر الخانة ويلون النجمة.",
+  { 
+    id: 3, 
+    title: "كتاب للتلوين والرسم", 
+    description: "مساحة حرة يعبر فيها وليدك وتفرغ طاقته، وفرصة ممتازة باش تجلسي معاه وتسميلو الألوان والأشكال باش تحفزيه على النطق أثناء اللعب.", 
     isGift: true, 
-    icon: "🗺️"
+    icon: <Palette className="w-8 h-8 text-yellow-600" /> 
   }
 ];
 
 const scenarios = [
-  {
-    type: 'bad',
-    icon: <XCircle className="w-8 h-8 text-red-500 shrink-0" />,
-    text: "السيناريو المرعب: وجه ابنك حزين، نقطة كارثية، المعدل ينزل."
+  { 
+    type: 'bad', 
+    icon: <XCircle className="w-10 h-10 text-red-500 shrink-0" />, 
+    text: "السيناريو المقلق: وليدك ينعزل، يلقى صعوبة باش يفهموه الناس، ويبكي كي ما يقدرش يعبر على واش يحب." 
   },
-  {
-    type: 'good',
-    icon: <CheckCircle2 className="w-8 h-8 text-green-500 shrink-0" />,
-    text: "إ السيناريو الذي نحققه لكِ: ثقة عالية، إجابات صحيحة، ونقطة ترفع الرأس إن شاء الله!"
+  { 
+    type: 'good', 
+    icon: <CheckCircle2 className="w-10 h-10 text-green-500 shrink-0" />, 
+    text: "السيناريو اللي نتمناوه: طفل واثق، يهدر بطلاقة، يعبر على أفكارو، ويفرحك بأول كلماته الواضحة!" 
   }
 ];
 
-interface WilayaData {
-  IDWilaya: number;
-  Wilaya: string;
-  Domicile: string;
-  Stopdesk: string;
-  Annuler: string;
-  
-}
-export interface WooProduct{
-  price:number;
-}
-
+// --- WILAYA DATA ---
+interface WilayaData { IDWilaya: number; Wilaya: string; Domicile: string; Stopdesk: string; Annuler: string; }
 const wilayasData: WilayaData[] = [
-  { "IDWilaya": 1, "Wilaya": "Adrar", "Domicile": "1400", "Stopdesk": "970", "Annuler": "200" },
+   { "IDWilaya": 1, "Wilaya": "Adrar", "Domicile": "1400", "Stopdesk": "970", "Annuler": "200" },
   { "IDWilaya": 2, "Wilaya": "Chlef", "Domicile": "750", "Stopdesk": "520", "Annuler": "200" },
   { "IDWilaya": 3, "Wilaya": "Laghouat", "Domicile": "950", "Stopdesk": "670", "Annuler": "200" },
   { "IDWilaya": 4, "Wilaya": "Oum El Bouaghi", "Domicile": "800", "Stopdesk": "520", "Annuler": "200" },
@@ -129,22 +117,17 @@ const wilayasData: WilayaData[] = [
   { "IDWilaya": 58, "Wilaya": "Meniaa", "Domicile": "950", "Stopdesk": "0", "Annuler": "200" }
 ];
 
-
-// --- COMPONENT ---
-
-const ProductInfo = () => {
+const ProductCheckoutPage = () => {
   const router = useRouter(); 
-  const searchParams = useSearchParams();
-  const id = searchParams.get('id');
-  const title = searchParams.get('title');
-  const rawImage = searchParams.get('image');
-  
-  // 1. ADDED: State for Price
-  const [price, setPrice] = useState<number>(0);
+  const params = useParams();
+  const id = params.id as string; 
 
-  const [images, setImages] = useState<string[]>(rawImage ? rawImage.split(',') : []);
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  // Product Data State
+  const [productName, setProductName] = useState<string>("جاري التحميل...");
+  const [price, setPrice] = useState<number>(0);
+  const [images, setImages] = useState<string[]>([]);
+  const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]); 
 
   // Form States
   const [customerName, setCustomerName] = useState("");
@@ -152,80 +135,94 @@ const ProductInfo = () => {
   const [customerAddress, setCustomerAddress] = useState("");
   const [selectedWilayaID, setSelectedWilayaID] = useState<number | "">("");
   const [deliveryType, setDeliveryType] = useState<"Domicile" | "Stopdesk">("Domicile");
-  
-  // COUNTING SYSTEM STATES
+  const [draftId , setDraftId] = useState<string | null>(null);
+
+  // Calculation States
   const [count, setCount] = useState(1);
   const [shippingTotal, setShippingTotal] = useState(0);
   const [finalTotal, setFinalTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<string>('');
-
-  // 1. IMPROVED INCREMENT/DECREMENT LOGIC
-  const increment = () => {
-     setCount((prev) => prev + 1);
-  }
   
-  const decrement = () => {
-     if(count > 1 ) {
-        setCount((prev) => prev - 1);
-     }
-  }
- 
-  // Fetch Gallery AND PRICE Logic
+  // حفظ المسودة التلقائي
+  useEffect(()=>{
+    if(!customerPhone || customerPhone.length !== 10) return;
+     
+    const timer = setTimeout(async () => {
+      const draftData = {
+        draftId: draftId,
+        productId: id,
+        name: customerName,
+        phone: customerPhone,
+        address: customerAddress,
+        wilaya: selectedWilayaID ? wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID))?.Wilaya : "",
+        deliveryType: deliveryType,
+        quantity: count,
+        total: finalTotal
+      };
+     
+      const result = await saveDraftOrder(draftData);
+      if (result?.draftId) setDraftId(result.draftId);
+    }, 1000); 
+
+    return () => clearTimeout(timer);
+  },[customerName, customerPhone, customerAddress, selectedWilayaID, deliveryType, count, finalTotal, draftId, id]);
+
+  // جلب المنتج
   useEffect(() => {
     if (!id) return;
-    const fetchProductData = async () => {
-      const url = process.env.NEXT_PUBLIC_WOO_URL;
-      const key = process.env.NEXT_PUBLIC_WOO_KEY;
-      const secret = process.env.NEXT_PUBLIC_WOO_SECRET;
-      if (!url || !key || !secret) return;
+    const loadProduct = async () => {
       try {
-        const response = await fetch(
-          `${url}/wp-json/wc/v3/products/${id}?consumer_key=${key}&consumer_secret=${secret}`
-        );
-        const data = await response.json();
-        
-        // Handle Images
-        if (data.images && data.images.length > 0) {
-           const galleryUrls = data.images.map((img: any) => img.src);
-           setImages(galleryUrls);
+        const product = await getProductById(id);
+        if (product) {
+          setProductName(product.name);
+          setPrice(product.price);
+          const validMainImage = product.imageUrl.startsWith('/') ? product.imageUrl : `/${product.imageUrl}`;
+          setImages([validMainImage]);
+          
+          if (product.images) {
+            try {
+              const parsedGallery = JSON.parse(product.images);
+              setGalleryImages(Array.isArray(parsedGallery) ? parsedGallery : []);
+            } catch (e) {
+              setGalleryImages([]);
+            }
+          }
+        } else {
+          setProductName("المنتج غير موجود");
         }
-
-        // 2. Handle Price (FETCHED FROM WOOCOMMERCE)
-        if (data.price) {
-            setPrice(parseFloat(data.price));
-        }
-
       } catch (error) {
-        console.error("Failed to fetch product data:", error);
+        console.error("Error fetching product:", error);
       }
     };
-    fetchProductData();
+    loadProduct();
   }, [id]);
 
-  // 3. UPDATED PRICING LOGIC (Uses Fetched Price)
+  // حساب التكلفة
   useEffect(() => {
-    // OLD: const productPrice = parseFloat(price?.replace(/,/g, '') || '0');
-    // NEW: Use state price
-    const productPrice = price;
-
-    let shippingCost = 0;
-    if (selectedWilayaID) {
-      const wilayaData = wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID));
-      if (wilayaData) {
-        shippingCost = deliveryType === 'Domicile' ? parseFloat(wilayaData.Domicile) : parseFloat(wilayaData.Stopdesk);
-      }
-    }
-    setShippingTotal(shippingCost || 0);
     
-    // FORMULA: (Price * Count) + Shipping
-    setFinalTotal((productPrice * count) );
+    
+    setFinalTotal((price * count) ); 
   }, [selectedWilayaID, deliveryType, price, count]); 
 
-  // 4. UPDATED CHECKOUT LOGIC
+  // Helpers
+  const increment = () => setCount((prev) => prev + 1);
+  const decrement = () => { if(count > 1 ) setCount((prev) => prev - 1); };
+  const nextImage = () => { setCurrentGalleryIndex((prev) => (prev === galleryImages.length ? 0 : prev + 1)); };
+  const prevImage = () => { setCurrentGalleryIndex((prev) => (prev === 0 ? galleryImages.length : prev - 1)); };
+
+  const scrollToForm = () => {
+    document.getElementById('checkout-form')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // إرسال الطلب النهائي
   const handleCheckout = async () => {
-    if (!customerName || !customerPhone || !customerAddress || !selectedWilayaID) {
+    if (!customerName  || !customerAddress || !selectedWilayaID) {
       setMessage("الرجاء ملء جميع معلومات التوصيل (الولاية مطلوبة).");
+      return;
+    }
+    if(customerPhone.length !== 10){
+      setMessage("الرجاء إدخال رقم هاتف صحيح مكون من 10 أرقام.");
       return;
     }
 
@@ -233,227 +230,187 @@ const ProductInfo = () => {
     setMessage("");
 
     const selectedWilayaData = wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID));
-    const cityName = selectedWilayaData ? selectedWilayaData.Wilaya : "";
-
-    const line_items = [{
-      product_id: id,
-      quantity: count,
-      // If we fetched the price, we don't necessarily need to send 'total' manually unless overwriting,
-      // but WooCommerce usually calculates it from ID. 
-      // However, if you want to enforce exact pricing or metadata:
-      meta_data: selectedSize ? [{ key: "Size", value: selectedSize }] : []
-    }];
-
-    const shipping_lines = [{
-      method_id: "flat_rate",
-      method_title: deliveryType === 'Domicile' ? `توصيل للمنزل (${cityName})` : `استلام من المكتب (${cityName})`,
-      total: shippingTotal.toString()
-    }];
+    const cityName = selectedWilayaData ? selectedWilayaData.Wilaya : "غير محدد";
 
     const orderData = {
-      payment_method: "cod",
-      payment_method_title: "Cash on delivery",
-      set_paid: false,
-      billing: {
-        first_name: customerName,
-        last_name: "(Direct Order)",
-        address_1: customerAddress,
-        city: cityName,
-        country: "DZ",
-        phone: customerPhone,
-        state: selectedWilayaID.toString()
-      },
-      shipping: {
-        first_name: customerName,
-        address_1: customerAddress,
-        city: cityName,
-        country: "DZ"
-      },
-      line_items: line_items,
-      shipping_lines: shipping_lines
+      draftId: draftId, 
+      productId: id,
+      name: customerName,
+      phone: customerPhone,
+      address: customerAddress,
+      wilaya: cityName,
+      deliveryType: deliveryType,
+      quantity: count,
+      total: finalTotal
     };
 
-    const url = process.env.NEXT_PUBLIC_WOO_URL;
-    const key = process.env.NEXT_PUBLIC_WOO_KEY;
-    const secret = process.env.NEXT_PUBLIC_WOO_SECRET;
-
-    if (!url || !key || !secret) {
-      setMessage("خطأ في إعدادات الـ API.");
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      const response = await fetch(
-        `${url}/wp-json/wc/v3/orders?consumer_key=${key}&consumer_secret=${secret}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(orderData)
+      const result = await placeOrder(orderData);
+      
+      if (result.success ) {
+        if (draftId) {
+            const formData = new FormData();
+            formData.append('draftId', draftId);
+            await deletDraft(formData);
         }
-      );
-      const responseData = await response.json();
-      if (response.ok) {
-        router.push(`/thank-you?orderId=${responseData.id}`);
-      } else {
-        setMessage(`❌ فشل: ${responseData.message || 'حدث خطأ غير معروف'}`);
+        router.push('/thank-you');
       }
     } catch (error) {
       console.error(error);
-      setMessage("❌ حدث خطأ تقني.");
+      setMessage("❌ حدث خطأ أثناء حفظ الطلب.");
     }
     setIsLoading(false);
   };
 
-  const nextImage = () => { setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1)); };
-  const prevImage = () => { setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1)); };
-
   return (
-    <div className={`min-h-screen  mr-5 ${tajawal.className} overflow-x-hidden text-right`} dir="rtl">
+    <section className={`flex flex-col min-w-full h-full${tajawal.className} overflow-x-hidden 
+    text-right  text-slate-900  `} dir="rtl">
       
-      {/* --- 1. HERO SECTION --- */}
-      <section className="pt-24 pb-12 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto mt-10 ">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      {/* --- MARKETING HOOK (Top Section) --- */}
+      <section className="pt-24 pb-6 px-4 sm:px-6">
+        <div className="max-w-4xl mx-auto mt-6 text-center">
+          <h1 className={`${cairo.className} text-3xl md:text-5xl font-black text-slate-800 leading-tight mb-4`}>
+            خايفة على وليدك من <br className="hidden md:block"/> 
+            <span className="text-red-600">تأخر النطق وصعوبات التعلم؟ 🥺</span>
+          </h1>
+          <p className="text-lg md:text-xl text-slate-600 font-medium mb-8">
+            الحل راهو بين يديك! اكتشفي <span className="font-bold text-orange-600">باقة التعلم التفاعلي والتخاطب</span> + هدية التلوين لتنمية تركيزه.
+          </p>
+          
+          {/* Warning Box */}
+          <div className="bg-red-50 border-2 border-red-200 border-dashed rounded-xl p-4 md:p-6 flex flex-col sm:flex-row items-center justify-center gap-3 mb-8 shadow-sm">
+            <AlertOctagon className="text-red-500 w-10 h-10 shrink-0 animate-pulse" />
+            <p className="text-red-700 font-bold text-base md:text-lg">
+              تأخر الكلام وضعف التركيز يقدر يأثر على ثقة الطفل بنفسه.. الأنشطة التفاعلية الملموسة هي أفضل حل لإنقاذه!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* --- HERO & FORM SECTION --- */}
+      <section className="pb-12 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             
-            {/* RIGHT SIDE (Mobile Top): Hook + Images */}
-            <div className="order-1 lg:order-1 flex flex-col gap-6">
-                
-                {/* HEADLINE */}
-                <div className="text-center lg:text-right">
-                    <h1 className={`${cairo.className} text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-tight mb-4`}>
-                        خايفة وليدك يكمل العام <br/>
-                        <span className="text-red-600 relative inline-block">
-                            ضعيف في الفرنسية؟ 😟
-                            <span className="absolute bottom-0 left-0 w-full h-2 bg-red-100 -z-10"></span>
-                        </span>
-                    </h1>
-                    <p className="text-lg text-slate-600 mb-6 max-w-lg mx-auto lg:mx-0">
-                        الحل راهو في جيبه! اكتشفي باقة <strong className="text-orange-600">Le Mega Pro</strong> + هدية التحدي الحصرية.
-                    </p>
-                </div>
-
-                {/* PAIN BAR */}
-                <div className="bg-red-50 border-2 border-dashed border-red-300 rounded-xl p-4 text-center lg:text-right animate-pulse-slow">
-                    <p className="text-red-700 font-bold flex items-center justify-center lg:justify-start gap-2 text-sm sm:text-base">
-                        <AlertOctagon className="w-6 h-6 shrink-0" />
-                        كتب ثقيلة.. مصطلحات واعرين.. والنتيجة: التلميذ يكره المادة!
-                    </p>
-                </div>
-
-                {/* IMAGE GALLERY */}
-                <div className="relative w-full aspect-[4/3] rounded-2xl shadow-2xl overflow-hidden border-4 border-white">
-                  {images.length > 0 ? (
-                    <>
-                      <img
-                        src={images[currentImageIndex]}
-                        alt={title || 'Product'}
-                        className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                      />
-                      {images.length > 1 && (
-                        <>
-                          <button onClick={prevImage} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-900 p-2 rounded-full shadow-lg transition-all"><ChevronLeft /></button>
-                          <button onClick={nextImage} className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-900 p-2 rounded-full shadow-lg transition-all"><ChevronRight /></button>
-                        </>
-                      )}
-                    </>
+            {/* RIGHT SIDE: Images */}
+            <div className="order-1 flex flex-col gap-6">
+                <div className="relative w-full aspect-[4/3] rounded-2xl shadow-xl overflow-hidden border-4 border-white bg-white">
+                  {images.length > 0 || galleryImages.length > 0 ? (
+                    <img
+                     src={[...images, ...galleryImages][currentGalleryIndex] ?? images[0] ?? ''}
+                     alt="Product"
+                     className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                    />
                   ) : (
-                    <div className="w-full h-full bg-slate-200 flex items-center justify-center text-slate-400">Loading Images...</div>
+                    <div className="w-full h-full bg-slate-100 flex items-center justify-center animate-pulse text-slate-400">
+                      جاري تحميل الصور...
+                    </div>
                   )}
                 </div>
-                
-                {/* Thumbnails */}
-                <div className='flex gap-2 overflow-x-auto pb-2'>
-                    {images.map((item, index) => (
-                    <img key={index} src={item} onClick={() => setCurrentImageIndex(index)}
-                        className={`w-20 h-20 object-cover rounded-lg cursor-pointer border-2 transition-all ${currentImageIndex === index ? 'border-orange-500 scale-105' : 'border-transparent opacity-70'}`}
-                    />
-                    ))}
-                </div>
-            </div>
 
+                {/* Thumbnails */}
+                {galleryImages.length > 0 && (
+                  <div className="flex items-center justify-center gap-2 md:gap-4">
+                    <button onClick={prevImage} className="p-2 bg-white shadow-sm border border-slate-200 rounded-full hover:bg-orange-50 transition-colors">
+                      <ChevronRight className="w-5 h-5 text-slate-700" />
+                    </button>
+                    <div className='flex gap-2 overflow-x-auto py-2 px-1 scrollbar-hide'>
+                       <img
+                         src={images[0]}
+                         alt="Main Thumbnail"
+                         className={`w-14 h-14 md:w-16 md:h-16 object-cover rounded-lg cursor-pointer border-2 transition-all shrink-0
+                         ${currentGalleryIndex === 0 ? 'border-orange-500 scale-105 shadow-md' : 'border-transparent opacity-70 hover:opacity-100'}
+                         `}
+                         onClick={() => setCurrentGalleryIndex(0)} 
+                       />
+                      {galleryImages.map((img, index) => (
+                      <img
+                        key={index}
+                        src={img.startsWith('/') ? img : `/${img}`} 
+                        alt={`Thumbnail ${index + 1}`}
+                        className={`w-14 h-14 md:w-16 md:h-16 object-cover rounded-lg cursor-pointer border-2 transition-all shrink-0
+                        ${currentGalleryIndex === index + 1 ? 'border-orange-500 scale-105 shadow-md' : 'border-transparent opacity-70 hover:opacity-100'}
+                        `}
+                        onClick={() => setCurrentGalleryIndex(index + 1)} 
+                      />
+                    ))}
+                    </div>
+                    <button onClick={nextImage} className="p-2 bg-white shadow-sm border border-slate-200 rounded-full hover:bg-orange-50 transition-colors">
+                      <ChevronLeft className="w-5 h-5 text-slate-700" />
+                    </button>
+                  </div>
+                )}
+            </div>
+            
             {/* LEFT SIDE: THE FORM */}
-            <div className="order-2 lg:order-2 bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden sticky top-4">
-               {/* Pricing Header */}
-               <div className="bg-slate-900 text-white p-6 text-center">
-                  <h3 className={`${cairo.className} text-xl font-bold mb-2`}>عرض خاص للأولياء الحريصين 💎</h3>
-                  <div className="flex items-center justify-center gap-4">
-                      {/* Optional: Add Regular Price here if API provides it */}
-                      <span className="text-slate-400 line-through text-lg">4700 د.ج</span>
-                      {/* 5. DISPLAY FETCHED PRICE */}
+            <div id="checkout-form" className="order-2 bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden sticky top-24">
+               <div className="bg-slate-900 text-white p-6 text-center relative overflow-hidden">
+                  <div className="absolute -right-10 -top-10 w-32 h-32 bg-orange-500 rounded-full opacity-20 blur-2xl"></div>
+                  <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-blue-500 rounded-full opacity-20 blur-2xl"></div>
+                  <h2 className={`${cairo.className} text-xl sm:text-2xl font-bold mb-2 relative z-10`}>عرض خاص للأمهات الحريصات 💎</h2>
+                  <div className="flex items-center justify-center gap-3 relative z-10">
                       <span className="text-green-400 text-4xl font-black">{price} د.ج</span>
                   </div>
-                  <p className="text-sm text-slate-400 mt-2">السعر شامل 5 كتب + هدية التحدي</p>
+                  <p className="text-sm text-slate-300 mt-2 relative z-10">السعر شامل المنتجات + هدية التلوين</p>
                </div>
 
-               {/* Form Body */}
                <div className="p-6 sm:p-8 space-y-4">
-                    <div className="space-y-4 ">
-                        <input type="text" placeholder="الاسم الكامل" className="w-full placeholder-black text-black  p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+                    <div className="space-y-4">
+                        <input type="text" placeholder="الاسم الكامل" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-500 transition-all"
                             value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
                         
-                        <input type="tel" placeholder="رقم الهاتف (للاتصال)" className="w-full placeholder-zinc-400 text-black  p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+                        <input type="tel" placeholder="رقم الهاتف (للاتصال)" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-500 transition-all text-left" dir="ltr"
                             value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} />
                         
                         <div className="grid grid-cols-2 gap-3">
                              <select value={selectedWilayaID} onChange={(e) => setSelectedWilayaID(Number(e.target.value))}
-                                className="w-full p-4 bg-slate-50 text-black borde border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none appearance-none">
-                                <option value="" disabled >الولاية</option>
-                                {wilayasData.map((w) => (<option key={w.IDWilaya} value={w.IDWilaya}>{w.IDWilaya} - {w.Wilaya}</option>))}
-                            </select>
-                            <input type="text" placeholder="البلدية" className="w-full placeholder-zinc-400  p-4 text-black bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none"
-                                value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} />
+                                 className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-500">
+                                 <option value="" disabled>الولاية</option>
+                                 {wilayasData.map((w) => (<option key={w.IDWilaya} value={w.IDWilaya}>{w.IDWilaya} - {w.Wilaya}</option>))}
+                             </select>
+                            
+                             <input type="text" placeholder="البلدية" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-orange-500"
+                                 value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} />
                         </div>
-
+                               
                         {selectedWilayaID && (
-                            <div className="bg-orange-50 p-4 rounded-xl border border-orange-100">
-                                 <div className="bg-emerald-50 border-2 border-emerald-500 border-dashed rounded-xl p-3 my-4 text-center shadow-sm animate-pulse-slow">
-  <h1 className='text-emerald-800 text-xl sm:text-2xl font-black font-tajawal flex items-center justify-center gap-2'>
-    <Truck className="w-6 h-6" />
-    التوصيل مجاني 69 ولاية!! 🇩🇿
-  </h1>
-</div>
-                            </div>
+                         <div className='border-2 border-dashed border-green-500 bg-green-50 w-full p-4 text-center rounded-xl text-green-700 font-bold flex items-center justify-center gap-2 animate-in fade-in'>
+                             <Truck className="w-5 h-5" />
+                             <span>توصيل  مجاني ({wilayasData.find(w=>w.IDWilaya === selectedWilayaID)?.Wilaya})</span>
+                         </div>
                         )}
 
-                        {/* 4. QUANTITY SELECTOR UI */}
-                        <div className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <div className="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
                            <span className="font-bold text-slate-700">الكمية:</span>
                            <div className="flex items-center gap-4 bg-white px-2 py-1 rounded-lg border border-slate-200 shadow-sm">
-                              <button onClick={decrement} className="w-8 h-8 flex items-center justify-center bg-slate-100 rounded hover:bg-slate-200 text-slate-600 transition-colors">
-                                 <Minus size={16} />
-                              </button>
-                              <span className="font-bold text-xl text-black w-6 text-center">{count}</span>
-                              <button onClick={increment} className="w-8 h-8 flex items-center justify-center bg-orange-100 rounded hover:bg-orange-200 text-orange-600 transition-colors">
-                                 <Plus size={16} />
-                              </button>
+                              <button onClick={decrement} className="w-8 h-8 flex items-center justify-center bg-slate-100 rounded hover:bg-slate-200 transition-colors"><Minus size={16} /></button>
+                              <span className="font-bold text-xl w-6 text-center">{count}</span>
+                              <button onClick={increment} className="w-8 h-8 flex items-center justify-center bg-orange-100 rounded hover:bg-orange-200 text-orange-600 transition-colors"><Plus size={16} /></button>
                            </div>
                         </div>
 
-                        {/* Order Summary */}
-                        <div className="pt-4 border-t border-slate-100 space-y-2">
-                           {count > 1 && (
-                              <div className="flex justify-between items-center text-sm text-slate-500">
-                                 <span>سعر الباقات ({count}x):</span>
-                                 {/* DISPLAY SUB-TOTAL */}
-                                 <span>{price * count} د.ج</span>
-                              </div>
-                           )}
-                           <div className="flex justify-between items-center text-xl font-bold text-slate-900">
+                        <div className="pt-4 border-t border-slate-100 space-y-3">
+                           <div className="flex justify-between items-center text-sm text-slate-500">
+                              <span>المجموع ({count}x):</span>
+                              <span className="font-bold">{price * count} د.ج</span>
+                           </div>
+                           <div className="flex justify-between items-center text-sm text-slate-500">
+                              <span>التوصيل:</span>
+                              <span className="font-bold">{!selectedWilayaID ?`0 د.ج` : `مجاني`}</span>
+                           </div>
+                           <div className="flex justify-between items-center text-xl sm:text-2xl font-black text-slate-900 mt-4 pt-4 border-t border-slate-100">
                                <span>المجموع الكلي:</span>
-                               {/* DISPLAY FINAL TOTAL */}
                                <span className="text-orange-600">{finalTotal} د.ج</span>
                            </div>
                         </div>
 
-                        {/* BIG ORANGE BUTTON */}
                         <button onClick={handleCheckout} disabled={isLoading}
-                            className="w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xl font-black rounded-xl shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2">
-                             {isLoading ? <span className="animate-spin text-2xl">↻</span> : <><ShieldCheck /> اضغط هنا للطلب</>}
+                            className="w-full py-4 mt-4 bg-orange-600 hover:bg-orange-700 text-white text-xl font-black rounded-xl shadow-[0_8px_20px_rgb(234,88,12,0.3)] hover:shadow-[0_8px_25px_rgb(234,88,12,0.4)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0">
+                             {isLoading ? <span className="animate-spin text-2xl">↻</span> : <><ShieldCheck className="w-6 h-6"/> اطلبي الباقة الآن</>}
                         </button>
-                        <p className="text-center text-xs text-slate-400">الدفع عند الاستلام (Main à main) - ضمان 100%</p>
+                        <p className="text-center text-slate-400 text-sm mt-2">الدفع عند الاستلام (Main à main) - ضمان 100%</p>
                         
-                        {message && <p className="text-center text-red-500 font-bold bg-red-50 p-2 rounded">{message}</p>}
+                        {message && <p className="text-center text-red-600 font-bold bg-red-50 p-3 rounded-lg border border-red-100 mt-2 animate-in fade-in slide-in-from-top-2">{message}</p>}
                     </div>
                </div>
             </div>
@@ -461,108 +418,80 @@ const ProductInfo = () => {
         </div>
       </section>
 
-      <img src="/der2.jpeg" className='rounded-3xl border-1 bg-zinc-400 mb-10' />
-
-      {/* --- 2. THE SECRET WEAPON (THE MAP) --- */}
-      <section className="py-12 px-4 bg-yellow-50 border-y-4 border-yellow-400">
-         <div className="max-w-4xl mx-auto text-center">
-            <div className="inline-block bg-orange-600 text-white px-4 py-1 rounded-full text-sm font-bold mb-4 shadow-md animate-bounce">
-               🎁 هدية مجانية حصرية
-            </div>
-            <h2 className={`${cairo.className} text-3xl sm:text-4xl font-black text-slate-900 mb-4`}>
-                🗺️ خارطة طريق البطل (تحدي 30 يوم)
-            </h2>
-            <p className="text-xl text-slate-700 leading-relaxed max-w-2xl mx-auto mb-8">
-               ماشي مجرد جدول.. هذه <strong>لعبة</strong> تخلي وليدك "يحوس" وقتاش يفتح القاموس باش يعمر الخانة ويلون النجمة! <br/>
-               <span className="text-sm opacity-80">(توصلك مطبوعة مع الباقة)</span>
-            </p>
-            
-            <div className="flex justify-center gap-2 text-yellow-500">
-                {[1,2,3,4,5].map(i => <Star key={i} className="w-8 h-8 fill-yellow-400" />)}
-            </div>
+      {/* --- WHAT'S INSIDE SECTION --- */}
+      <section className="py-16 px-4 bg-white border-t border-slate-100">
+         <div className="max-w-3xl mx-auto">
+             <h2 className={`${cairo.className} text-2xl md:text-4xl font-black text-center mb-10 text-slate-900`}>
+                 واش كاين داخل الباقة؟ 📦
+             </h2>
+             <div className="space-y-4">
+                 {boxItems.map(item => (
+                     <div key={item.id} className={`flex items-start gap-4 p-6 rounded-2xl transition-all hover:shadow-md ${item.isGift ? 'bg-yellow-50 border-2 border-yellow-400' : 'bg-slate-50 border border-slate-200'}`}>
+                         <div className="text-4xl shrink-0 bg-white w-14 h-14 rounded-xl flex items-center justify-center shadow-sm">{item.icon}</div>
+                         <div>
+                             <h3 className="font-bold text-lg md:text-xl text-slate-800 mb-2 flex items-center gap-2">
+                                 {item.title}
+                                 {item.isGift && <span className="bg-yellow-400 text-yellow-900 text-xs px-2 py-1 rounded-full font-bold">هدية!</span>}
+                             </h3>
+                             <p className="text-slate-600 leading-relaxed">{item.description}</p>
+                         </div>
+                     </div>
+                 ))}
+             </div>
          </div>
       </section>
 
-      {/* --- 3. WHAT'S INSIDE --- */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-5xl mx-auto">
-           <h2 className={`${cairo.className} text-3xl font-black text-center text-slate-900 mb-12`}>
-               واش كاين داخل "باقة الإنقاذ"؟ 📦
-           </h2>
-
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {boxItems.map((item) => (
-                 <div key={item.id} className={`p-6 rounded-2xl border-2 transition-all hover:shadow-lg ${item.isGift ? 'bg-yellow-50 border-yellow-400' : 'bg-slate-50 border-slate-100 hover:border-blue-200'}`}>
-                    <div className="flex items-start gap-4">
-                        <span className="text-4xl">{item.icon}</span>
-                        <div>
-                           <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
-                           <p className="text-slate-600 leading-relaxed">{item.description}</p>
-                        </div>
-                     </div>
-                 </div>
-              ))}
-           </div>
-        </div>
-      </section>
-
-      {/* --- 4. SCENARIOS --- */}
-      <section className="py-16 px-4 bg-slate-900 text-white rounded-3xl">
-          <div className="max-w-4xl mx-auto">
-             <h2 className={`${cairo.className} text-3xl font-bold text-center mb-10`}>تخيلي السيناريو يوم كشف النقاط...</h2>
-             <div className="grid gap-6">
-                {scenarios.map((scenario, idx) => (
-                   <div key={idx} className={`flex items-center gap-4 p-6 rounded-xl ${scenario.type === 'bad' ? 'bg-slate-800 opacity-70' : 'bg-green-900/40 border border-green-500'}`}>
-                      {scenario.icon}
-                      <p className={`text-lg ${scenario.type === 'bad' ? 'line-through text-slate-400' : 'font-bold text-white'}`}>{scenario.text}</p>
-                   </div>
-                ))}
-             </div>
+      {/* --- SCENARIOS SECTION --- */}
+      <section className="py-16 px-4 bg-slate-900 text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500 opacity-5 rounded-full blur-3xl"></div>
+          <div className="max-w-5xl mx-auto relative z-10">
+              <h2 className={`${cairo.className} text-3xl md:text-4xl font-black text-center mb-12`}>تخيلي كيفاش تتغير حياة وليدك...</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                  {scenarios.map((s, idx) => (
+                      <div key={idx} className={`p-8 rounded-3xl border-2 flex flex-col items-center text-center gap-4 ${s.type === 'bad' ? 'bg-slate-800/50 border-slate-700' : 'bg-green-900/20 border-green-500/50'}`}>
+                          {s.icon}
+                          <p className={`text-lg md:text-xl font-medium ${s.type === 'bad' ? 'text-slate-300 line-through decoration-red-500/50' : 'text-green-50'}`}>
+                              {s.text}
+                          </p>
+                      </div>
+                  ))}
+              </div>
           </div>
       </section>
-      <p className='text-3xl font-tajawal text-black text-center mt-10
-      font-bold'>🗺️خارطة الكنز</p>
-      <img src="/map.jpeg" className='border rounded-3xl mt-5 '
-       />
-      
-        
-      
-      
 
-      {/* --- 5. SOCIAL PROOF --- */}
-      <section className="py-16 px-4 bg-[#f8fafc] text-center">
-         <h2 className="text-2xl font-bold text-slate-800 mb-8">
-         ⭐️⭐️⭐️⭐️⭐️ أمهات جربن باقاتنا</h2>
-
-         <div className="grid grid-cols-3 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-             <img src="/der1.jpeg" width={240} height={120} />
-             <img src="/der5.jpeg" width={240} height={120} />
-             <img src="/der3.jpeg" width={240} height={120} />
-             <img src="/der4.jpeg" width={240} height={120} />
-             <img src="/der6.jpeg" width={240} height={120} />
-             <img src="/der7.jpeg" width={240} height={120} />
-             <img src="/der8.jpeg" width={240} height={120} />
-             <img src="/der9.jpeg" width={240} height={120} />
-             <img src="/der10.jpeg" width={240} height={120} />
-             <img src="/der11.jpeg" width={240} height={120} />
-             <img src="/der13.jpeg" width={240} height={120} />
-             <img src="/der14.jpeg" width={240} height={120} />
-         </div>
+      {/* --- REVIEWS / SOCIAL PROOF --- */}
+      <section className="py-16 px-4 bg-slate-50">
+          <div className="max-w-4xl mx-auto text-center">
+              <div className="flex justify-center mb-4">
+                  {[1,2,3,4,5].map(star => <Star key={star} className="w-8 h-8 text-yellow-400 fill-yellow-400" />)}
+              </div>
+              <h2 className={`${cairo.className} text-3xl font-black text-slate-800 mb-8`}>أمهات شافوا النتيجة مع ولادهم</h2>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="aspect-[9/16] bg-slate-200 rounded-xl flex items-center justify-center text-slate-400 text-sm border border-slate-300">صورة رأي أم</div>
+                  <div className="aspect-[9/16] bg-slate-200 rounded-xl flex items-center justify-center text-slate-400 text-sm border border-slate-300">صورة رأي أم</div>
+                  <div className="aspect-[9/16] bg-slate-200 rounded-xl flex items-center justify-center text-slate-400 text-sm border border-slate-300 hidden md:flex">صورة رأي أم</div>
+              </div>
+          </div>
       </section>
 
-      
-
-      {/* --- 6. FLOATING CTA --- */}
-      <div className="fixed bottom-0  left-5 w-full bg-white border-t border-slate-200 p-4  lg:hidden z-50 shadow-[0_-5px_15px_rgba(0,0,0,0.1)]">
-         <button onClick={handleCheckout} 
-            className="w-full bg-orange-600 text-white font-bold py-3
-             rounded-xl shadow-lg flex items-center justify-center gap-2 ">
-            <CreditCard size={20} /> اطلبي الباقة الآن ({price} د.ج)
-         </button>
+      {/* --- STICKY CTA BUTTON --- */}
+      <div className="fixed bottom-0 left-0 w-full p-4 bg-white/80 
+      backdrop-blur-md rounded-t-3xl border-t border-slate-200 z-50 flex justify-center
+       shadow-[0_-10px_30px_rgba(0,0,0,0.05)] -right-5 lg:right-0">
+          <button 
+             onClick={scrollToForm}
+             className="w-full max-w-md py-4 bg-orange-600 text-white
+              text-xl font-black rounded-xl shadow-lg
+               hover:bg-orange-700 transition-colors flex items-center
+                justify-center gap2">
+              <CreditCard className="w-6 h-6" />
+              اطلبي الباقة الآن ({price} د.ج)
+          </button>
       </div>
 
-    </div>
+    </section>
   );
 };
 
-export default ProductInfo;
+export default ProductCheckoutPage;

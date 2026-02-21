@@ -1,15 +1,19 @@
-import type { NextConfig } from 'next';
+/** @type {import('next').NextConfig} */
 
-const nextConfig: NextConfig = {
+module.exports = {
+ 
+    serverActions: {
+      bodySizeLimit: '30mb',
+    },
+  
+  
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'algeriebledy.dreamhosters.com',
-        pathname: '**',
+        hostname: '**',
       },
     ],
   },
 };
 
-export default nextConfig;
