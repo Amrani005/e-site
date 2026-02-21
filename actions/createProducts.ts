@@ -68,14 +68,17 @@ export async function createProducts(formData: FormData) {
       },
     });
 
-    console.log("✅ تم حفظ المنتج بنجاح في السحابة وقاعدة البيانات!");
 
+      revalidatePath("/dashboard/products");
+    revalidatePath("/"); 
+    // إذا كان لديك صفحة خاصة بالمنتجات في الموقع أضفها أيضاً مثل: revalidatePath("/products");
+
+    // 2. إرسال رسالة نجاح للفرونت إند بدلاً من الـ redirect
+    return { success: true };
   } catch (error) {
     console.error("❌ حدث خطأ أثناء الحفظ:", error);
-    throw new Error("فشل في حفظ المنتج");
+    return { success: false, error: "فشل في حفظ المنتج" };
   }
 
-  // تحديث الصفحة والعودة للوحة التحكم
-  revalidatePath("/dashboard/products");
-  redirect("/dashboard/products");
+  
 }
