@@ -13,5 +13,6 @@ export default async function deleteOrders(formData: FormData) {
     })
     revalidatePath("/dashboard/orders");
   revalidatePath("/dashboard/draft");
+   revalidatePath("/dashboard");
     
 }

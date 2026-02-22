@@ -75,6 +75,7 @@ export async function saveDraftOrder(data: any) {
    // غسيل الكاش للداشبورد
    revalidatePath("/dashboard/draft");
    revalidatePath("/dashboard/orders");
+   revalidatePath("/dashboard");
 
    return {draftId : resultDraftId}
 }
@@ -122,6 +123,7 @@ export async function placeOrder(data: any) {
   // غسيل الكاش للداشبورد
   revalidatePath("/dashboard/orders");
   revalidatePath("/dashboard/draft");
+  revalidatePath("/dashboard");
 
   return { success: true, orderId: newOrder.id };
 }
@@ -136,4 +138,5 @@ export async function deletDraft(formData: FormData){
    });
    
    revalidatePath("/dashboard/draft");
+   revalidatePath("/dashboard");
 }
