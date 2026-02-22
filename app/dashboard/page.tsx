@@ -13,6 +13,7 @@ import {
   TrendingUp 
 } from "lucide-react";
 import { signOut } from "next-auth/react";
+import { revalidatePath } from "next/cache";
 
 export default async function DashboardPage() {
     
@@ -20,7 +21,7 @@ export default async function DashboardPage() {
   const [ordersCount, draftsCount, productsCount] = await Promise.all([
     db.order.count({ where: { status: { not: 'Draft' } } }), // عدد الطلبات الحقيقية
     db.order.count({ where: { status: 'Draft' } }),          // عدد المسودات
-    db.product.count()                                       // عدد المنتجات
+    db.product.count()   // عدد المنتجات
   ]);
 
   
@@ -61,7 +62,8 @@ export default async function DashboardPage() {
             <div className="p-3 bg-blue-50 rounded-xl text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
               <ShoppingBag size={28} />
             </div>
-            <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded-full">
+            <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 
+            rounded-full">
               {ordersCount} طلب
             </span>
           </div>

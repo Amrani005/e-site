@@ -68,7 +68,7 @@ export default async function OrdersPage ()  {
                   </td>
 
                   {/* معلومات الزبون */}
-                  <td className="p-4">
+                  <td className="p-4 flex flex-col">
                     <div className="font-bold text-slate-800">{order.customerName}</div>
                     <div className="text-sm text-blue-600 dir-ltr text-right">{order.customerPhone}</div>
                   </td>
