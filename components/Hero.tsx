@@ -6,19 +6,19 @@ const Hero = () => {
   return (
     
       <section 
-        className="relative h-full flex items-center justify-center
-         overflow-hidden px-4 mt-30 " 
+        className=" h-full flex items-center 
+         overflow-hidden px-4  mt-30 " 
         dir="rtl"
       >
-        <div className="container mx-auto h-full w-full grid grid-cols-1 
-        lg:grid-cols-2 gap-12  items-center relative z-10">
+        <div className="container mx-auto h-full w-full  grid-cols-1 
+        lg:grid-cols-2 gap-12 right-2.5 items-center relative z-10">
           
           {/* 1. Content Section */}
           <motion.div 
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-right space-y-8  font-tajawal"
+            className=" space-y-8  font-tajawal"
           >
             <div className="inline-flex items-center  gap-2 px-4 py-2
              rounded-full bg-blue-500/10 border border-blue-500/20

@@ -177,7 +177,7 @@ const ProductCheckoutPage = () => {
         if (product) {
           setProductName(product.name);
           setPrice(product.price);
-          const validMainImage = product.imageUrl.startsWith('/') ? product.imageUrl : `/${product.imageUrl}`;
+          const validMainImage = product.imageUrl.startsWith('/') || product.imageUrl.startsWith('http') ? product.imageUrl : `/${product.imageUrl}`;
           setImages([validMainImage]);
           
           if (product.images) {
@@ -263,8 +263,7 @@ const ProductCheckoutPage = () => {
   };
 
   return (
-    <section className={`flex flex-col min-w-full h-full${tajawal.className} overflow-x-hidden 
-    text-right  text-slate-900  `} dir="rtl">
+    <section className={`flex flex-col -translate-x-2.5  h-full${tajawal.className} text-right  text-slate-900 right-5 left-10  `} dir="rtl">
       
       {/* --- MARKETING HOOK (Top Section) --- */}
       <section className="pt-24 pb-6 px-4 sm:px-6">

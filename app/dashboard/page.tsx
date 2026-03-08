@@ -59,7 +59,8 @@ export default async function DashboardPage() {
            transition-all duration-300"
         >
           <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-blue-50 rounded-xl text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+            <div className="p-3 bg-blue-50 rounded-xl text-blue-600 group-hover:bg-blue-600
+             group-hover:text-white transition-colors">
               <ShoppingBag size={28} />
             </div>
             <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 

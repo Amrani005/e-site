@@ -3,7 +3,7 @@
 import { deleteProducts } from "@/actions/deletProducts";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Trash2, Plus, Package, Calendar, Tag } from "lucide-react";
+import { Trash2, Plus, Package, Calendar, Tag ,Recycle} from "lucide-react";
 
 // Animation variants for the staggered list effect
 const containerVariants = {
@@ -114,7 +114,18 @@ export default function ProductsList({ products }: { products: any[] }) {
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>
+
                     </form>
+                        
+                    <Link href={`/dashboard/products/${product.id}/edit`}>
+                      <button
+                        className="p-2  text-green-400 hover:text-red-200 hover:bg-red-500/20 rounded-lg transition-all duration-200 opacity-70 group-hover:opacity-100"
+                        title="update product " 
+                      >
+                        <a href="/app/dashboard/products/[id]/edit/page.tsx"><Recycle className="w-5 h-5"/></a>
+                        
+                       </button>
+                    </Link>
                   </div>
                 </motion.div>
               ))

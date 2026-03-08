@@ -17,14 +17,14 @@ export default async function Projects() {
   
 
   return (
-    <section id="projects" className="py-20 bg-transparent font-tajawal">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="projects" className="py-20  bg-transparent font-tajawal">
+      <div className="  -translate-x-2.5 sm:px-6 lg:px-8">
         
         <h2 id='title' className="text-6xl lg:text-8xl font-black text-center mb-16 text-orange-700 dark:text-orange-400">
           منتجاتنا
         </h2>
         
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className=" lg:grid flex flex-col sm:grid md:grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product) => (
             <div 
               key={product.id} 

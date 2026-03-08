@@ -34,7 +34,7 @@ const Header = () => {
 
   return (
     // أصلحنا px-10 لتكون متجاوبة وأزلنا font-tajawal (يجب أن يكون في globals.css)
-    <header className="fixed top-4 translate-x-10 lg:translate-x-0 z-50
+    <header className="fixed top-4 -right-5 lg:translate-x-0 z-50
      w-full px-4 sm:px-10">
       <div
         className="w-full rounded-3xl border border-transparent

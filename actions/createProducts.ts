@@ -2,8 +2,7 @@
 
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { v2 as cloudinary } from "cloudinary"; // 👈 استدعاء السحابة
+import { v2 as cloudinary } from "cloudinary";    
 
 // ⚙️ إعداد الاتصال بالسحابة (سيقرأها من Vercel لاحقاً)
 cloudinary.config({
@@ -58,6 +57,7 @@ export async function createProducts(formData: FormData) {
     const galleryString = JSON.stringify(images);
 
     // --- 3. حفظ المنتج في قاعدة البيانات (مع الروابط السحابية) ---
+    
     await db.product.create({
       data: {
         name: name,
