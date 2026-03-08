@@ -10,7 +10,7 @@ const Hero = () => {
          overflow-hidden px-4  mt-30 " 
         dir="rtl"
       >
-        <div className="container mx-auto h-full w-full  grid-cols-1 
+        <div className=" grid container mx-auto h-full w-full  grid-cols-1 
         lg:grid-cols-2 gap-12 right-2.5 items-center relative z-10">
           
           {/* 1. Content Section */}
