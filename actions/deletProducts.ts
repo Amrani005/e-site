@@ -19,7 +19,7 @@ export async function deleteProducts(formData: FormData) {
         // 2. غسيل الكاش في كل مكان! (هذا هو السلاح السري)
         revalidatePath("/dashboard/products");
         revalidatePath("/dashboard"); // 👈 لتدمير الشبح من الواجهة الرئيسية
-        
+        revalidatePath("/");
     } catch (error) {
         console.error("❌ حدث خطأ أثناء الحذف:", error);
     }
