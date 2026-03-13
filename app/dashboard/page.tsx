@@ -19,8 +19,8 @@ export default async function DashboardPage() {
     
   // 1. جلب الإحصائيات دفعة واحدة (أسرع للأداء)
   const [ordersCount, draftsCount, productsCount] = await Promise.all([
-    db.order.count({ where: { status: { not: 'Draft' } } }), // عدد الطلبات الحقيقية
-    db.order.count({ where: { status: 'Draft' } }),          // عدد المسودات
+    db.order.count({ where: { status: { not: 'draft' } } }), // عدد الطلبات الحقيقية
+    db.order.count({ where: { status: 'draft' } }),          // عدد المسودات
     db.product.count()   // عدد المنتجات
   ]);
 
