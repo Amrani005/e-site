@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from '@/components/Header'
-import ProductInfo from '@/components/ProductInfo'
+import ProductQuranInfo from '@/components/ProductQuranInfo'
 import Footer from '@/components/Footer'
 
 const page = () => {
@@ -9,7 +9,7 @@ const page = () => {
        
         <Header/>
     
-      <ProductInfo/>
+      <ProductQuranInfo/>
       <Footer/>
     </div>
   )
