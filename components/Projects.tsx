@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { db } from "@/lib/db";
+import { Package } from 'lucide-react';
 
 export default async function Projects() {
   
@@ -26,7 +27,8 @@ export default async function Projects() {
         
         <div className=" lg:grid grid grid-cols-2  flex-col sm:grid 
         md:grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => (
+          {products.length > 0 ?(
+            products.map((product) => (
             <div 
               key={product.id} 
               className="group flex flex-col bg-white  backdrop-blur-sm 
@@ -79,7 +81,14 @@ export default async function Projects() {
                 </div>
               </div>
             </div>
-          ))}
+          ))
+          ):(
+            <div  className="p-12 text-center text-slate-400 flex flex-col items-center gap-4">
+                <Package className="w-16 h-16 opacity-20" />
+                <p>لا توجد منتجات حتى الآن، ابدأ بإضافة واحد!</p>
+              </div>
+          )}
+          
         </div>
       </div>
     </section>
