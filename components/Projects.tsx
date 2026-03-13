@@ -24,11 +24,12 @@ export default async function Projects() {
           منتجاتنا
         </h2>
         
-        <div className=" lg:grid flex flex-col sm:grid md:grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className=" lg:grid grid grid-cols-2  flex-col sm:grid 
+        md:grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product) => (
             <div 
               key={product.id} 
-              className="group flex flex-col bg-white  backdrop-blur-sm rounded-3xl
+              className="group flex flex-col bg-white  backdrop-blur-sm 
                overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2
                 transition-all duration-300 border border-zinc-100 "
             >

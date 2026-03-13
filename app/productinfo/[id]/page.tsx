@@ -5,10 +5,10 @@ import Footer from '@/components/Footer'
 
 const page = () => {
   return (
-    <div className='lg:w-full   w-[100%] flex flex-col'>
-       <div className='px-5'>
+    <div className=''>
+       
         <Header/>
-      </div>
+    
       <ProductInfo/>
       <Footer/>
     </div>

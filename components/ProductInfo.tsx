@@ -263,10 +263,10 @@ const ProductCheckoutPage = () => {
   };
 
   return (
-    <section className={`flex flex-col -translate-x-2.5  h-full${tajawal.className} text-right  text-slate-900 right-5 left-10  `} dir="rtl">
+    <section className={`flex flex-col  h-full${tajawal.className} text-right  text-slate-900    `} dir="rtl">
       
       {/* --- MARKETING HOOK (Top Section) --- */}
-      <section className="pt-24 pb-6 px-4 sm:px-6">
+      <section className="pt-24 pb-6 mr-5 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto mt-6 text-center">
           <h1 className={`${cairo.className} text-3xl md:text-5xl font-black text-slate-800 leading-tight mb-4`}>
             خايفة على وليدك من <br className="hidden md:block"/> 
@@ -287,21 +287,31 @@ const ProductCheckoutPage = () => {
       </section>
 
       {/* --- HERO & FORM SECTION --- */}
-      <section className="pb-12 px-4 sm:px-6">
+      <section className="pb-12  mr-5 sm:px-6 ">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 
+          items-start">
             
             {/* RIGHT SIDE: Images */}
             <div className="order-1 flex flex-col gap-6">
-                <div className="relative w-full aspect-[4/3] rounded-2xl shadow-xl overflow-hidden border-4 border-white bg-white">
+                <div className="relative w-full aspect-[4/3] rounded-2xl 
+                shadow-xl overflow-hidden border-4 border-white
+                 bg-white">
                   {images.length > 0 || galleryImages.length > 0 ? (
                     <img
-                     src={[...images, ...galleryImages][currentGalleryIndex] ?? images[0] ?? ''}
+                      src={[...images, ...galleryImages][currentGalleryIndex]
+                       ?? 
+                       images[0]  
+                       ?? 
+                      ''}
                      alt="Product"
-                     className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                     className="w-full h-full object-cover 
+                     transition-transform duration-700 hover:scale-105"
                     />
                   ) : (
-                    <div className="w-full h-full bg-slate-100 flex items-center justify-center animate-pulse text-slate-400">
+                    <div className="w-full h-full bg-slate-100 flex 
+                    items-center justify-center animate-pulse 
+                    text-slate-400">
                       جاري تحميل الصور...
                     </div>
                   )}
@@ -325,7 +335,7 @@ const ProductCheckoutPage = () => {
                       {galleryImages.map((img, index) => (
                       <img
                         key={index}
-                        src={img.startsWith('/') ? img : `/${img}`} 
+                        src={img.startsWith('/') || img.startsWith('http') ? img : `/${img}`} 
                         alt={`Thumbnail ${index + 1}`}
                         className={`w-14 h-14 md:w-16 md:h-16 object-cover rounded-lg cursor-pointer border-2 transition-all shrink-0
                         ${currentGalleryIndex === index + 1 ? 'border-orange-500 scale-105 shadow-md' : 'border-transparent opacity-70 hover:opacity-100'}
@@ -342,7 +352,8 @@ const ProductCheckoutPage = () => {
             </div>
             
             {/* LEFT SIDE: THE FORM */}
-            <div id="checkout-form" className="order-2 bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden sticky top-24">
+            <div id="checkout-form" className="order-2 bg-white
+              rounded-3xl shadow-xl border border-slate-200 overflow-hidden sticky top-24">
                <div className="bg-slate-900 text-white p-6 text-center relative overflow-hidden">
                   <div className="absolute -right-10 -top-10 w-32 h-32 bg-orange-500 rounded-full opacity-20 blur-2xl"></div>
                   <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-blue-500 rounded-full opacity-20 blur-2xl"></div>
@@ -418,7 +429,7 @@ const ProductCheckoutPage = () => {
       </section>
 
       {/* --- WHAT'S INSIDE SECTION --- */}
-      <section className="py-16 px-4 bg-white border-t border-slate-100">
+      <section className="py-16 px-4 mr-5 bg-white border-t border-slate-100">
          <div className="max-w-3xl mx-auto">
              <h2 className={`${cairo.className} text-2xl md:text-4xl font-black text-center mb-10 text-slate-900`}>
                  واش كاين داخل الباقة؟ 📦
@@ -441,7 +452,7 @@ const ProductCheckoutPage = () => {
       </section>
 
       {/* --- SCENARIOS SECTION --- */}
-      <section className="py-16 px-4 bg-slate-900 text-white relative overflow-hidden">
+      <section className="py-16 px-4 bg-slate-900 mr-5 rounded-3xl text-white relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500 opacity-5 rounded-full blur-3xl"></div>
           <div className="max-w-5xl mx-auto relative z-10">
               <h2 className={`${cairo.className} text-3xl md:text-4xl font-black text-center mb-12`}>تخيلي كيفاش تتغير حياة وليدك...</h2>
@@ -459,7 +470,7 @@ const ProductCheckoutPage = () => {
       </section>
 
       {/* --- REVIEWS / SOCIAL PROOF --- */}
-      <section className="py-16 px-4 bg-slate-50">
+      <section className="py-16 px-4 mr-4 bg-slate-50">
           <div className="max-w-4xl mx-auto text-center">
               <div className="flex justify-center mb-4">
                   {[1,2,3,4,5].map(star => <Star key={star} className="w-8 h-8 text-yellow-400 fill-yellow-400" />)}
@@ -475,12 +486,12 @@ const ProductCheckoutPage = () => {
       </section>
 
       {/* --- STICKY CTA BUTTON --- */}
-      <div className="fixed bottom-0 left-0 w-full p-4 bg-white/80 
+      <div className="fixed  bottom-0 left-0 w-full p-4 bg-white/80 
       backdrop-blur-md rounded-t-3xl border-t border-slate-200 z-50 flex justify-center
        shadow-[0_-10px_30px_rgba(0,0,0,0.05)] -right-5 lg:right-0">
           <button 
              onClick={scrollToForm}
-             className="w-full max-w-md py-4 bg-orange-600 text-white
+             className="w-full  max-w-md py-4 bg-orange-600 text-white
               text-xl font-black rounded-xl shadow-lg
                hover:bg-orange-700 transition-colors flex items-center
                 justify-center gap2">

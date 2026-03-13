@@ -6,7 +6,7 @@ const Footer = () => {
     // 1. Footer container: Black background, white text, full width
     <footer className="  text-orange-600 w-full
      contain-content lg:w-full -translate-x-5">
-      <hr />
+      <hr className='ml-5 ' />
       {/* 2. Main Footer Content Area: NAD STORE & Description */}
       {/* py-16 for vertical padding, container for centered content */}
       <div className="py-16 px-4">
