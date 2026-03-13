@@ -79,8 +79,7 @@ export default function AddProductPage() {
       }
       
     } catch (error) {
-      console.error("حدث خطأ أثناء الضغط أو الرفع:", error);
-      alert("عذراً، حدث خطأ أثناء رفع الصور.");
+      
     } finally {
       setIsSubmitting(false); 
     }
