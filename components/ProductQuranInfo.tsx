@@ -380,8 +380,8 @@ const ProductCheckoutPage = () => {
             <section className="pt-24 lg:hidden md:hidden  px-4 sm:px-6">
              <div className="max-w-4xl mx-auto -mt-15 text-center">
                 <h1 className={`${cairo.className} text-3xl md:text-5xl font-black text-slate-800 leading-tight mb-4`}>
-                  اجعل لك أثراً لا ينقطع.. <br className="hidden md:block"/> 
-                  <span className="text-emerald-600">باقة المصاحف للصدقة الجارية 📖</span>
+مصاحف برواية ورش عن نافع مقاس 14.20 سم   <br className="hidden md:block"/> 
+                  <span className="text-emerald-600"> مع توصيل سريع </span>
                 </h1>
                 <p className="text-lg md:text-xl text-slate-600 font-medium mb-8">
                  ساهم في نشر كتاب الله واكسب أجراً مستمراً لك أو لمن تحب. اختر الباقة التي تناسبك ونحن نتكفل بالباقي.
