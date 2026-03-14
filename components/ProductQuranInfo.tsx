@@ -283,7 +283,7 @@ const ProductCheckoutPage = () => {
   };
 
   return (
-    <section className={`flex flex-col  h-full ${tajawal.className} text-right  text-slate-900    `} dir="rtl">
+    <section className={`flex flex-col  h-full ${tajawal.className}   text-slate-900    `} >
       
       
 
@@ -312,7 +312,7 @@ const ProductCheckoutPage = () => {
                   )}
                  {fullScreen && (
                     <div 
-                     className="fixed w-full translate-x-5  inset-0 z-[100] flex items-center justify-center 
+                     className="fixed w-full   inset-0 z-[100] flex items-center justify-center 
                      p-4 backdrop-blur-xl  cursor-zoom-out "
       
                     >
@@ -392,7 +392,9 @@ const ProductCheckoutPage = () => {
             </section>
             
             {/* LEFT SIDE: THE FORM */}
-            <div id="checkout-form" className="order-2 bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden sticky top-24">
+            <div id="checkout-form" className=" bg-white 
+             rounded-3xl shadow-xl border border-slate-200 overflow-hidden
+              top-24 ">
                <div className="bg-slate-900 text-white p-6 text-center relative overflow-hidden">
                   <div className="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500 rounded-full opacity-20 blur-2xl"></div>
                   <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-blue-500 rounded-full opacity-20 blur-2xl"></div>
