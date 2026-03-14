@@ -288,7 +288,7 @@ const ProductCheckoutPage = () => {
       
 
       {/* --- HERO & FORM SECTION --- */}
-      <section className="  mr-2 -mx-3 sm:px-6 mt-40 lg:mt-60 ">
+      <section className="  p-6 -mx-3 sm:px-6 mt-40 lg:mt-60 ">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
               
@@ -515,7 +515,7 @@ const ProductCheckoutPage = () => {
       </section>
 
       {/* --- MARKETING HOOK (Top Section) --- */}
-      <section className="pt-24  mr-5 px-4 sm:px-6">
+      <section className="pt-24   px-4 sm:px-6">
         <div className="max-w-4xl mx-auto -mt-15 text-center">
           <h1 className={`${cairo.className} text-3xl md:text-5xl font-black text-slate-800 leading-tight mb-4`}>
             اجعل لك أثراً لا ينقطع.. <br className="hidden md:block"/> 
@@ -536,7 +536,7 @@ const ProductCheckoutPage = () => {
       </section>
 
       {/* --- WHAT'S INSIDE SECTION --- */}
-      <section className="py-16 px-4 mr-5 bg-white border-t border-slate-100">
+      <section className="py-16 px-4  bg-white border-t border-slate-100">
          <div className="max-w-3xl mx-auto">
              <h2 className={`${cairo.className} text-2xl md:text-4xl font-black text-center mb-10 text-slate-900`}>
                  لماذا تختار هذه الباقة؟ 📦
@@ -558,7 +558,7 @@ const ProductCheckoutPage = () => {
       </section>
 
       {/* --- SCENARIOS SECTION --- */}
-      <section className="py-16 px-4 bg-slate-900 mr-5 rounded-3xl text-white relative overflow-hidden">
+      <section className="py-16 px-4 bg-slate-900   text-white relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 opacity-5 rounded-full blur-3xl"></div>
           <div className="max-w-5xl mx-auto relative z-10">
               <h2 className={`${cairo.className} text-3xl md:text-4xl font-black text-center mb-12`}>فضل الصدقة الجارية...</h2>

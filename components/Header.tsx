@@ -8,14 +8,17 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    // Changed to fixed, top-0, inset-x-0, w-screen to force it edge-to-edge
-    <div className="fixed  top-0 z-50 lg:w-full md:lg-full w-90">
-      <div className="-mr-10 bg-green-900 py-2 text-center text-sm font-medium text-white">
+    // Fixed: Cleaned up the wrapper. inset-x-0 pins it to left/right edges.
+    <div className="fixed inset-x-0 top-0 z-50 w-full">
+      {/* Fixed: Removed -mr-10 and w-120. Replaced with w-full */}
+      <div className="w-full bg-green-900 py-2 text-center text-sm font-medium text-white">
         مرحبا بكم في متجر لكل كتابه  
       </div>
 
-      <header className="-mr-7 border-b border-gray-100 bg-white/95 backdrop-blur-md">
+      {/* Fixed: Removed -mr-6 and px-2. Replaced with w-full */}
+      <header className="w-full border-b border-gray-100 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-4 sm:px-8">
+          
           <div className="flex items-center gap-6">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -23,24 +26,24 @@ const Header = () => {
             >
               {isMenuOpen ? <X size={32} /> : <Menu size={32} />}
             </button>
-            <button className="hidden text-black  transition-transform hover:scale-110 md:block">
+            <button className="hidden text-black transition-transform hover:scale-110 md:block">
               <Search size={28} />
             </button>
           </div>
 
           <div className="flex-1 text-center md:flex-none">
             <Link href="/" className="inline-block" prefetch={false}>
-              <span className="text-2xl font-sans uppercase tracking-widest text-black sm:text-3xl">
+              <span className="font-sans text-2xl uppercase tracking-widest text-black sm:text-3xl">
                 Likolin Kitaboh
               </span>
             </Link>
           </div>
 
           <div className="flex items-center gap-5 sm:gap-8">
-            <Link href="/contact" className="hidden text-black  transition-transform hover:scale-110 md:block">
+            <Link href="/contact" className="hidden text-black transition-transform hover:scale-110 md:block">
               <User size={28} />
             </Link>
-            <Link href="/cart" className="relative flex items-center text-black  transition-transform hover:scale-110">
+            <Link href="/cart" className="relative flex items-center text-black transition-transform hover:scale-110">
               <ShoppingBag size={28} />
             </Link>
           </div>
@@ -52,9 +55,7 @@ const Header = () => {
               <span className="text-lg font-semibold uppercase tracking-wider text-gray-600 transition-colors group-hover:text-black">
                 {item.label}
               </span>
-              <span className="absolute bottom-0 left-0 h-[2px] w-full
-               origin-center scale-x-0 bg-black transition-transform
-                duration-300 ease-out group-hover:scale-x-100" />
+              <span className="absolute bottom-0 left-0 h-[2px] w-full origin-center scale-x-0 bg-black transition-transform duration-300 ease-out group-hover:scale-x-100" />
             </Link>
           ))}
         </nav>
@@ -68,12 +69,12 @@ const Header = () => {
                   placeholder="بحث..." 
                   className="w-full rounded-none border-b-2 border-gray-300 bg-transparent py-3 pl-10 pr-4 text-lg outline-none transition-colors focus:border-orange-600"
                 />
-                <Search className="absolute left-2 top-3.5 text-black " size={24} />
+                <Search className="absolute left-2 top-3.5 text-black" size={24} />
               </div>
 
               {navLinks.map((item) => (
                 <Link key={item.label} href={item.href} onClick={() => setIsMenuOpen(false)}>
-                  <div className="text-xl font-bold text-gray-800 transition-colors hover:text-black ">
+                  <div className="text-xl font-bold text-gray-800 transition-colors hover:text-black">
                     {item.label}
                   </div>
                 </Link>
@@ -82,10 +83,10 @@ const Header = () => {
               <div className="mt-4 flex w-full items-center border-t border-gray-200 pt-6">
                 <Link
                   href="/contact"
-                  className="flex items-center gap-3 text-lg font-bold text-black hover:text-black  transition-colors"
+                  className="flex items-center gap-3 text-lg font-bold text-black transition-colors hover:text-black"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <User className="text-black " size={24} />
+                  <User className="text-black" size={24} />
                   حسابي
                 </Link>
               </div>
