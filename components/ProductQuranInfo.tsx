@@ -280,29 +280,10 @@ const ProductCheckoutPage = () => {
   return (
     <section className={`flex flex-col  h-full ${tajawal.className} text-right  text-slate-900    `} dir="rtl">
       
-      {/* --- MARKETING HOOK (Top Section) --- */}
-      <section className="pt-24 pb-6 mr-5 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto mt-6 text-center">
-          <h1 className={`${cairo.className} text-3xl md:text-5xl font-black text-slate-800 leading-tight mb-4`}>
-            اجعل لك أثراً لا ينقطع.. <br className="hidden md:block"/> 
-            <span className="text-emerald-600">باقة المصاحف للصدقة الجارية 📖</span>
-          </h1>
-          <p className="text-lg md:text-xl text-slate-600 font-medium mb-8">
-            ساهم في نشر كتاب الله واكسب أجراً مستمراً لك أو لمن تحب. اختر الباقة التي تناسبك ونحن نتكفل بالباقي.
-          </p>
-          
-          {/* Warning/Motivation Box */}
-          <div className="bg-emerald-50 border-2 border-emerald-200 border-dashed rounded-xl p-4 md:p-6 flex flex-col sm:flex-row items-center justify-center gap-3 mb-8 shadow-sm">
-            <HeartHandshake className="text-emerald-500 w-10 h-10 shrink-0 animate-pulse" />
-            <p className="text-emerald-800 font-bold text-base md:text-lg">
-              إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولد صالح يدعو له.
-            </p>
-          </div>
-        </div>
-      </section>
+      
 
       {/* --- HERO & FORM SECTION --- */}
-      <section className="pb-12  mr-5 sm:px-6 ">
+      <section className="pb-12  mr-5 sm:px-6 mt-30 ">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             
@@ -310,7 +291,8 @@ const ProductCheckoutPage = () => {
             <div className="order-1 flex flex-col gap-6">
                 
                   {images.length > 0 || galleryImages.length > 0 ? (
-                    <img
+                    <img 
+                    
                       src={[...images, ...galleryImages][currentGalleryIndex] ?? images[0] ?? ''}
                      alt="Product"
                      className="bg-cover
@@ -477,6 +459,27 @@ const ProductCheckoutPage = () => {
                     </div>
                </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- MARKETING HOOK (Top Section) --- */}
+      <section className="pt-24  mr-5 px-4 sm:px-6">
+        <div className="max-w-4xl mx-auto -mt-15 text-center">
+          <h1 className={`${cairo.className} text-3xl md:text-5xl font-black text-slate-800 leading-tight mb-4`}>
+            اجعل لك أثراً لا ينقطع.. <br className="hidden md:block"/> 
+            <span className="text-emerald-600">باقة المصاحف للصدقة الجارية 📖</span>
+          </h1>
+          <p className="text-lg md:text-xl text-slate-600 font-medium mb-8">
+            ساهم في نشر كتاب الله واكسب أجراً مستمراً لك أو لمن تحب. اختر الباقة التي تناسبك ونحن نتكفل بالباقي.
+          </p>
+          
+          {/* Warning/Motivation Box */}
+          <div className="bg-emerald-50 border-2 border-emerald-200 border-dashed rounded-xl p-4 md:p-6 flex flex-col sm:flex-row items-center justify-center gap-3 mb-8 shadow-sm">
+            <HeartHandshake className="text-emerald-500 w-10 h-10 shrink-0 animate-pulse" />
+            <p className="text-emerald-800 font-bold text-base md:text-lg">
+              إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولد صالح يدعو له.
+            </p>
           </div>
         </div>
       </section>
