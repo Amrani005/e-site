@@ -11,7 +11,7 @@ const Header = () => {
     // Fixed: Cleaned up the wrapper. inset-x-0 pins it to left/right edges.
     <div className="fixed inset-x-0 top-0 z-50 w-full">
       {/* Fixed: Removed -mr-10 and w-120. Replaced with w-full */}
-      <div className="w-full bg-green-900 py-2 text-center text-sm font-medium text-white">
+      <div className="w-full bg-green-900  text-center text-sm font-medium text-white">
        أي استفسار او لطلب المستعجل اتصل على 0795351720 أو 0561818058
       </div>
 
@@ -33,7 +33,7 @@ const Header = () => {
 
           <div className="flex-1 text-center md:flex-none">
             <Link href="/" className="inline-block" prefetch={false}>
-              <span className="font-sans text-2xl uppercase tracking-widest text-black sm:text-3xl">
+              <span className="font-sans text-xl uppercase tracking-widest text-black sm:text-3xl">
                 Likolin Kitaboh
               </span>
             </Link>
