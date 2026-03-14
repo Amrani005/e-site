@@ -295,7 +295,7 @@ const ProductCheckoutPage = () => {
                     
                       src={[...images, ...galleryImages][currentGalleryIndex] ?? images[0] ?? ''}
                      alt="Product"
-                     className="bg-cover
+                     className="bg-cover rounded-3xl
                      transition-transform duration-700 hover:scale-105 "
                      
                     />
