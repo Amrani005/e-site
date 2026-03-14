@@ -12,7 +12,7 @@ const Header = () => {
     <div className="fixed inset-x-0 top-0 z-50 w-full">
       {/* Fixed: Removed -mr-10 and w-120. Replaced with w-full */}
       <div className="w-full bg-green-900 py-2 text-center text-sm font-medium text-white">
-        مرحبا بكم في متجر لكل كتابه  
+       أي استفسار او لطلب المستعجل اتصل على 0795351720 أو 0561818058
       </div>
 
       {/* Fixed: Removed -mr-6 and px-2. Replaced with w-full */}
