@@ -291,9 +291,9 @@ const ProductCheckoutPage = () => {
       <section className="  mr-2 -mx-3 sm:px-6 mt-40 lg:mt-60 ">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            
+              
             {/* RIGHT SIDE: Images */}
-            <div className="order-1 flex flex-col gap-6">
+            <div className=" flex flex-col gap-6">
                 
                   {images.length > 0 || galleryImages.length > 0 ? (
                     <img 
@@ -310,39 +310,36 @@ const ProductCheckoutPage = () => {
                       جاري تحميل الصور...
                     </div>
                   )}
-    {fullScreen && (
-    <div 
-      className="fixed w-full translate-x-5  inset-0 z-[100] flex items-center justify-center 
-       p-4 backdrop-blur-xl  cursor-zoom-out "
-      // Clicking anywhere on the background will close it
+                 {fullScreen && (
+                    <div 
+                     className="fixed w-full translate-x-5  inset-0 z-[100] flex items-center justify-center 
+                     p-4 backdrop-blur-xl  cursor-zoom-out "
       
-    >
-      {/* Close Button (Make sure X is imported from lucide-react) */}
-      <button 
-        className="absolute right-6 top-6 text-white transition-colors hover:text-orange-600 md:right-10 md:top-10"
-        onClick={() => setFullScreen(false)}
-      >
-        <X size={40} />
-      </button>
-       <div className="flex flex-col lg:flex items-center justify-center gap-2 ">
-        <button onClick={prevImage} className="p-2 bg-white shadow-sm border border-slate-200 rounded-full hover:bg-emerald-50 transition-colors">
-          <ChevronUp className="w-5 h-5 text-slate-700" />
-        </button>
-        <img 
-        src={[...images, ...galleryImages][currentGalleryIndex] ?? images[0] ?? ''}
-        alt="Product Fullscreen"
-        className="max-h-[90vh] max-w-full rounded-3xl object-contain cursor-default select-none"
-        // Prevents closing when clicking exactly on the image itself
-        onClick={(e) => e.stopPropagation()} 
-      />
-        <button onClick={nextImage} className="p-2 bg-white shadow-sm border border-slate-200 rounded-full hover:bg-emerald-50 transition-colors">
-         <ChevronDown className="w-5 h-5 text-slate-700" />
-        </button>
-       </div>
-      {/* The Fullscreen Image */}
+                    >
+     
+                    <button 
+                      className="absolute right-6 top-6 text-white transition-colors hover:text-orange-600 md:right-10 md:top-10"
+                      onClick={() => setFullScreen(false)}
+                    >
+                      <X size={40} />
+                    </button>
+                    <div className="flex flex-col lg:flex items-center justify-center gap-2 ">
+                     <button onClick={prevImage} className="p-2 bg-white shadow-sm border border-slate-200 rounded-full hover:bg-emerald-50 transition-colors">
+                       <ChevronUp className="w-5 h-5 text-slate-700" />
+                     </button> 
+                     <img 
+                       src={[...images, ...galleryImages][currentGalleryIndex] ?? images[0] ?? ''}
+                       alt="Product Fullscreen"
+                       className="max-h-[90vh] max-w-full rounded-3xl object-contain cursor-default select-none"
+                       onClick={(e) => e.stopPropagation()} 
+                      />
+                      <button onClick={nextImage} className="p-2 bg-white shadow-sm border border-slate-200 rounded-full hover:bg-emerald-50 transition-colors">
+                        <ChevronDown className="w-5 h-5 text-slate-700" />
+                      </button>
+                    </div>
       
-    </div>
-  )}
+                    </div>
+                  )}
 
                 {/* Thumbnails */}
                 {galleryImages.length > 0 && (
@@ -377,6 +374,22 @@ const ProductCheckoutPage = () => {
                   </div>
                 )}
             </div>
+
+            
+             {/* --- MARKETING HOOK (Top Section) --- */}
+            <section className="pt-24 lg:hidden md:hidden  px-4 sm:px-6">
+             <div className="max-w-4xl mx-auto -mt-15 text-center">
+                <h1 className={`${cairo.className} text-3xl md:text-5xl font-black text-slate-800 leading-tight mb-4`}>
+                  اجعل لك أثراً لا ينقطع.. <br className="hidden md:block"/> 
+                  <span className="text-emerald-600">باقة المصاحف للصدقة الجارية 📖</span>
+                </h1>
+                <p className="text-lg md:text-xl text-slate-600 font-medium mb-8">
+                 ساهم في نشر كتاب الله واكسب أجراً مستمراً لك أو لمن تحب. اختر الباقة التي تناسبك ونحن نتكفل بالباقي.
+                </p>
+          
+         
+              </div>
+            </section>
             
             {/* LEFT SIDE: THE FORM */}
             <div id="checkout-form" className="order-2 bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden sticky top-24">
@@ -389,7 +402,7 @@ const ProductCheckoutPage = () => {
                   </div>
                   <p className="text-sm text-slate-300 mt-2 relative z-10">باقة {selectedPackage.quantity} مصاحف</p>
                </div>
-
+                     
                <div className="p-6 sm:p-8 space-y-4">
                     <div className="space-y-4">
                         <input type="text" placeholder="الاسم الكامل" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
