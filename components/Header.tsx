@@ -1,166 +1,99 @@
-// components/Header.tsx
-'use client'; // 1. ضروري لاستخدام Hooks
+'use client';
 import Link from 'next/link';
-import Image from 'next/image';
-import {
-  Menu, // For Mobile
-  MonitorSmartphone, // For Mobile
-  Languages, // For Mobile
-  Sun, // For Desktop
-  Moon, // For Desktop
-  X,
-  ArrowBigDown, // 3. أضفنا أيقونة الإغلاق
-} from 'lucide-react';
-import { useState,useEffect } from 'react'; // 2. استيراد useState
+import { Menu, X, Search, ShoppingBag, User } from 'lucide-react';
+import { useState } from 'react';
 import { navLinks } from '..';
-import { ThemeToggle } from '@/app/theme-toggle';
-
-/*
-  ملاحظة: لعمل مبدل الوضع (Theme Toggle) بشكل كامل،
-  ستحتاج على الأرجح إلى "use client" وحزمة مثل 'next-themes'.
-  هذا مجرد مثال شكلي.
-*/
-
- 
-
- 
-
 
 const Header = () => {
-  // 2. إضافة متغير الحالة
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-
-
   return (
-    // أصلحنا px-10 لتكون متجاوبة وأزلنا font-tajawal (يجب أن يكون في globals.css)
-    <header className="fixed top-4 -right-5 lg:translate-x-0 z-50
-     w-full px-4 sm:px-10">
-      <div
-        className="w-full rounded-3xl border border-transparent
-        bg-transparent  shadow-lg backdrop-blur-lg  
-        "
-      >
-        {/* Mobile Header (based on your NEW screenshot)
-          Visible on small screens, hidden on 'md' and up
-        */}
-        <div className="relative flex h-16 items-center justify-between
-         px-4 md:hidden ">
-          {/* Left: Hamburger Menu Button */}
-          
+    // Changed to fixed, top-0, inset-x-0, w-screen to force it edge-to-edge
+    <div className="fixed  top-0 z-50 lg:w-full md:lg-full w-90">
+      <div className="-mr-10 bg-green-900 py-2 text-center text-sm font-medium text-white">
+        مرحبا بكم في متجر لكل كتابه  
+      </div>
 
-          <div className='flex items-center gap-4'>
+      <header className="-mr-7 border-b border-gray-100 bg-white/95 backdrop-blur-md">
+        <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-4 sm:px-8">
+          <div className="flex items-center gap-6">
             <button
-           
-            // 3. إضافة onClick لفتح وإغلاق القائمة
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 text-gray-800 
-              dark:text-gray-200  cursor-pointer
-              "
-          >
-            {/* 3. تبديل الأيقونة بناءً على الحالة */}
-            {isMenuOpen ? <X size={40} className='rotate-180 hover:text-purple-600 duration-300 transition-transform ease-in-out' /> : <Menu size={40} className=' duration-300 transition-transform  ease-in-out text-orange-600 ' />}
-          </button>
-          <Link href='/cart'>
-          <ThemeToggle />
-          </Link>
-          
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-black transition-transform hover:scale-110 md:hidden"
+            >
+              {isMenuOpen ? <X size={32} /> : <Menu size={32} />}
+            </button>
+            <button className="hidden text-black  transition-transform hover:scale-110 md:block">
+              <Search size={28} />
+            </button>
           </div>
 
-          {/* Right: Logo */}
-          <Link href="/" className="flex items-center gap-2" prefetch={false}>
-            <span className="text-xl font-bold  font-tajawal text-orange-600 ">
+          <div className="flex-1 text-center md:flex-none">
+            <Link href="/" className="inline-block" prefetch={false}>
+              <span className="text-2xl font-sans uppercase tracking-widest text-black sm:text-3xl">
                 Likolin Kitaboh
-            </span>
-            
-            
-          </Link>
+              </span>
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-5 sm:gap-8">
+            <Link href="/contact" className="hidden text-black  transition-transform hover:scale-110 md:block">
+              <User size={28} />
+            </Link>
+            <Link href="/cart" className="relative flex items-center text-black  transition-transform hover:scale-110">
+              <ShoppingBag size={28} />
+            </Link>
+          </div>
         </div>
 
-        {/* --- 4. قائمة الموبايل (تظهر عند الفتح) --- */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-6 px-4 pb-4 text-center cursor-pointer
-          duration-300 transition-all ease-in-out">
-            {navLinks.map((item)=>(
-              <a href={item.href}>
-                <div className="text-lg font-medium text-purple-700 dark:text-gray-300
-               hover:text-purple-600 mt-4">
+        <nav className="hidden h-14 w-full items-center justify-center gap-10 border-t border-gray-100 bg-white/50 md:flex">
+          {navLinks.map((item) => (
+            <Link key={item.label} href={item.href} className="group relative py-2">
+              <span className="text-lg font-semibold uppercase tracking-wider text-gray-600 transition-colors group-hover:text-black">
                 {item.label}
+              </span>
+              <span className="absolute bottom-0 left-0 h-[2px] w-full
+               origin-center scale-x-0 bg-black transition-transform
+                duration-300 ease-out group-hover:scale-x-100" />
+            </Link>
+          ))}
+        </nav>
+
+        {isMenuOpen && (
+          <div className="absolute left-0 top-full w-full border-b border-gray-200 bg-white px-6 py-8 shadow-xl md:hidden">
+            <div className="flex flex-col gap-6">
+              <div className="relative w-full">
+                <input 
+                  type="text" 
+                  placeholder="بحث..." 
+                  className="w-full rounded-none border-b-2 border-gray-300 bg-transparent py-3 pl-10 pr-4 text-lg outline-none transition-colors focus:border-orange-600"
+                />
+                <Search className="absolute left-2 top-3.5 text-black " size={24} />
               </div>
-              </a>
+
+              {navLinks.map((item) => (
+                <Link key={item.label} href={item.href} onClick={() => setIsMenuOpen(false)}>
+                  <div className="text-xl font-bold text-gray-800 transition-colors hover:text-black ">
+                    {item.label}
+                  </div>
+                </Link>
+              ))}
               
-            ))}
-            {/* زر "تواصل معنا" للموبايل */}
-            <div className="mt-8 hover:scale-[1.1] duration-300">
-              <Link
-                href="/contact"
-                className="inline-flex w-full items-center justify-center
-                 rounded-full bg-orange-600 px-6 py-3 text-base 
-                  text-white shadow-sm transition-colors
-                   duration-300"
-                prefetch={false}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                 تسجيل الدخول
-              </Link>
+              <div className="mt-4 flex w-full items-center border-t border-gray-200 pt-6">
+                <Link
+                  href="/contact"
+                  className="flex items-center gap-3 text-lg font-bold text-black hover:text-black  transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <User className="text-black " size={24} />
+                  حسابي
+                </Link>
+              </div>
             </div>
           </div>
         )}
-
-        {/* --- نهاية قائمة الموبايل --- */}
-
-        {/* Desktop Header (based on your FIRST screenshot)
-          Hidden on small screens, visible on 'md' and up
-        */}
-        <div className="hidden h-20 items-center justify-between px-6 md:flex">
-          {/* Left: Theme Toggle */}
-          
-              <Link href='/cart'>
-          <ThemeToggle />
-          </Link>
-          {/* Center: Navigation Links */}
-          <nav className='flex  gap-8'>
-           {navLinks.map((item)=>(
-              <a key={item.label}  href={item.href}>
-                <div  key={item.label}  className="text-2xl font-medium text-gray-700 dark:text-gray-300
-               hover:text-purple-600 mt-4 ">
-                {item.label}
-              </div>
-              </a>
-              
-            ))}
-          </nav>
-          
-
-          {/* Right: Actions (CTA + Logo) */}
-          <div className="flex items-center gap-4">
-            <div className=' hover:scale-[1.1] duration-300 ease-in-out'>
-              <Link
-              href="/contact"
-              className="inline-flex items-center
-               justify-center rounded-full bg-orange-600 px-6 py-2.5
-                text-base font-semibold text-white shadow-sm
-                 transition-colors hover:bg-orange-700 
-                 focus-visible:outline focus-visible:outline-2 
-                 focus-visible:outline-offset-2
-                  focus-visible:outline-purple-600
-                  hover:scale-[1.1] ease-in-out "
-              prefetch={false}
-            >
-                 تسجيل الدخول
-            </Link>
-            </div>
-            
-            <Link href="/" className="flex items-center gap-2" prefetch={false}>
-              <span className="text-lg font-bold  font-mono text-blue-600 ">
-                Likolin Kitaboh
-            </span>
-              
-            </Link>
-          </div>
-        </div>
-      </div>
-    </header>
+      </header>
+    </div>
   );
 };
 

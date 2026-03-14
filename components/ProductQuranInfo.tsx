@@ -8,9 +8,12 @@ import {
   ArrowRight, ChevronLeft, ChevronRight, CreditCard, 
   MapPin, Truck, AlertOctagon, CheckCircle2, XCircle, 
   Minus, Plus, ShieldCheck, Star, 
-  UserCircle, BookOpen, Palette, HeartHandshake, Package
+  UserCircle, BookOpen, Palette, HeartHandshake, Package,
+  ChevronUp,
+  ChevronDown
 } from 'lucide-react';
 import Image from 'next/image';
+import { X } from 'lucide-react';
 
 // --- 1. FONTS SETUP ---
 const cairo = Cairo({ subsets: ['arabic'], weight: ['400', '700', '900'] });
@@ -139,6 +142,7 @@ const ProductCheckoutPage = () => {
 
   // Package Selection State
   const [selectedPackage, setSelectedPackage] = useState(quranPackages[0]);
+  const [fullScreen,setFullScreen]= useState(false);
 
   // Form States
   const [customerName, setCustomerName] = useState("");
@@ -177,6 +181,7 @@ const ProductCheckoutPage = () => {
 
     return () => clearTimeout(timer);
   },[customerName, customerPhone, customerAddress, selectedWilayaID, deliveryType, selectedPackage.quantity, finalTotal, draftId, id]);
+
 
   // جلب المنتج
   useEffect(() => {
@@ -283,7 +288,7 @@ const ProductCheckoutPage = () => {
       
 
       {/* --- HERO & FORM SECTION --- */}
-      <section className="pb-12  mr-5 sm:px-6 mt-30 ">
+      <section className="  mr-2 -mx-3 sm:px-6 mt-40 lg:mt-60 ">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             
@@ -296,7 +301,8 @@ const ProductCheckoutPage = () => {
                       src={[...images, ...galleryImages][currentGalleryIndex] ?? images[0] ?? ''}
                      alt="Product"
                      className="bg-cover rounded-3xl
-                     transition-transform duration-700 hover:scale-105 "
+                     transition-transform duration-700 hover:scale-105 cursor-pointer "
+                     onClick={()=>setFullScreen(true)}
                      
                     />
                   ) : (
@@ -304,7 +310,39 @@ const ProductCheckoutPage = () => {
                       جاري تحميل الصور...
                     </div>
                   )}
-                
+    {fullScreen && (
+    <div 
+      className="fixed w-full translate-x-5  inset-0 z-[100] flex items-center justify-center 
+       p-4 backdrop-blur-xl  cursor-zoom-out "
+      // Clicking anywhere on the background will close it
+      
+    >
+      {/* Close Button (Make sure X is imported from lucide-react) */}
+      <button 
+        className="absolute right-6 top-6 text-white transition-colors hover:text-orange-600 md:right-10 md:top-10"
+        onClick={() => setFullScreen(false)}
+      >
+        <X size={40} />
+      </button>
+       <div className="flex flex-col lg:flex items-center justify-center gap-2 ">
+        <button onClick={prevImage} className="p-2 bg-white shadow-sm border border-slate-200 rounded-full hover:bg-emerald-50 transition-colors">
+          <ChevronUp className="w-5 h-5 text-slate-700" />
+        </button>
+        <img 
+        src={[...images, ...galleryImages][currentGalleryIndex] ?? images[0] ?? ''}
+        alt="Product Fullscreen"
+        className="max-h-[90vh] max-w-full rounded-3xl object-contain cursor-default select-none"
+        // Prevents closing when clicking exactly on the image itself
+        onClick={(e) => e.stopPropagation()} 
+      />
+        <button onClick={nextImage} className="p-2 bg-white shadow-sm border border-slate-200 rounded-full hover:bg-emerald-50 transition-colors">
+         <ChevronDown className="w-5 h-5 text-slate-700" />
+        </button>
+       </div>
+      {/* The Fullscreen Image */}
+      
+    </div>
+  )}
 
                 {/* Thumbnails */}
                 {galleryImages.length > 0 && (
