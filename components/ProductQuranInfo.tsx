@@ -481,7 +481,9 @@ const ProductCheckoutPage = () => {
                                    : 'border-slate-200 hover:border-emerald-300 bg-white'
                                  }`}
                                >
-                                 <span className="font-bold text-lg text-slate-800">{pkg.quantity} مصاحف</span>
+                                 <span className="font-bold text-lg text-green-500 " > {pkg.quantity} </span>
+                                  <span className="font-bold text-lg text-slate-800 " >مصاحف برواية ورش عن نافع مقاس 14.20 سم   مع توصيل سريع  </span>
+
                                  <span className={`text-sm ${selectedPackage.id === pkg.id ? 'text-emerald-700 font-bold' : 'text-slate-500'}`}>
                                    {pkg.price} د.ج
                                  </span>
@@ -533,8 +535,9 @@ const ProductCheckoutPage = () => {
           {/* Warning/Motivation Box */}
           <div className="bg-emerald-50 border-2 border-emerald-200 border-dashed rounded-xl p-4 md:p-6 flex flex-col sm:flex-row items-center justify-center gap-3 mb-8 shadow-sm">
             <HeartHandshake className="text-emerald-500 w-10 h-10 shrink-0 animate-pulse" />
-            <p className="text-emerald-800 font-bold text-base md:text-lg">
-              إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولد صالح يدعو له.
+            <p className="text-emerald-800 w-60 font-bold text-base md:text-lg">
+              <span  className="text-black w-60 font-extrabold  md:text-xl"> قال الرسول صلر الله عليه وسلم   : </span>
+                إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولد صالح يدعو له.
             </p>
           </div>
         </div>
