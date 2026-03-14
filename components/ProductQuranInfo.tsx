@@ -21,10 +21,10 @@ const tajawal = Tajawal({ subsets: ['arabic'], weight: ['400', '500', '700', '80
 
 // --- NEW PACKAGES CONFIGURATION ---
 const quranPackages = [
-  { id: 'pack-5', quantity: 5, price: 4650 },
-  { id: 'pack-7', quantity: 7, price: 5990 },
-  { id: 'pack-10', quantity: 10, price: 7950 },
-  { id: 'pack-15', quantity: 15, price: 12800 }
+  { id: 'pack-5', quantity: 5, price: 4650, preca: 5700 },
+  { id: 'pack-7', quantity: 7, price: 5990 , preca: 6500},
+  { id: 'pack-10', quantity: 10, price: 7950 , preca: 9000},
+  { id: 'pack-15', quantity: 15, price: 12800, preca: 15000 }
 ];
 
 // --- DATA CONFIGURATION ---
@@ -228,8 +228,8 @@ const ProductCheckoutPage = () => {
   }, [selectedWilayaID, deliveryType, selectedPackage]); 
 
   // Helpers
-  const nextImage = () => { setCurrentGalleryIndex((prev) => (prev === galleryImages.length ? 0 : prev + 1)); };
-  const prevImage = () => { setCurrentGalleryIndex((prev) => (prev === 0 ? galleryImages.length : prev - 1)); };
+  const nextImage = () => { setCurrentGalleryIndex((preca) => (preca === galleryImages.length ? 0 : preca + 1)); };
+  const precaImage = () => { setCurrentGalleryIndex((preca) => (preca === 0 ? galleryImages.length : preca - 1)); };
 
   const scrollToForm = () => {
     document.getElementById('checkout-form')?.scrollIntoView({ behavior: 'smooth' });
@@ -324,7 +324,7 @@ const ProductCheckoutPage = () => {
                       <X size={40} />
                     </button>
                     <div className="flex flex-col lg:flex items-center justify-center gap-2 ">
-                     <button onClick={prevImage} className="p-2 bg-white shadow-sm border border-slate-200 rounded-full hover:bg-emerald-50 transition-colors">
+                     <button onClick={precaImage} className="p-2 bg-white shadow-sm border border-slate-200 rounded-full hover:bg-emerald-50 transition-colors">
                        <ChevronUp className="w-5 h-5 text-slate-700" />
                      </button> 
                      <img 
@@ -344,7 +344,7 @@ const ProductCheckoutPage = () => {
                 {/* Thumbnails */}
                 {galleryImages.length > 0 && (
                   <div className="flex items-center justify-center gap-2 md:gap-4">
-                    <button onClick={prevImage} className="p-2 bg-white shadow-sm border border-slate-200 rounded-full hover:bg-emerald-50 transition-colors">
+                    <button onClick={precaImage} className="p-2 bg-white shadow-sm border border-slate-200 rounded-full hover:bg-emerald-50 transition-colors">
                       <ChevronRight className="w-5 h-5 text-slate-700" />
                     </button>
                     <div className='flex gap-2 overflow-x-auto py-2 px-1 scrollbar-hide'>
@@ -398,8 +398,10 @@ const ProductCheckoutPage = () => {
                <div className="bg-slate-900 text-white p-6 text-center relative overflow-hidden">
                   <div className="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500 rounded-full opacity-20 blur-2xl"></div>
                   <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-blue-500 rounded-full opacity-20 blur-2xl"></div>
-                  <h2 className={`${cairo.className} text-xl sm:text-2xl font-bold mb-2 relative z-10`}>اختر باقتك وساهم في الخير 💎</h2>
+                  <h2 className={`${cairo.className} text-xl sm:text-2xl font-bold mb-2 relative z-10`}>اختر باقتك وساهم في الخير </h2>
+                  <p className="text-red-600 line-through text-2xl "> {selectedPackage.preca} د.ج</p>
                   <div className="flex items-center justify-center gap-3 relative z-10">
+                     
                       <span className="text-green-400 text-4xl font-black">{selectedPackage.price} د.ج</span>
                   </div>
                   <p className="text-sm text-slate-300 mt-2 relative z-10">باقة {selectedPackage.quantity} مصاحف</p>
