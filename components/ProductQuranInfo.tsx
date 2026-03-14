@@ -542,18 +542,26 @@ const ProductCheckoutPage = () => {
       </section>
 
       {/* --- STICKY CTA BUTTON --- */}
-      <div className="fixed  bottom-0 left-0 w-full p-4 bg-white/80 
-      backdrop-blur-md rounded-t-3xl border-t border-slate-200 z-50 flex justify-center
-       shadow-[0_-10px_30px_rgba(0,0,0,0.05)] -right-5 lg:right-0">
+      <div className="fixed bottom-0 left-0 w-full p-4 bg-white/95 
+      backdrop-blur-md rounded-t-3xl border-t border-slate-200 z-50 flex flex-col items-center justify-center
+       shadow-[0_-15px_40px_rgba(0,0,0,0.08)] -right-5 lg:right-0">
+          
           <button 
              onClick={scrollToForm}
-             className="w-full  max-w-md py-4 bg-emerald-600 text-white
-              text-xl font-black rounded-xl shadow-lg
-               hover:bg-emerald-700 transition-colors flex items-center
-                justify-center gap-2">
-              <CreditCard className="w-6 h-6" />
-              اطلب باقتك الآن ({finalTotal} د.ج)
+             className="w-full max-w-md py-4 bg-emerald-600 text-white
+              text-xl font-black rounded-xl shadow-[0_8px_20px_rgb(5,150,105,0.3)]
+               hover:bg-emerald-700 hover:-translate-y-1 transition-all flex items-center
+                justify-center gap-2 animate-[pulse_2s_infinite]">
+              <HeartHandshake className="w-6 h-6" />
+              اكسب أجر الصدقة الآن ({finalTotal} د.ج)
           </button>
+          
+          {/* Micro-copy للموثوقية */}
+          <span className="text-emerald-700 text-sm font-bold mt-2.5 flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4" /> 
+              لا تدفع شيئاً الآن.. الدفع يداً بيد عند الاستلام
+          </span>
+          
       </div>
 
     </section>
