@@ -308,12 +308,15 @@ const ProductCheckoutPage = () => {
             
             {/* RIGHT SIDE: Images */}
             <div className="order-1 flex flex-col gap-6">
-                <div className="relative w-full aspect-[4/3] rounded-2xl shadow-xl overflow-hidden border-4 border-white bg-white">
+                <div className="relative w-full h-full aspect-[4/3] rounded-2xl 
+                shadow-xl overflow-hidden border-4 border-white bg-white">
                   {images.length > 0 || galleryImages.length > 0 ? (
                     <img
                       src={[...images, ...galleryImages][currentGalleryIndex] ?? images[0] ?? ''}
                      alt="Product"
-                     className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                     className="w-full h-full  
+                     transition-transform duration-700 hover:scale-105 "
+                     
                     />
                   ) : (
                     <div className="w-full h-full bg-slate-100 flex items-center justify-center animate-pulse text-slate-400">
