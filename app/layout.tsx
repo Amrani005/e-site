@@ -7,6 +7,7 @@ import './globals.css';
 import { ThemeProvider } from 'next-themes';
 import Script from 'next/script';
 import { GoogleAnalytics } from '@next/third-parties/google';
+import { Analytics } from "@vercel/analytics/next"
 
 
 
@@ -66,8 +67,9 @@ export default function RootLayout({
         </Script>
         <ThemeProvider attribute='class' enableSystem >
           {children}
+          
         </ThemeProvider> 
-        
+        <Analytics/>
       </body>
       <GoogleAnalytics gaId="G-KD4WF4VZM6" />
     </html>
