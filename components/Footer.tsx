@@ -4,8 +4,8 @@ import React from 'react';
 const Footer = () => {
   return (
     // 1. Footer container: Black background, white text, full width
-    <footer className="  text-orange-600 w-full
-     contain-content lg:w-full -translate-x-5">
+    <footer className="  text-black w-full
+     contain-content lg:w-full  ">
       <hr className='ml-5 ' />
       {/* 2. Main Footer Content Area: NAD STORE & Description */}
       {/* py-16 for vertical padding, container for centered content */}
@@ -13,7 +13,7 @@ const Footer = () => {
         <div className="container mx-auto text-center max-w-4xl">
           
           {/* Title: NAD STORE (Centered, large, uppercase) */}
-          <h2 className="text-3xl  font-tajawal font-extrabold tracking-widest
+          <h2 className="text-3xl  font-sans  tracking-widest
            mb-8 uppercase ">
             Likolin Kitaboh
           </h2>
