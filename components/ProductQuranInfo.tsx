@@ -10,6 +10,7 @@ import {
   Minus, Plus, ShieldCheck, Star, 
   UserCircle, BookOpen, Palette, HeartHandshake, Package
 } from 'lucide-react';
+import Image from 'next/image';
 
 // --- 1. FONTS SETUP ---
 const cairo = Cairo({ subsets: ['arabic'], weight: ['400', '700', '900'] });
@@ -525,12 +526,13 @@ const ProductCheckoutPage = () => {
                   {[1,2,3,4,5].map(star => <Star key={star} className="w-8 h-8 text-yellow-400 fill-yellow-400" />)}
               </div>
               <h2 className={`${cairo.className} text-3xl font-black text-slate-800 mb-8`}>آراء من ساهموا معنا في الخير</h2>
+                <div className='grid grid-cols-2 gap-3'>
+                  <Image src="/der8.jpeg" alt='' width={240} height={400}/>
+                  <Image src="/review1.jpeg" alt='' width={240} height={300}/>
+                  <Image src="/review2.jpeg" alt='' width={240} height={300}/>
+                  
+                </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div className="aspect-[9/16] bg-slate-200 rounded-xl flex items-center justify-center text-slate-400 text-sm border border-slate-300">صورة رأي متبرع</div>
-                  <div className="aspect-[9/16] bg-slate-200 rounded-xl flex items-center justify-center text-slate-400 text-sm border border-slate-300">صورة رأي متبرع</div>
-                  <div className="aspect-[9/16] bg-slate-200 rounded-xl flex items-center justify-center text-slate-400 text-sm border border-slate-300 hidden md:flex">صورة رأي متبرع</div>
-              </div>
           </div>
       </section>
 
