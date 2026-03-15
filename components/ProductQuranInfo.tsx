@@ -612,7 +612,7 @@ const ProductCheckoutPage = () => {
                hover:bg-emerald-700 hover:-translate-y-1 transition-all flex items-center
                 justify-center gap-2 animate-[pulse_2s_infinite]">
               <HeartHandshake className="w-6 h-6" />
-              أطلب الآن({finalTotal} د.ج)
+              أطلب باقتك الآن
           </button>
           
           {/* Micro-copy للموثوقية */}
