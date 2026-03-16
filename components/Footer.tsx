@@ -25,7 +25,7 @@ const Footer = () => {
               className="text-lg text-gray-400 leading-relaxed font-tajawal" 
               dir="rtl"
             >
-              متجركم **Likoline Kitaboh** يوفر لكم أفضل المنتجات التقنية الحديثة بأسعار مميزة
+              متجركم **Likoline Kitaboh** يوفر لكم الكتب بأعلى جودة و بأسعار مميزة
             </p>
           </div>
           
