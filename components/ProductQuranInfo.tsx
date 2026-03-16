@@ -524,16 +524,10 @@ const ProductCheckoutPage = () => {
       {/* --- MARKETING HOOK (Top Section) --- */}
       <section className="pt-24   px-4 sm:px-6">
         <div className="max-w-4xl mx-auto -mt-15 text-center">
-          <h1 className={`${cairo.className} text-3xl md:text-5xl font-black text-slate-800 leading-tight mb-4`}>
-            اجعل لك أثراً لا ينقطع.. <br className="hidden md:block"/> 
-            <span className="text-emerald-600">باقة المصاحف للصدقة الجارية 📖</span>
-          </h1>
-          <p className="text-lg md:text-xl text-slate-600 font-medium mb-8">
-            ساهم في نشر كتاب الله واكسب أجراً مستمراً لك أو لمن تحب. اختر الباقة التي تناسبك ونحن نتكفل بالباقي.
-          </p>
+         
           
           {/* Warning/Motivation Box */}
-          <div className="bg-emerald-50 border-2 border-emerald-200 border-dashed rounded-xl p-4 md:p-6 flex flex-col sm:flex-row items-center justify-center gap-3 mb-8 shadow-sm">
+          <div className="bg-emerald-50 border-2 border-emerald-200 border-dashed rounded-xl p-4 md:p-6 flex flex-col sm:flex-row items-center justify-center gap-3  shadow-sm">
             <HeartHandshake className="text-emerald-500 w-10 h-10 shrink-0 animate-pulse" />
             <p className="text-emerald-800 w-60 font-bold text-base md:text-lg">
               <span  className="text-black w-60 font-extrabold  md:text-xl"> قال الرسول صلى الله عليه وسلم   : </span>
@@ -543,45 +537,6 @@ const ProductCheckoutPage = () => {
         </div>
       </section>
 
-      {/* --- WHAT'S INSIDE SECTION --- */}
-      <section className="py-16 px-4  bg-white border-t border-slate-100">
-         <div className="max-w-3xl mx-auto">
-             <h2 className={`${cairo.className} text-2xl md:text-4xl font-black text-center mb-10 text-slate-900`}>
-                 لماذا تختار هذه الباقة؟ 📦
-             </h2>
-             <div className="space-y-4">
-                 {boxItems.map(item => (
-                     <div key={item.id} className={`flex items-start gap-4 p-6 rounded-2xl transition-all hover:shadow-md ${item.isGift ? 'bg-yellow-50 border-2 border-yellow-400' : 'bg-slate-50 border border-slate-200'}`}>
-                         <div className="text-4xl shrink-0 bg-white w-14 h-14 rounded-xl flex items-center justify-center shadow-sm">{item.icon}</div>
-                         <div>
-                             <h3 className="font-bold text-lg md:text-xl text-slate-800 mb-2 flex items-center gap-2">
-                                 {item.title}
-                             </h3>
-                             <p className="text-slate-600 leading-relaxed">{item.description}</p>
-                         </div>
-                     </div>
-                 ))}
-             </div>
-         </div>
-      </section>
-
-      {/* --- SCENARIOS SECTION --- */}
-      <section className="py-16 px-4 bg-slate-900   text-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 opacity-5 rounded-full blur-3xl"></div>
-          <div className="max-w-5xl mx-auto relative z-10">
-              <h2 className={`${cairo.className} text-3xl md:text-4xl font-black text-center mb-12`}>فضل الصدقة الجارية...</h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                  {scenarios.map((s, idx) => (
-                      <div key={idx} className={`p-8 rounded-3xl border-2 flex flex-col items-center text-center gap-4 ${s.type === 'bad' ? 'bg-slate-800/50 border-slate-700' : 'bg-emerald-900/20 border-emerald-500/50'}`}>
-                          {s.icon}
-                          <p className={`text-lg md:text-xl font-medium ${s.type === 'bad' ? 'text-slate-300' : 'text-emerald-50'}`}>
-                              {s.text}
-                          </p>
-                      </div>
-                  ))}
-              </div>
-          </div>
-      </section>
 
       {/* --- REVIEWS / SOCIAL PROOF --- */}
       <section className="py-16 px-4 mr-4 bg-slate-50">
