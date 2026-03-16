@@ -600,6 +600,30 @@ const ProductCheckoutPage = () => {
           </div>
       </section>
 
+      <section className="py-16 px-4 mr-4 bg-slate-50">
+          <div className="max-w-4xl mx-auto text-center">
+              <div className="flex justify-center mb-4">
+                  {[1,2,3,4,5].map(star => <Star key={star} className="w-8 h-8 text-yellow-400 fill-yellow-400" />)}
+              </div>
+              <h2 className={`${cairo.className} text-3xl font-black text-slate-800 mb-8`}>آراء عملائنا الأخرى</h2>
+                <div className='grid grid-cols-4 lg:grid-cols-4 gap-3'>
+                  <Image src="/der8.jpeg" alt='' width={240} height={400}/>
+                  <Image src="/der1.jpeg" alt='' width={240} height={300}/>
+                  <Image src="/der2.jpeg" alt='' width={240} height={300}/>
+                  <Image src="/der3.jpeg" alt='' width={240} height={300}/>
+                  <Image src="/der4.jpeg" alt='' width={240} height={300}/>
+                  <Image src="/der5.jpeg" alt='' width={240} height={300}/>
+                  <Image src="/der6.jpeg" alt='' width={240} height={300}/>
+                  <Image src="/der7.jpeg" alt='' width={240} height={300}/>
+                  <Image src="/der9.jpeg" alt='' width={240} height={300}/>
+                  <Image src="/der10.jpeg" alt='' width={240} height={300}/>
+
+                  
+                </div>
+              
+          </div>
+      </section>
+
       {/* --- STICKY CTA BUTTON --- */}
       <div className="fixed bottom-0 left-0 w-full p-4 bg-white/95 
       backdrop-blur-md rounded-t-3xl border-t border-slate-200 z-50 flex flex-col items-center justify-center
@@ -612,7 +636,7 @@ const ProductCheckoutPage = () => {
                hover:bg-emerald-700 hover:-translate-y-1 transition-all flex items-center
                 justify-center gap-2 animate-[pulse_2s_infinite]">
               <HeartHandshake className="w-6 h-6" />
-              أطلب باقتك الآن
+              إملأ معلوماتك  وإختر باقتك
           </button>
           
           {/* Micro-copy للموثوقية */}
