@@ -418,7 +418,6 @@ const ProductCheckoutPage = () => {
 
                   <div className="flex items-center justify-center gap-3 relative z-10">
                       
-                      <span className="text-green-950 font-black  text-4xl  ">{selectedPackage ? selectedPackage.price : (price * count)} د.ج</span>
                   </div>
                   <p className="text-sm text-slate-300 mt-2 relative z-10">باقة {count} مصاحف</p>
                </div>
