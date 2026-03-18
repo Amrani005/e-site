@@ -411,7 +411,7 @@ const ProductCheckoutPage = () => {
             <div id="checkout-form" className=" bg-white 
              rounded-3xl shadow-xl border border-slate-200 overflow-hidden
              top-24 ">
-               <div className="bg-green-950 text-white p-6 text-center relative overflow-hidden">
+               <div className="bg-emerald-600 text-white p-6 text-center relative overflow-hidden">
                   <div className="absolute -right-10 -top-10 w-32 h-32 bg-emerald-900 rounded-full opacity-20 blur-2xl"></div>
                   <div className="absolute -left-10 -bottom-10 w-32 h-32 rounded-full opacity-20 blur-2xl"></div>
                   <h2 className={`${cairo.className} text-xl sm:text-2xl font-bold mb-2 relative z-10`}>المرجو ادخال المعلومات   </h2>
@@ -419,7 +419,7 @@ const ProductCheckoutPage = () => {
 
                   <div className="flex items-center justify-center gap-3 relative z-10">
                       
-                      <span className="text-green-600 font-black  text-4xl  ">{selectedPackage ? selectedPackage.price : (price * count)} د.ج</span>
+                      <span className="text-green-950 font-black  text-4xl  ">{selectedPackage ? selectedPackage.price : (price * count)} د.ج</span>
                   </div>
                   <p className="text-sm text-slate-300 mt-2 relative z-10">باقة {count} مصاحف</p>
                </div>
@@ -452,6 +452,7 @@ const ProductCheckoutPage = () => {
                                <button onClick={decrement} className="w-8 h-8 flex items-center justify-center bg-slate-100 rounded hover:bg-slate-200 transition-colors"><Minus size={16} /></button>
                         
                                  <span className="font-bold text-xl w-6 text-center">{count}</span>
+                                
                         
                                <button onClick={increment} className="w-8 h-8 flex items-center justify-center bg-orange-100 rounded hover:bg-orange-200 text-orange-600 transition-colors"><Plus size={16} /></button>
                         
