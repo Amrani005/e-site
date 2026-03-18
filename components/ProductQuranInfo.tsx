@@ -140,8 +140,9 @@ const ProductCheckoutPage = () => {
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
   const [galleryImages, setGalleryImages] = useState<string[]>([]); 
 
-  // Package Selection State
-  const [selectedPackage, setSelectedPackage] = useState(quranPackages[0]);
+  // Package Selection State - SINGLE SOURCE OF TRUTH (count)
+  const [count, setCount] = useState(quranPackages[0].quantity); // Default to first package quantity
+  const [selectedPackage, setSelectedPackage] = useState<any>(quranPackages[0]);
   const [fullScreen,setFullScreen]= useState(false);
 
   // Form States
@@ -161,7 +162,7 @@ const ProductCheckoutPage = () => {
   // حفظ المسودة التلقائي
   useEffect(()=>{
     if(!customerPhone || customerPhone.length !== 10) return;
-     
+      
     const timer = setTimeout(async () => {
       const draftData = {
         draftId: draftId,
@@ -171,16 +172,16 @@ const ProductCheckoutPage = () => {
         address: customerAddress,
         wilaya: selectedWilayaID ? wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID))?.Wilaya : "",
         deliveryType: deliveryType,
-        quantity: selectedPackage.quantity, 
+        quantity: count, // Updated to use count
         total: finalTotal
       };
-     
+      
       const result = await saveDraftOrder(draftData);
       if (result?.draftId) setDraftId(result.draftId);
     }, 1000); 
 
     return () => clearTimeout(timer);
-  },[customerName, customerPhone, customerAddress, selectedWilayaID, deliveryType, selectedPackage.quantity, finalTotal, draftId, id]);
+  },[customerName, customerPhone, customerAddress, selectedWilayaID, deliveryType, count, finalTotal, draftId, id]);
 
 
   // جلب المنتج
@@ -213,7 +214,11 @@ const ProductCheckoutPage = () => {
     loadProduct();
   }, [id]);
 
-  // حساب تكلفة التوصيل والإجمالي الكلي
+  //Helper 
+  const increment = () => setCount((prev) => prev + 1);
+  const decrement = () => setCount((prev) => (prev > 1 ? prev - 1 : 1));
+
+  // حساب تكلفة التوصيل والإجمالي الكلي بناء على الكمية
   useEffect(() => {
     let cost = 0;
     if (selectedWilayaID) {
@@ -224,8 +229,19 @@ const ProductCheckoutPage = () => {
       }
     }
     setShippingTotal(cost);
-    setFinalTotal(selectedPackage.price + cost); 
-  }, [selectedWilayaID, deliveryType, selectedPackage]); 
+
+    // Check if the current count exactly matches any package
+    const activePackage = quranPackages.find(pkg => pkg.quantity === count);
+    setSelectedPackage(activePackage || null);
+
+    // If it's a package, use package price + shipping. Else use (unit price * count) + shipping
+    if(activePackage) {
+      setFinalTotal(activePackage.price + cost); 
+    } else {
+      setFinalTotal((price * count) + cost);
+    }
+    
+  }, [selectedWilayaID, deliveryType, count, price]); 
 
   // Helpers
   const nextImage = () => { setCurrentGalleryIndex((preca) => (preca === galleryImages.length ? 0 : preca + 1)); };
@@ -260,7 +276,7 @@ const ProductCheckoutPage = () => {
       address: customerAddress,
       wilaya: cityName,
       deliveryType: deliveryType,
-      quantity: selectedPackage.quantity, 
+      quantity: count, // Updated to use count
       total: finalTotal
     };
 
@@ -339,7 +355,7 @@ const ProductCheckoutPage = () => {
                     </div>
       
                     </div>
-                  )}
+                 )}
 
                 {/* Thumbnails */}
                 {galleryImages.length > 0 && (
@@ -394,18 +410,18 @@ const ProductCheckoutPage = () => {
             {/* LEFT SIDE: THE FORM */}
             <div id="checkout-form" className=" bg-white 
              rounded-3xl shadow-xl border border-slate-200 overflow-hidden
-              top-24 ">
-               <div className="bg-slate-900 text-white p-6 text-center relative overflow-hidden">
-                  <div className="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500 rounded-full opacity-20 blur-2xl"></div>
-                  <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-blue-500 rounded-full opacity-20 blur-2xl"></div>
+             top-24 ">
+               <div className="bg-green-950 text-white p-6 text-center relative overflow-hidden">
+                  <div className="absolute -right-10 -top-10 w-32 h-32 bg-emerald-900 rounded-full opacity-20 blur-2xl"></div>
+                  <div className="absolute -left-10 -bottom-10 w-32 h-32 rounded-full opacity-20 blur-2xl"></div>
                   <h2 className={`${cairo.className} text-xl sm:text-2xl font-bold mb-2 relative z-10`}>المرجو ادخال المعلومات   </h2>
                    <h2 className={`${cairo.className} text-red-500 text-lg sm:text-2xl font-bold mb-2 relative z-10`}>" لكي تتأكد عندما تصلك طلبيتك"</h2>
 
                   <div className="flex items-center justify-center gap-3 relative z-10">
-                     
-                      <span className="text-green-400 text-4xl font-black">{selectedPackage.price} د.ج</span>
+                      
+                      <span className="text-green-600 font-black  text-4xl  ">{selectedPackage ? selectedPackage.price : (price * count)} د.ج</span>
                   </div>
-                  <p className="text-sm text-slate-300 mt-2 relative z-10">باقة {selectedPackage.quantity} مصاحف</p>
+                  <p className="text-sm text-slate-300 mt-2 relative z-10">باقة {count} مصاحف</p>
                </div>
                      
                <div className="p-6 sm:p-8 space-y-4">
@@ -426,6 +442,23 @@ const ProductCheckoutPage = () => {
                              <input type="text" placeholder="البلدية" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500"
                                  value={customerAddress} onChange={(e) => setCustomerAddress(e.target.value)} />
                         </div>
+
+                         <div className="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        
+                          <span className="font-bold text-slate-700">الكمية:</span>
+                        
+                             <div className="flex items-center gap-4 bg-white px-2 py-1 rounded-lg border border-slate-200 shadow-sm">
+                        
+                               <button onClick={decrement} className="w-8 h-8 flex items-center justify-center bg-slate-100 rounded hover:bg-slate-200 transition-colors"><Minus size={16} /></button>
+                        
+                                 <span className="font-bold text-xl w-6 text-center">{count}</span>
+                        
+                               <button onClick={increment} className="w-8 h-8 flex items-center justify-center bg-orange-100 rounded hover:bg-orange-200 text-orange-600 transition-colors"><Plus size={16} /></button>
+                        
+                              </div>
+                        
+                             </div>
+
                                
                         {/* --- 👈 أزرار اختيار نوع التوصيل (المنزل/المكتب) --- */}
                         <div className="flex gap-3 mt-4">
@@ -474,9 +507,9 @@ const ProductCheckoutPage = () => {
                                <button
                                  key={pkg.id}
                                  type="button"
-                                 onClick={() => setSelectedPackage(pkg)}
+                                 onClick={() => setCount(pkg.quantity)}
                                  className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center transition-all ${
-                                   selectedPackage.id === pkg.id 
+                                   selectedPackage?.id === pkg.id 
                                    ? 'border-emerald-500 bg-emerald-100 shadow-sm' 
                                    : 'border-slate-200 hover:border-emerald-300 bg-white'
                                  }`}
@@ -484,7 +517,7 @@ const ProductCheckoutPage = () => {
                                  <span className="font-bold text-lg text-green-500 " > {pkg.quantity} </span>
                                   <span className="font-bold text-lg text-slate-800 " >مصاحف برواية ورش عن نافع مقاس 14.20 سم   مع توصيل سريع  </span>
 
-                                 <span className={`text-sm ${selectedPackage.id === pkg.id ? 'text-emerald-700 font-bold' : 'text-slate-500'}`}>
+                                 <span className={`text-sm ${selectedPackage?.id === pkg.id ? 'text-emerald-700 font-bold' : 'text-slate-500'}`}>
                                    {pkg.price} د.ج
                                  </span>
                                </button>
@@ -494,8 +527,8 @@ const ProductCheckoutPage = () => {
 
                         <div className="pt-4 border-t border-slate-100 space-y-3">
                            <div className="flex justify-between items-center text-sm text-slate-500">
-                              <span>المجموع (باقة {selectedPackage.quantity} مصاحف):</span>
-                              <span className="font-bold">{selectedPackage.price} د.ج</span>
+                              <span>المجموع (باقة {count} مصاحف):</span>
+                              <span className="font-bold">{selectedPackage ? selectedPackage.price : (price * count)} د.ج</span>
                            </div>
                            <div className="flex justify-between items-center text-sm text-slate-500">
                               <span>التوصيل ({deliveryType === 'Domicile' ? 'للمنزل' : 'للمكتب'}):</span>
