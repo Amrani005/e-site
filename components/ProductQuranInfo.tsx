@@ -415,7 +415,6 @@ const ProductCheckoutPage = () => {
                   <div className="absolute -right-10 -top-10 w-32 h-32 bg-emerald-900 rounded-full opacity-20 blur-2xl"></div>
                   <div className="absolute -left-10 -bottom-10 w-32 h-32 rounded-full opacity-20 blur-2xl"></div>
                   <h2 className={`${cairo.className} text-xl sm:text-2xl font-bold mb-2 relative z-10`}>المرجو ادخال المعلومات   </h2>
-                   <h2 className={`${cairo.className} text-red-500 text-lg sm:text-2xl font-bold mb-2 relative z-10`}>" لكي تتأكد عندما تصلك طلبيتك"</h2>
 
                   <div className="flex items-center justify-center gap-3 relative z-10">
                       
