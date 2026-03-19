@@ -612,7 +612,7 @@ const ProductCheckoutPage = () => {
       </section>
 
       {/* --- STICKY CTA BUTTON --- */}
-      <div className="fixed bottom-0 left-0 w-full p-4 bg-white/95 
+      <div className="fixed -bottom-3 left-0 w-full p-4 bg-white/95 
       backdrop-blur-md rounded-t-3xl border-t border-slate-200 z-50 flex flex-col items-center justify-center
        shadow-[0_-15px_40px_rgba(0,0,0,0.08)] -right-5 lg:right-0">
           
