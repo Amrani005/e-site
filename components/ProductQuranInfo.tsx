@@ -158,6 +158,8 @@ const ProductCheckoutPage = () => {
   const [finalTotal, setFinalTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<string>('');
+  const [poids,setPoids]= useState(0.75);
+  const [extraCosts,setExtraCost]= useState(0);
   
   // حفظ المسودة التلقائي
   useEffect(()=>{
@@ -215,31 +217,57 @@ const ProductCheckoutPage = () => {
   }, [id]);
 
   //Helper 
-  const increment = () => setCount((prev) => prev + 1);
-  const decrement = () => setCount((prev) => (prev > 1 ? prev - 1 : 1));
+  const increment = () => {
+    setCount((prev) => prev + 1);
+
+  }
+  const decrement = () => {
+    setCount((prev) => (prev > 1 ? prev - 1 : 1));
+
+  }
 
   // حساب تكلفة التوصيل والإجمالي الكلي بناء على الكمية
   useEffect(() => {
     let cost = 0;
+    let kg= poids * count;
+    let currentExtraCost=0;
+    
     if (selectedWilayaID) {
       const wilayaInfo = wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID));
       if (wilayaInfo) {
         // حساب السعر استناداً لنوع التوصيل الذي اختاره العميل
         cost = parseInt(wilayaInfo[deliveryType], 10) || 0;
+
       }
     }
     setShippingTotal(cost);
 
+    
+   
+
+    
     // Check if the current count exactly matches any package
     const activePackage = quranPackages.find(pkg => pkg.quantity === count);
     setSelectedPackage(activePackage || null);
+    
+    if (kg > 5) {
+    const integerkg = Math.floor(kg);
+    const extraKg = integerkg - 5;
+    
+    if (extraKg > 0) {
+      currentExtraCost = extraKg * 50;
+    }
+  }
+
+  setExtraCost(currentExtraCost);
 
     // If it's a package, use package price + shipping. Else use (unit price * count) + shipping
     if(activePackage) {
-      setFinalTotal(activePackage.price + cost); 
+      setFinalTotal(activePackage.price + cost + currentExtraCost); 
     } else {
-      setFinalTotal((price * count) + cost);
+      setFinalTotal((price * count) + cost+ currentExtraCost);
     }
+    
     
   }, [selectedWilayaID, deliveryType, count, price]); 
 
@@ -253,8 +281,8 @@ const ProductCheckoutPage = () => {
 
   // إرسال الطلب النهائي
   const handleCheckout = async () => {
-    if (!customerName  || !customerAddress || !selectedWilayaID) {
-      setMessage("الرجاء ملء جميع معلومات التوصيل (الولاية مطلوبة).");
+    if (   !customerAddress || !selectedWilayaID) {
+      setMessage("الرجاء ملء جميع معلومات التوصيل .");
       return;
     }
     if(customerPhone.length !== 10){
@@ -296,6 +324,7 @@ const ProductCheckoutPage = () => {
       setMessage("❌ حدث خطأ أثناء حفظ الطلب.");
     }
     setIsLoading(false);
+    console.log(extraCosts);
   };
 
   return (
@@ -445,9 +474,14 @@ const ProductCheckoutPage = () => {
                         
                           <span className="font-bold text-slate-700">الكمية:</span>
                         
-                             <div className="flex items-center gap-4 bg-white px-2 py-1 rounded-lg border border-slate-200 shadow-sm">
+                             <div className="flex items-center gap-4 bg-white px-2 py-1 rounded-lg
+                              border border-slate-200 shadow-sm">
                         
-                               <button onClick={decrement} className="w-8 h-8 flex items-center justify-center bg-slate-100 rounded hover:bg-slate-200 transition-colors"><Minus size={16} /></button>
+                                <button onClick={decrement} className="w-8 h-8 flex items-center 
+                                 justify-center bg-slate-100 rounded hover:bg-slate-200 
+                                 transition-colors">
+                                 <Minus size={16} />
+                                </button>
                         
                                  <span className="font-bold text-xl w-6 text-center">{count}</span>
                                 
