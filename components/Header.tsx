@@ -16,8 +16,9 @@ const Header = () => {
       </div>
 
       {/* Fixed: Removed -mr-6 and px-2. Replaced with w-full */}
-      <header className="w-full border-b border-gray-100 bg-white/95 backdrop-blur-md">
-        <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-4 sm:px-8">
+      <header className="w-full border-b border-gray-100 bg-white/95
+       backdrop-blur-md">
+        <div className="mx-auto flex h-15 max-w-7xl items-center justify-between px-4 sm:px-8">
           
           <div className="flex items-center gap-6">
             <button

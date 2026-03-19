@@ -618,7 +618,7 @@ const ProductCheckoutPage = () => {
           
           <button 
              onClick={scrollToForm}
-             className="w-full max-w-md py-4 bg-emerald-600 text-white
+             className="w-full  max-w-md py-4 bg-emerald-600 text-white
               text-xl font-black rounded-xl shadow-[0_8px_20px_rgb(5,150,105,0.3)]
                hover:bg-emerald-700 hover:-translate-y-1 transition-all flex items-center
                 justify-center gap-2 animate-[pulse_2s_infinite]">
