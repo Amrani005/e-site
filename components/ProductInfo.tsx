@@ -236,7 +236,7 @@ const wilayasData: WilayaData[] = [
 
 
 
-const ProductCheckoutPage = () => {
+const ProductInfo = () => {
 
   const router = useRouter();
 
@@ -1007,3 +1007,4 @@ const ProductCheckoutPage = () => {
   );
 
 };
+export default ProductInfo;
