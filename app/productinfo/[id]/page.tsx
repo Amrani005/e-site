@@ -10,7 +10,7 @@ const page = () => {
        
         <Header/>
     
-      <ProductInfo/>
+      <ProductQuranInfo/>
       <Footer/>
     </div>
   )
