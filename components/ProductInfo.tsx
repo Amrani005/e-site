@@ -10,6 +10,7 @@ import {
   Minus, Plus, ShieldCheck, Star,
   UserCircle, BookOpen, Palette
 } from 'lucide-react';
+import { HeartHandshake } from 'lucide-react';
 
 // --- 1. FONTS SETUP ---
 const cairo = Cairo({ subsets: ['arabic'], weight: ['400', '700', '900'] });
@@ -464,8 +465,8 @@ const ProductInfo = () => {
         <button
           onClick={scrollToForm}
           className="w-full max-w-md py-4 bg-orange-600 text-white text-xl font-black rounded-xl shadow-lg hover:bg-orange-700 transition-colors flex items-center justify-center gap-2">
-          <CreditCard className="w-6 h-6" />
-          اطلبي الباقة الآن ({price} د.ج)
+          <HeartHandshake className="w-6 h-6" />
+          اطلبي الباقة الآن 
         </button>
       </div>
 
