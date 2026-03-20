@@ -19,6 +19,12 @@ model Product {
   isArchived  Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  hookTitle     String?
+  hookSubtitle  String?
+  hookDesc      String?
+  hadithText    String?
+  reviewImages1 String? // للحفظ كـ JSON String
+  reviewImages2 String? // للحفظ كـ JSON String
 
   @@map("product")
 }

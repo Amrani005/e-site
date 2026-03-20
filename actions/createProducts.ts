@@ -4,7 +4,6 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { v2 as cloudinary } from "cloudinary";    
 
-// ⚙️ إعداد الاتصال بالسحابة (سيقرأها من Vercel لاحقاً)
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -13,24 +12,33 @@ cloudinary.config({
 
 export async function createProducts(formData: FormData) {
   try {
+    // 1. التقاط النصوص بأمان
     const name = formData.get("name") as string;
     const price = Number(formData.get("price"));
     const description = formData.get("description") as string;
 
-    // 🧠 دالة سحرية: تحول الملف إلى بيانات قابلة للقراءة وترفعها للسحابة
+    const hookTitle = formData.get("hookTitle") as string | null;
+    const hookSubtitle = formData.get("hookSubtitle") as string | null;
+    const hookDesc = formData.get("hookDesc") as string | null;
+    const hadithText = formData.get("hadithText") as string | null;
+
+    // 2. دالة الرفع الآمنة للسحابة
     const uploadToCloudinary = async (file: File): Promise<string> => {
+      // حماية قصوى: لا تحاول رفع ملف حجمه صفر أبداً
+      if (!file || file.size === 0) return "";
+
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
       return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: "dzshop_products" }, // سيتم إنشاء مجلد بهذا الاسم في حسابك
+          { folder: "dzshop_products" }, 
           (error, result) => {
             if (error) {
               console.error("Cloudinary Error:", error);
               reject(error);
             } else {
-              resolve(result!.secure_url); // نأخذ الرابط الآمن المشفر (https)
+              resolve(result!.secure_url); 
             }
           }
         );
@@ -38,47 +46,63 @@ export async function createProducts(formData: FormData) {
       });
     };
 
-    // --- 1. رفع الصورة الرئيسية ---
+    // 3. رفع الصورة الرئيسية بأمان
     const imageFile = formData.get("image") as File;
     let mainImageUrl = "";
     if (imageFile && imageFile.size > 0) {
       mainImageUrl = await uploadToCloudinary(imageFile); 
     }
 
-    // --- 2. رفع صور المعرض (Gallery) ---
-    const galleryFiles = formData.getAll("gallery") as File[];
-    let images: string[] = [];
-    for (const file of galleryFiles) {
-      if (file.size > 0) {
-        const url = await uploadToCloudinary(file);
-        images.push(url);
+    // 4. دالة مساعدة محمية لرفع المصفوفات
+    const uploadMultipleFiles = async (fieldName: string): Promise<string[]> => {
+      const files = formData.getAll(fieldName);
+      const urls: string[] = [];
+      
+      for (const file of files) {
+        // يجب التأكد أنه ملف حقيقي وليس نصاً أو ملفاً وهمياً
+        if (file instanceof File && file.size > 0) {
+          try {
+            const url = await uploadToCloudinary(file);
+            if (url) urls.push(url);
+          } catch (e) {
+             console.error(`Failed to upload file from ${fieldName}`);
+          }
+        }
       }
-    }
-    const galleryString = JSON.stringify(images);
+      return urls;
+    };
 
-    // --- 3. حفظ المنتج في قاعدة البيانات (مع الروابط السحابية) ---
-    
+    // 5. رفع المصفوفات
+    const galleryUrls = await uploadMultipleFiles("gallery");
+    const review1Urls = await uploadMultipleFiles("reviewImages1");
+    const review2Urls = await uploadMultipleFiles("reviewImages2");
+
+    // 6. الحفظ في قاعدة البيانات
     await db.product.create({
       data: {
         name: name,
         price: price,
-        description: description,
-        imageUrl: mainImageUrl, // نحفظ الرابط فقط!
-        images: galleryString,  // نحفظ قائمة الروابط فقط!
+        description: description || null, // الحماية من الـ undefined
+        imageUrl: mainImageUrl,
+        images: galleryUrls.length > 0 ? JSON.stringify(galleryUrls) : "[]",  
+        hookTitle: hookTitle || null,
+        hookSubtitle: hookSubtitle || null,
+        hookDesc: hookDesc || null,
+        hadithText: hadithText || null,
+        reviewImages1: review1Urls.length > 0 ? JSON.stringify(review1Urls) : null,
+        reviewImages2: review2Urls.length > 0 ? JSON.stringify(review2Urls) : null,
       },
     });
 
-
-      revalidatePath("/dashboard/products");
+    // 7. غسيل الكاش
+    revalidatePath("/dashboard/products");
     revalidatePath("/"); 
-    // إذا كان لديك صفحة خاصة بالمنتجات في الموقع أضفها أيضاً مثل: revalidatePath("/products");
 
-    // 2. إرسال رسالة نجاح للفرونت إند بدلاً من الـ redirect
     return { success: true };
+    
   } catch (error) {
-    console.error("❌ حدث خطأ أثناء الحفظ:", error);
-    return { success: false, error: "فشل في حفظ المنتج" };
+    console.error("❌ CRITICAL ERROR in createProducts:", error);
+    // إرجاع رسالة الخطأ للواجهة لكي يراها المطور (أنت)
+    return { success: false, error: error instanceof Error ? error.message : "Unknown server error" };
   }
-
-  
 }
