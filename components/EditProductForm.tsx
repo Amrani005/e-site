@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { UpgradeProduct } from "@/actions/UpgradeProducts";
+import { UpgradeProduct } from "@/actions/UpgradeProduct"; 
 import { motion } from "framer-motion";
+import { PackagePlus, DollarSign, AlignLeft, Send, UploadCloud, ImageIcon, Loader2, Type, Quote, Star, ListPlus } from "lucide-react";
 import Link from "next/link";
 import imageCompression from "browser-image-compression";
 
@@ -11,29 +12,39 @@ export default function EditProductForm({ product }: { product: any }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [imageUrl, setImageUrl] = useState<string | null>(product.imageUrl);
+  // --- تهيئة الصور القديمة ---
+  const [imageUrl, setImageUrl] = useState<string | null>(product?.imageUrl || null);
+  
+  const safeParse = (data: any) => {
+    if (!data) return [];
+    try { return JSON.parse(data); } catch (e) { return []; }
+  };
 
-  let initialGallery = [];
-  try {
-    initialGallery = product.images ? JSON.parse(product.images) : [];
-  } catch (e) {
-    initialGallery = [];
-  }
-  const [galleryImage, setGalleryImage] = useState<string[]>(initialGallery);
+  const [galleryImage, setGalleryImage] = useState<string[]>(safeParse(product?.images));
+  const [reviewPreview1, setReviewPreview1] = useState<string[]>(safeParse(product?.reviewImages1));
+  const [reviewPreview2, setReviewPreview2] = useState<string[]>(safeParse(product?.reviewImages2));
+
+  // --- تهيئة الباقات القديمة ---
+  const [dynamicPackages, setDynamicPackages] = useState<any[]>(() => {
+    const pkgs = safeParse(product?.packagesData);
+    return pkgs.length > 0 ? pkgs : [{ quantity: 5, price: product?.price || 4650, title: product?.name || "" }];
+  });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setImageUrl(URL.createObjectURL(file));
-    }
+    if (file) setImageUrl(URL.createObjectURL(file));
   };
-
-  const handleImageChange_2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files && files.length > 0) {
-      const newGallery = Array.from(files).map((file) => URL.createObjectURL(file));
-      setGalleryImage(newGallery);
-    }
+    if (files && files.length > 0) setGalleryImage(Array.from(files).map(file => URL.createObjectURL(file)));
+  };
+  const handleReview1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) setReviewPreview1(Array.from(files).map(file => URL.createObjectURL(file)));
+  };
+  const handleReview2Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) setReviewPreview2(Array.from(files).map(file => URL.createObjectURL(file)));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -43,29 +54,30 @@ export default function EditProductForm({ product }: { product: any }) {
     try {
       const form = e.currentTarget;
       const formData = new FormData(form);
+      formData.append("id", product.id); // نرسل الـ ID لكي يعرف السيرفر من يعدل
 
-      const option = {
-        maxSizeMB:0.04,
-        maxWidthOrHeight:1080,
-        useWebWorker:true
-      } 
+      const options = { maxSizeMB: 0.04, maxWidthOrHeight: 1080, useWebWorker: true };
 
-      const editedImageFile = formData.get("image") as File;
-      if(editedImageFile && editedImageFile.size>0){
-        const editedCompressedImage = await imageCompression(editedImageFile,option);
-        formData.set("image",editedCompressedImage); 
+      const imageFile = formData.get("image") as File;
+      if (imageFile && imageFile.size > 0) {
+        const compressedImage = await imageCompression(imageFile, options);
+        formData.set("image", compressedImage, compressedImage.name);
       }
 
-      const editedGaleryFile = formData.getAll("gallery") as File[];
-      formData.delete("gallery");
-      for(const file of editedGaleryFile){
-        if(file.size > 0){
-          const editedCompressedGallery = await imageCompression(file,option);
-          formData.append("gallery",editedCompressedGallery)
+      const compressAndAppendFiles = async (fieldName: string) => {
+        const files = formData.getAll(fieldName) as File[];
+        formData.delete(fieldName);
+        for (const file of files) {
+          if (file.size > 0) {
+            const compressedFile = await imageCompression(file, options);
+            formData.append(fieldName, compressedFile, compressedFile.name);
+          }
         }
-      }
+      };
 
-      formData.append("id", product.id);
+      await compressAndAppendFiles("gallery");
+      await compressAndAppendFiles("reviewImages1");
+      await compressAndAppendFiles("reviewImages2");
 
       const result = await UpgradeProduct(formData);
 
@@ -73,132 +85,144 @@ export default function EditProductForm({ product }: { product: any }) {
         router.push("/dashboard/products");
         router.refresh();
       } else {
-        alert("فشل الحفظ في السيرفر! تأكد من صحة البيانات.");
+        alert("فشل التعديل! تأكد من صحة البيانات.");
       }
     } catch (error) {
-      alert("عذراً، حدث خطأ أثناء معالجة البيانات.");
+      alert("حدث خطأ أثناء الضغط والرفع");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="relative flex-col min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0f172a]">
+    <div className="relative flex-col min-h-screen w-full flex items-center py-20 justify-center overflow-hidden bg-[#0f172a]">
       <div className="flex justify-between gap-6 mb-10 z-10">
-        <Link href="/dashboard/products" className="text-white bg-white/10 px-6 py-2 rounded-xl">
-          Back
-        </Link>
+        <Link href='/dashboard/products' className="text-white bg-white/10 px-6 py-2 rounded-xl border border-white/20 hover:bg-white/20 transition">رجوع للوحة</Link>
       </div>
 
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blue-600/30 blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-cyan-500/20 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-500/20 blur-[120px]" />
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-md p-6 mx-4"
-      >
+      <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} className="relative z-10 w-full max-w-2xl p-6 mx-4">
         <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl p-8 text-white">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent mb-2">
-              تعديل المنتج
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-300 bg-clip-text text-transparent mb-2">
+              تعديل بيانات: {product?.name}
             </h1>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            <div className="relative group">
-              <input
-                name="name"
-                type="text"
-                defaultValue={product.name}
-                className="w-full bg-slate-900/50 border border-white/10 p-3 rounded-xl text-right focus:outline-none focus:border-cyan-400"
-                required
-                disabled={isSubmitting}
-              />
-            </div>
-            <div className="relative group">
-              <input
-                name="price"
-                type="number"
-                defaultValue={product.price}
-                className="w-full bg-slate-900/50 border border-white/10 p-3 rounded-xl text-right focus:outline-none focus:border-cyan-400"
-                required
-                disabled={isSubmitting}
-              />
-            </div>
-            <div className="relative group">
-              <textarea
-                name="description"
-                rows={3}
-                defaultValue={product.description}
-                className="w-full bg-slate-900/50 border border-white/10 p-3 rounded-xl text-right focus:outline-none focus:border-cyan-400"
-                disabled={isSubmitting}
-              />
-            </div>
-
-            <div className="relative group border-2 border-dashed border-slate-500 hover:border-cyan-400 rounded-xl transition bg-slate-800/50">
-              <label className="absolute -top-3 right-3 bg-[#0f172a] px-2 text-xs text-cyan-400 font-bold z-20">
-                تحديث الصورة الرئيسية
-              </label>
-              <input
-                name="image"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                disabled={isSubmitting}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50"
-              />
-              <div className="p-8 flex flex-col items-center justify-center text-slate-400">
-                {imageUrl ? (
-                  <img src={imageUrl} alt="Preview" className="w-full h-40 object-cover rounded-lg shadow-lg" />
-                ) : (
-                  <span className="mb-2">رفع صورة جديدة</span>
-                )}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5" dir="rtl">
+            
+            {/* --- BASIC INFO --- */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="relative group">
+                 <PackagePlus className="absolute left-4 top-3.5 w-5 h-5 text-emerald-300" />
+                 <input name="name" type="text" defaultValue={product?.name || ""} placeholder="اسم المنتج الأساسي" className="w-full bg-slate-900/50 border border-white/10 p-3 pl-12 rounded-xl focus:outline-none focus:border-emerald-400" required disabled={isSubmitting} />
+              </div>
+              <div className="relative group">
+                 <DollarSign className="absolute left-4 top-3.5 w-5 h-5 text-emerald-300" />
+                 <input name="price" type="number" defaultValue={product?.price || ""} placeholder="السعر الافتراضي" className="w-full bg-slate-900/50 border border-white/10 p-3 pl-12 rounded-xl focus:outline-none focus:border-emerald-400" required disabled={isSubmitting} />
               </div>
             </div>
 
-            <div className="relative group border-2 border-dashed border-slate-500 hover:border-cyan-400 rounded-xl transition bg-slate-800/50">
-              <label className="absolute -top-3 right-3 bg-[#0f172a] px-2 text-xs text-cyan-400 font-bold z-20">
-                تحديث صور المعرض
-              </label>
-              <input
-                name="gallery"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageChange_2}
-                disabled={isSubmitting}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50"
-              />
-              <div className="p-8 flex flex-col items-center justify-center text-slate-400">
-                {galleryImage.length > 0 ? (
-                  <div className="grid grid-cols-3 gap-2 w-full">
-                    {galleryImage.map((img, index) => (
-                      <img key={index} src={img} alt="gallery" className="w-full h-16 object-cover rounded-md border border-slate-600" />
-                    ))}
+            <div className="relative group">
+               <AlignLeft className="absolute left-4 top-3.5 w-5 h-5 text-emerald-300" />
+               <textarea name="description" defaultValue={product?.description || ""} rows={2} placeholder="وصف المنتج (الأساسي)" className="w-full bg-slate-900/50 border border-white/10 p-3 pl-12 rounded-xl focus:outline-none focus:border-emerald-400" disabled={isSubmitting} />
+            </div>
+
+            <hr className="border-white/10 my-2" />
+
+            {/* --- CUSTOM PACKAGES --- */}
+            <div className="bg-slate-800/50 p-5 rounded-xl border border-slate-600 shadow-inner">
+              <h3 className="text-emerald-400 font-bold mb-4 flex items-center gap-2"><ListPlus className="w-5 h-5"/> تخصيص الباقات</h3>
+              
+              {dynamicPackages.map((pkg: any, index: number) => (
+                <div key={index} className="flex flex-col gap-3 mb-4 p-4 border border-slate-600/50 rounded-lg bg-slate-900/80">
+                  <div className="flex gap-2">
+                    <input type="number" placeholder="الكمية" required value={pkg.quantity} onChange={(e) => { const newPkgs = [...dynamicPackages]; newPkgs[index].quantity = Number(e.target.value); setDynamicPackages(newPkgs); }} className="w-1/3 p-3 bg-slate-800 rounded-lg text-white focus:outline-none focus:border-emerald-500 border border-transparent transition-all" />
+                    <input type="number" placeholder="السعر" required value={pkg.price} onChange={(e) => { const newPkgs = [...dynamicPackages]; newPkgs[index].price = Number(e.target.value); setDynamicPackages(newPkgs); }} className="w-1/3 p-3 bg-slate-800 rounded-lg text-white focus:outline-none focus:border-emerald-500 border border-transparent transition-all" />
+                    <button type="button" onClick={() => { const newPkgs = dynamicPackages.filter((_, i) => i !== index); setDynamicPackages(newPkgs); }} className="w-1/3 p-3 bg-red-500/20 text-red-400 font-bold rounded-lg hover:bg-red-500/40 transition-colors">حذف</button>
                   </div>
-                ) : (
-                  <span className="mb-2 opacity-50">رفع صور إضافية</span>
-                )}
+                  <input type="text" placeholder="محتوى الباقة" required value={pkg.title} onChange={(e) => { const newPkgs = [...dynamicPackages]; newPkgs[index].title = e.target.value; setDynamicPackages(newPkgs); }} className="w-full p-3 bg-slate-800 rounded-lg text-white focus:outline-none focus:border-emerald-500 border border-transparent transition-all text-right" />
+                </div>
+              ))}
+              
+              <button type="button" onClick={() => setDynamicPackages([...dynamicPackages, { quantity: 1, price: 1000, title: "باقة جديدة" }])} className="text-sm w-full text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 py-3 rounded-lg hover:bg-emerald-500/20 transition-colors font-bold">+ إضافة باقة جديدة</button>
+              <input type="hidden" name="packagesData" value={JSON.stringify(dynamicPackages)} />
+            </div>
+
+            <hr className="border-white/10 my-2" />
+
+            {/* --- MARKETING TEXTS --- */}
+            <h3 className="text-cyan-400 font-bold text-sm">النصوص التسويقية</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="relative group">
+                 <Type className="absolute left-4 top-3.5 w-5 h-5 text-cyan-300" />
+                 <input name="hookTitle" type="text" defaultValue={product?.hookTitle || ""} placeholder="العنوان العريض" className="w-full bg-slate-900/50 border border-white/10 p-3 pl-12 rounded-xl focus:outline-none focus:border-cyan-400" disabled={isSubmitting} />
+              </div>
+              <div className="relative group">
+                 <Type className="absolute left-4 top-3.5 w-5 h-5 text-cyan-300" />
+                 <input name="hookSubtitle" type="text" defaultValue={product?.hookSubtitle || ""} placeholder="العنوان الفرعي" className="w-full bg-slate-900/50 border border-white/10 p-3 pl-12 rounded-xl focus:outline-none focus:border-cyan-400" disabled={isSubmitting} />
+              </div>
+            </div>
+            <div className="relative group">
+               <Quote className="absolute left-4 top-3.5 w-5 h-5 text-emerald-300" />
+               <textarea name="hadithText" defaultValue={product?.hadithText || ""} rows={2} placeholder="نص الحديث النبوي" className="w-full bg-slate-900/50 border border-emerald-500/30 p-3 pl-12 rounded-xl focus:outline-none focus:border-emerald-400" disabled={isSubmitting} />
+            </div>
+            <div className="relative group">
+               <AlignLeft className="absolute left-4 top-3.5 w-5 h-5 text-cyan-300" />
+               <textarea name="hookDesc" defaultValue={product?.hookDesc || ""} rows={2} placeholder="الوصف التسويقي أسفل العنوان" className="w-full bg-slate-900/50 border border-white/10 p-3 pl-12 rounded-xl focus:outline-none focus:border-cyan-400" disabled={isSubmitting} />
+            </div>
+
+            <hr className="border-white/10 my-2" />
+
+            {/* --- IMAGES SECTION --- */}
+            <h3 className="text-cyan-400 font-bold text-sm">تغيير الصور (اتركها فارغة للاحتفاظ بالقديمة)</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="relative group border-2 border-dashed border-slate-500 hover:border-emerald-400 rounded-xl transition bg-slate-800/50 p-4">
+                <label className="block text-center text-xs text-emerald-400 font-bold mb-2">تغيير الصورة الرئيسية</label>
+                <input name="image" type="file" accept="image/*" onChange={handleImageChange} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" />
+                <div className="flex flex-col items-center justify-center text-slate-400 h-24">
+                  {imageUrl ? <img src={imageUrl} alt="Preview" className="h-full object-cover rounded-lg" /> : <><UploadCloud size={24} /><span className="text-xs mt-1">اضغط للتغيير</span></>}
+                </div>
+              </div>
+              <div className="relative group border-2 border-dashed border-slate-500 hover:border-emerald-400 rounded-xl transition bg-slate-800/50 p-4">
+                 <label className="block text-center text-xs text-emerald-400 font-bold mb-2">تغيير صور المعرض</label>
+                 <input name="gallery" type="file" accept="image/*" multiple onChange={handleGalleryChange} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" />
+                 <div className="flex flex-col items-center justify-center text-slate-400 h-24">
+                  {galleryImage.length > 0 ? (
+                    <div className="flex gap-1 overflow-hidden h-full">
+                      {galleryImage.slice(0,3).map((img, i) => <img key={i} src={img} className="h-full w-12 object-cover rounded" />)}
+                    </div>
+                  ) : <><ImageIcon size={24} /><span className="text-xs mt-1">اضغط للتغيير</span></>}
+                 </div>
               </div>
             </div>
 
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              type="submit"
-              disabled={isSubmitting}
-              className={`mt-4 w-full text-white font-bold py-3.5 rounded-xl shadow-lg flex items-center justify-center gap-2 ${
-                isSubmitting ? "bg-slate-600 cursor-not-allowed" : "bg-gradient-to-r from-blue-600 to-cyan-500"
-              }`}
-            >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="relative group border-2 border-dashed border-slate-500 hover:border-yellow-400 rounded-xl transition bg-slate-800/50 p-4">
+                 <label className="block text-center text-xs text-yellow-400 font-bold mb-2 flex justify-center gap-1"><Star size={14}/> تقييمات 1</label>
+                 <input name="reviewImages1" type="file" accept="image/*" multiple onChange={handleReview1Change} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" />
+                 <div className="flex flex-col items-center justify-center text-slate-400 h-16">
+                  {reviewPreview1.length > 0 ? <span className="text-sm font-bold text-yellow-400">{reviewPreview1.length} صور</span> : <span className="text-xs">اضغط للتغيير</span>}
+                 </div>
+              </div>
+              <div className="relative group border-2 border-dashed border-slate-500 hover:border-yellow-400 rounded-xl transition bg-slate-800/50 p-4">
+                 <label className="block text-center text-xs text-yellow-400 font-bold mb-2 flex justify-center gap-1"><Star size={14}/> تقييمات 2</label>
+                 <input name="reviewImages2" type="file" accept="image/*" multiple onChange={handleReview2Change} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" />
+                 <div className="flex flex-col items-center justify-center text-slate-400 h-16">
+                  {reviewPreview2.length > 0 ? <span className="text-sm font-bold text-yellow-400">{reviewPreview2.length} صور</span> : <span className="text-xs">اضغط للتغيير</span>}
+                 </div>
+              </div>
+            </div>
+
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={isSubmitting} className={`mt-6 w-full text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 ${isSubmitting ? 'bg-slate-600 cursor-not-allowed' : 'bg-gradient-to-r from-emerald-500 to-cyan-500'}`}>
               {isSubmitting ? (
-                <span>جاري الحفظ...</span>
+                <><span>جاري الحفظ...</span><Loader2 className="w-5 h-5 animate-spin" /></>
               ) : (
-                <span>حفظ التعديلات</span>
+                <><span>حفظ التعديلات</span><Send className="w-5 h-5" /></>
               )}
             </motion.button>
           </form>

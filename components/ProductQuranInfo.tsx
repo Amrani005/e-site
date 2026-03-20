@@ -15,60 +15,19 @@ import {
 import Image from 'next/image';
 import { X } from 'lucide-react';
 
-// --- 1. FONTS SETUP ---
 const cairo = Cairo({ subsets: ['arabic'], weight: ['400', '700', '900'] });
 const tajawal = Tajawal({ subsets: ['arabic'], weight: ['400', '500', '700', '800'] });
 
-// --- NEW PACKAGES CONFIGURATION ---
-const quranPackages = [
-  { id: 'pack-5', quantity: 5, price: 4650, preca: 5700 },
-  { id: 'pack-7', quantity: 7, price: 5990 , preca: 6500},
-  { id: 'pack-10', quantity: 10, price: 7950 , preca: 9000},
-  { id: 'pack-15', quantity: 15, price: 12800, preca: 15000 }
+// --- DEFAULT PACKAGES (البيانات الاحتياطية متضمنة النص) ---
+const defaultPackages = [
+  { id: 'pack-5', quantity: 5, price: 4650, title: "مصاحف برواية ورش عن نافع مقاس 14.20 سم" },
+  { id: 'pack-7', quantity: 7, price: 5990, title: "مصاحف برواية ورش عن نافع مقاس 14.20 سم" },
+  { id: 'pack-10', quantity: 10, price: 7950, title: "مصاحف برواية ورش عن نافع مقاس 14.20 سم" },
+  { id: 'pack-15', quantity: 15, price: 12800, title: "مصاحف برواية ورش عن نافع مقاس 14.20 سم" }
 ];
 
-// --- DATA CONFIGURATION ---
-const boxItems = [
-  {
-    id: 1,
-    title: "مصاحف بجودة عالية",
-    description: " طباعة واضحة مريحة للعين ورق ابيض، جودة اصلية مع غلاف كرتوني مستورد.",
-    isGift: false,
-    icon: <BookOpen className="w-8 h-8 text-emerald-500" />
-  },
-  {
-    id: 2,
-    title: "تغليف محكم وآمن",
-    description: "نحرص على تغليف المصاحف بعناية فائقة لتصلك في أبهى حلة، جاهزة لتوزيعها على المساجد أو المدارس القرآنية.",
-    isGift: false,
-    icon: <ShieldCheck className="w-8 h-8 text-emerald-500" />
-  },
-  {
-    id: 3,
-    title: "توصيل سريع وين ما كنت",
-    description: "نتكفل بإيصال باقتك إلى باب منزلك في أسرع وقت,  لتسارع في فعل الخير أينما كنت في الجزائر.",
-    isGift: true,
-    icon: <Truck className="w-8 h-8 text-yellow-600" />
-  }
-];
-
-const scenarios = [
-  {
-    type: 'bad',
-    icon: <XCircle className="w-10 h-10 text-red-500 shrink-0" />,
-    text: "التسويف في فعل الخير: تأجيل الصدقات التي قد تكون سبباً في البركة في رزقك، وتفريج كرباتك، وشفاء مرضاك."
-  },
-  {
-    type: 'good',
-    icon: <HeartHandshake className="w-10 h-10 text-emerald-500 shrink-0" />,
-    text: "أثر لا ينقطع: أجر مستمر لك أو لمن تحب مع كل حرف يُقرأ من هذه المصاحف، تجارة رابحة مع الله!"
-  }
-];
-
-// --- WILAYA DATA ---
-interface WilayaData { IDWilaya: number; Wilaya: string; Domicile: string; Stopdesk: string; Annuler: string; }
-const wilayasData: WilayaData[] = [
-   { "IDWilaya": 1, "Wilaya": "Adrar", "Domicile": "1400", "Stopdesk": "970", "Annuler": "200" },
+const wilayasData = [
+  { "IDWilaya": 1, "Wilaya": "Adrar", "Domicile": "1400", "Stopdesk": "970", "Annuler": "200" },
   { "IDWilaya": 2, "Wilaya": "Chlef", "Domicile": "750", "Stopdesk": "520", "Annuler": "200" },
   { "IDWilaya": 3, "Wilaya": "Laghouat", "Domicile": "950", "Stopdesk": "670", "Annuler": "200" },
   { "IDWilaya": 4, "Wilaya": "Oum El Bouaghi", "Domicile": "800", "Stopdesk": "520", "Annuler": "200" },
@@ -133,29 +92,26 @@ const ProductCheckoutPage = () => {
   const params = useParams();
   const id = params.id as string;
 
-  // Product Data State
   const [productName, setProductName] = useState<string>("جاري التحميل...");
   const [price, setPrice] = useState<number>(0);
   const [images, setImages] = useState<string[]>([]);
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
-
-  // Package Selection State - SINGLE SOURCE OF TRUTH (count)
-  const [count, setCount] = useState(quranPackages[0].quantity); // Default to first package quantity
-  const [selectedPackage, setSelectedPackage] = useState<any>(quranPackages[0]);
   const [fullScreen,setFullScreen]= useState(false);
 
-  // --- DYNAMIC CONTENT STATES (البيانات الديناميكية الجديدة من الداشبورد) ---
+  // --- DYNAMIC PACKAGES STATE ---
+  const [availablePackages, setAvailablePackages] = useState(defaultPackages);
+  const [count, setCount] = useState(defaultPackages[0].quantity); 
+  const [selectedPackage, setSelectedPackage] = useState<any>(defaultPackages[0]);
+
+  // --- DYNAMIC CONTENT STATES ---
   const [hookTitle, setHookTitle] = useState("مصاحف برواية ورش عن نافع مقاس 14.20 سم");
   const [hookSubtitle, setHookSubtitle] = useState("مع توصيل سريع");
   const [hookDesc, setHookDesc] = useState("ساهم في نشر كتاب الله واكسب أجراً مستمراً لك أو لمن تحب. اختر الباقة التي تناسبك ونحن نتكفل بالباقي.");
-  
   const [hadithText, setHadithText] = useState("إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولد صالح يدعو له.");
-  
   const [reviewImages1, setReviewImages1] = useState<string[]>(["/der8.jpeg", "/review1.jpeg", "/review2.jpeg"]);
   const [reviewImages2, setReviewImages2] = useState<string[]>(["/der8.jpeg", "/der1.jpeg", "/der2.jpeg", "/der3.jpeg", "/der4.jpeg", "/der5.jpeg", "/der6.jpeg", "/der7.jpeg", "/der9.jpeg", "/der10.jpeg"]);
 
-  // Form States
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
@@ -163,7 +119,6 @@ const ProductCheckoutPage = () => {
   const [deliveryType, setDeliveryType] = useState<"Domicile" | "Stopdesk">("Domicile");
   const [draftId , setDraftId] = useState<string | null>(null);
 
-  // Calculation States
   const [shippingTotal, setShippingTotal] = useState(0);
   const [finalTotal, setFinalTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -171,10 +126,8 @@ const ProductCheckoutPage = () => {
   const [poids,setPoids]= useState(0.75);
   const [extraCosts,setExtraCost]= useState(0);
  
-  // حفظ المسودة التلقائي
   useEffect(()=>{
     if(!customerPhone || customerPhone.length !== 10) return;
-     
     const timer = setTimeout(async () => {
       const draftData = {
         draftId: draftId,
@@ -184,19 +137,15 @@ const ProductCheckoutPage = () => {
         address: customerAddress,
         wilaya: selectedWilayaID ? wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID))?.Wilaya : "",
         deliveryType: deliveryType,
-        quantity: count, // Updated to use count
+        quantity: count,
         total: finalTotal
       };
-     
       const result = await saveDraftOrder(draftData);
       if (result?.draftId) setDraftId(result.draftId);
     }, 1000);
-
     return () => clearTimeout(timer);
   },[customerName, customerPhone, customerAddress, selectedWilayaID, deliveryType, count, finalTotal, draftId, id]);
 
-
-  // جلب المنتج وتحديث البيانات الديناميكية
   useEffect(() => {
     if (!id) return;
     const loadProduct = async () => {
@@ -209,25 +158,26 @@ const ProductCheckoutPage = () => {
           setImages([validMainImage]);
          
           if (product.images) {
-            try {
-              const parsedGallery = JSON.parse(product.images);
-              setGalleryImages(Array.isArray(parsedGallery) ? parsedGallery : []);
-            } catch (e) {
-              setGalleryImages([]);
-            }
+            try { setGalleryImages(JSON.parse(product.images) || []); } catch (e) { setGalleryImages([]); }
           }
 
-          // 👇 استيراد البيانات الديناميكية من قاعدة البيانات إذا كانت متوفرة
           if (product.hookTitle) setHookTitle(product.hookTitle);
           if (product.hookSubtitle) setHookSubtitle(product.hookSubtitle);
           if (product.hookDesc) setHookDesc(product.hookDesc);
           if (product.hadithText) setHadithText(product.hadithText);
-          
-          if (product.reviewImages1) {
-            try { setReviewImages1(JSON.parse(product.reviewImages1)); } catch (e) {}
-          }
-          if (product.reviewImages2) {
-            try { setReviewImages2(JSON.parse(product.reviewImages2)); } catch (e) {}
+          if (product.reviewImages1) try { setReviewImages1(JSON.parse(product.reviewImages1)); } catch (e) {}
+          if (product.reviewImages2) try { setReviewImages2(JSON.parse(product.reviewImages2)); } catch (e) {}
+
+          // استيراد الباقات الديناميكية
+          if (product.packagesData) {
+            try {
+              const parsedPackages = JSON.parse(product.packagesData);
+              if (parsedPackages && parsedPackages.length > 0) {
+                setAvailablePackages(parsedPackages);
+                setCount(parsedPackages[0].quantity); 
+                setSelectedPackage(parsedPackages[0]);
+              }
+            } catch (e) {}
           }
 
         } else {
@@ -240,64 +190,47 @@ const ProductCheckoutPage = () => {
     loadProduct();
   }, [id]);
 
-  //Helper
-  const increment = () => {
-    setCount((prev) => prev + 1);
-  }
-  const decrement = () => {
-    setCount((prev) => (prev > 1 ? prev - 1 : 1));
-  }
+  const increment = () => setCount((prev) => prev + 1);
+  const decrement = () => setCount((prev) => (prev > 1 ? prev - 1 : 1));
 
-  // حساب تكلفة التوصيل والإجمالي الكلي بناء على الكمية
   useEffect(() => {
     let cost = 0;
-    let kg= poids * count;
+    let kg = poids * count;
     let currentExtraCost=0;
    
     if (selectedWilayaID) {
       const wilayaInfo = wilayasData.find(w => w.IDWilaya === Number(selectedWilayaID));
       if (wilayaInfo) {
-        // حساب السعر استناداً لنوع التوصيل الذي اختاره العميل
         cost = parseInt(wilayaInfo[deliveryType], 10) || 0;
       }
     }
     setShippingTotal(cost);
 
-    // Check if the current count exactly matches any package
-    const activePackage = quranPackages.find(pkg => pkg.quantity === count);
+    const activePackage = availablePackages.find((pkg: any) => pkg.quantity === count);
     setSelectedPackage(activePackage || null);
    
     if (kg > 5) {
-    const integerkg = Math.floor(kg);
-    const extraKg = integerkg - 5;
-   
-    if (extraKg > 0) {
-      currentExtraCost = extraKg * 50;
+      const integerkg = Math.floor(kg);
+      const extraKg = integerkg - 5;
+      if (extraKg > 0) {
+        currentExtraCost = extraKg * 50;
+      }
     }
-  }
+    setExtraCost(currentExtraCost);
 
-  setExtraCost(currentExtraCost);
-
-    // If it's a package, use package price + shipping. Else use (unit price * count) + shipping
     if(activePackage) {
       setFinalTotal(activePackage.price + cost + currentExtraCost);
     } else {
       setFinalTotal((price * count) + cost+ currentExtraCost);
     }
-   
-  }, [selectedWilayaID, deliveryType, count, price]);
+  }, [selectedWilayaID, deliveryType, count, price, availablePackages]);
 
-  // Helpers
   const nextImage = () => { setCurrentGalleryIndex((preca) => (preca === galleryImages.length ? 0 : preca + 1)); };
   const precaImage = () => { setCurrentGalleryIndex((preca) => (preca === 0 ? galleryImages.length : preca - 1)); };
+  const scrollToForm = () => { document.getElementById('checkout-form')?.scrollIntoView({ behavior: 'smooth' }); };
 
-  const scrollToForm = () => {
-    document.getElementById('checkout-form')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  // إرسال الطلب النهائي
   const handleCheckout = async () => {
-    if (   !customerAddress || !selectedWilayaID) {
+    if (!customerAddress || !selectedWilayaID) {
       setMessage("الرجاء ملء جميع معلومات التوصيل .");
       return;
     }
@@ -320,13 +253,12 @@ const ProductCheckoutPage = () => {
       address: customerAddress,
       wilaya: cityName,
       deliveryType: deliveryType,
-      quantity: count, // Updated to use count
+      quantity: count,
       total: finalTotal
     };
 
     try {
       const result = await placeOrder(orderData);
-      
       if (result.success ) {
         if (draftId) {
             const formData = new FormData();
@@ -336,18 +268,13 @@ const ProductCheckoutPage = () => {
         router.push('/thank-you');
       }
     } catch (error) {
-      console.error(error);
       setMessage("❌ حدث خطأ أثناء حفظ الطلب.");
     }
     setIsLoading(false);
-    console.log(extraCosts);
   };
 
   return (
     <section className={`flex flex-col  h-full ${tajawal.className}   text-slate-900    `} >
-     
-     
-
       {/* --- HERO & FORM SECTION --- */}
       <section className="  p-6 -mx-3 sm:px-6 mt-40 lg:mt-60 ">
         <div className="max-w-6xl mx-auto">
@@ -355,16 +282,12 @@ const ProductCheckoutPage = () => {
              
             {/* RIGHT SIDE: Images */}
             <div className=" flex flex-col gap-6">
-               
                   {images.length > 0 || galleryImages.length > 0 ? (
                     <img
-                   
                       src={[...images, ...galleryImages][currentGalleryIndex] ?? images[0] ?? ''}
                      alt="Product"
-                     className="bg-cover rounded-3xl
-                     transition-transform duration-700 hover:scale-105 cursor-pointer "
+                     className="bg-cover rounded-3xl transition-transform duration-700 hover:scale-105 cursor-pointer "
                      onClick={()=>setFullScreen(true)}
-                     
                     />
                   ) : (
                     <div className="w-full h-full bg-slate-100 flex items-center justify-center animate-pulse text-slate-400">
@@ -372,16 +295,8 @@ const ProductCheckoutPage = () => {
                     </div>
                   )}
                  {fullScreen && (
-                    <div
-                     className="fixed w-full   inset-0 z-[100] flex items-center justify-center
-                     p-4 backdrop-blur-xl  cursor-zoom-out "
-     
-                    >
-     
-                    <button
-                      className="absolute right-6 top-6 text-white transition-colors hover:text-orange-600 md:right-10 md:top-10"
-                      onClick={() => setFullScreen(false)}
-                    >
+                    <div className="fixed w-full inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-xl  cursor-zoom-out ">
+                    <button className="absolute right-6 top-6 text-white transition-colors hover:text-orange-600 md:right-10 md:top-10" onClick={() => setFullScreen(false)}>
                       <X size={40} />
                     </button>
                     <div className="flex flex-col lg:flex items-center justify-center gap-2 ">
@@ -398,7 +313,6 @@ const ProductCheckoutPage = () => {
                         <ChevronDown className="w-5 h-5 text-slate-700" />
                       </button>
                     </div>
-     
                     </div>
                  )}
 
@@ -412,9 +326,7 @@ const ProductCheckoutPage = () => {
                        <img
                          src={images[0]}
                          alt="Main Thumbnail"
-                         className={`w-14 h-14 md:w-16 md:h-16 object-cover rounded-lg cursor-pointer border-2 transition-all shrink-0
-                         ${currentGalleryIndex === 0 ? 'border-emerald-500 scale-105 shadow-md' : 'border-transparent opacity-70 hover:opacity-100'}
-                         `}
+                         className={`w-14 h-14 md:w-16 md:h-16 object-cover rounded-lg cursor-pointer border-2 transition-all shrink-0 ${currentGalleryIndex === 0 ? 'border-emerald-500 scale-105 shadow-md' : 'border-transparent opacity-70 hover:opacity-100'} `}
                          onClick={() => setCurrentGalleryIndex(0)}
                        />
                       {galleryImages.map((img, index) => (
@@ -422,9 +334,7 @@ const ProductCheckoutPage = () => {
                         key={index}
                         src={img.startsWith('/') || img.startsWith('http') ? img : `/${img}`}
                         alt={`Thumbnail ${index + 1}`}
-                        className={`w-14 h-14 md:w-16 md:h-16 object-cover rounded-lg cursor-pointer border-2 transition-all shrink-0
-                        ${currentGalleryIndex === index + 1 ? 'border-emerald-500 scale-105 shadow-md' : 'border-transparent opacity-70 hover:opacity-100'}
-                        `}
+                        className={`w-14 h-14 md:w-16 md:h-16 object-cover rounded-lg cursor-pointer border-2 transition-all shrink-0 ${currentGalleryIndex === index + 1 ? 'border-emerald-500 scale-105 shadow-md' : 'border-transparent opacity-70 hover:opacity-100'} `}
                         onClick={() => setCurrentGalleryIndex(index + 1)}
                       />
                     ))}
@@ -436,8 +346,7 @@ const ProductCheckoutPage = () => {
                 )}
             </div>
 
-           
-             {/* --- MARKETING HOOK (Top Section - DYNAMIC) --- */}
+             {/* --- MARKETING HOOK --- */}
             <section className="pt-24 lg:hidden md:hidden  px-4 sm:px-6">
              <div className="max-w-4xl mx-auto -mt-15 text-center">
                 <h1 className={`${cairo.className} text-3xl md:text-5xl font-black text-slate-800 leading-tight mb-4`}>
@@ -447,24 +356,16 @@ const ProductCheckoutPage = () => {
                 <p className="text-lg md:text-xl text-slate-600 font-medium mb-8">
                  {hookDesc}
                 </p>
-         
-         
               </div>
             </section>
            
             {/* LEFT SIDE: THE FORM */}
-            <div id="checkout-form" className=" bg-white
-             rounded-3xl shadow-xl border border-slate-200 overflow-hidden
-             top-24 ">
+            <div id="checkout-form" className=" bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden top-24 ">
                <div className="bg-emerald-600 text-white p-6 text-center relative overflow-hidden">
                   <div className="absolute -right-10 -top-10 w-32 h-32 bg-emerald-900 rounded-full opacity-20 blur-2xl"></div>
                   <div className="absolute -left-10 -bottom-10 w-32 h-32 rounded-full opacity-20 blur-2xl"></div>
                   <h2 className={`${cairo.className} text-xl sm:text-2xl font-bold mb-2 relative z-10`}>المرجو ادخال المعلومات   </h2>
-
-                  <div className="flex items-center justify-center gap-3 relative z-10">
-                     
-                  </div>
-                  <p className="text-sm text-slate-300 mt-2 relative z-10">باقة {count} مصاحف</p>
+                  <p className="text-sm text-slate-300 mt-2 relative z-10">باقة {count} قطع</p>
                </div>
                      
                <div className="p-6 sm:p-8 space-y-4">
@@ -487,56 +388,19 @@ const ProductCheckoutPage = () => {
                         </div>
 
                          <div className="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-200">
-                       
                           <span className="font-bold text-slate-700">الكمية:</span>
-                       
-                             <div className="flex items-center gap-4 bg-white px-2 py-1 rounded-lg
-                              border border-slate-200 shadow-sm">
-                       
-                                <button onClick={decrement} className="w-8 h-8 flex items-center
-                                 justify-center bg-slate-100 rounded hover:bg-slate-200
-                                 transition-colors">
-                                 <Minus size={16} />
-                                </button>
-                       
+                             <div className="flex items-center gap-4 bg-white px-2 py-1 rounded-lg border border-slate-200 shadow-sm">
+                                <button onClick={decrement} className="w-8 h-8 flex items-center justify-center bg-slate-100 rounded hover:bg-slate-200 transition-colors"><Minus size={16} /></button>
                                  <span className="font-bold text-xl w-6 text-center">{count}</span>
-                               
-                       
                                <button onClick={increment} className="w-8 h-8 flex items-center justify-center bg-orange-100 rounded hover:bg-orange-200 text-orange-600 transition-colors"><Plus size={16} /></button>
-                       
                               </div>
-                       
                              </div>
 
-                               
-                        {/* --- 👈 أزرار اختيار نوع التوصيل (المنزل/المكتب) --- */}
+                        {/* --- أزرار اختيار نوع التوصيل --- */}
                         <div className="flex gap-3 mt-4">
-                            <button
-                                type="button"
-                                onClick={() => setDeliveryType("Domicile")}
-                                className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 font-bold transition-all ${
-                                    deliveryType === "Domicile"
-                                    ? 'border-emerald-500 bg-emerald-50 text-emerald-800 shadow-sm'
-                                    : 'border-slate-200 text-slate-500 hover:bg-slate-50'
-                                }`}
-                            >
-                                <Truck className="w-5 h-5" />
-                                للمنزل
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setDeliveryType("Stopdesk")}
-                                className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 font-bold transition-all ${
-                                    deliveryType === "Stopdesk"
-                                    ? 'border-emerald-500 bg-emerald-50 text-emerald-800 shadow-sm'
-                                    : 'border-slate-200 text-slate-500 hover:bg-slate-50'
-                                }`}
-                            >
-                                <Package className="w-5 h-5" />
-                                للمكتب (Stopdesk)
-                            </button>
+                            <button type="button" onClick={() => setDeliveryType("Domicile")} className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 font-bold transition-all ${deliveryType === "Domicile" ? 'border-emerald-500 bg-emerald-50 text-emerald-800 shadow-sm' : 'border-slate-200 text-slate-500 hover:bg-slate-50' }`}><Truck className="w-5 h-5" /> للمنزل</button>
+                            <button type="button" onClick={() => setDeliveryType("Stopdesk")} className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 font-bold transition-all ${deliveryType === "Stopdesk" ? 'border-emerald-500 bg-emerald-50 text-emerald-800 shadow-sm' : 'border-slate-200 text-slate-500 hover:bg-slate-50' }`}><Package className="w-5 h-5" /> للمكتب (Stopdesk)</button>
                         </div>
-                        {/* ------------------------------------- */}
 
                         {selectedWilayaID && (
                          <div className='border-2 border-dashed border-emerald-500 bg-emerald-50 w-full p-4 text-center rounded-xl text-emerald-700 font-bold flex flex-col items-center justify-center gap-2 animate-in fade-in'>
@@ -548,35 +412,45 @@ const ProductCheckoutPage = () => {
                          </div>
                         )}
 
-                        {/* --- PACKAGE SELECTION SECTION --- */}
-                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 mt-4">
-                           <span className="font-bold text-slate-700 block mb-3 text-lg">اختر حجم الباقة:</span>
-                           <div className="grid grid-cols-2 gap-3">
-                             {quranPackages.map((pkg) => (
-                               <button
-                                 key={pkg.id}
-                                 type="button"
-                                 onClick={() => setCount(pkg.quantity)}
-                                 className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center transition-all ${
-                                   selectedPackage?.id === pkg.id
-                                   ? 'border-emerald-500 bg-emerald-100 shadow-sm'
-                                   : 'border-slate-200 hover:border-emerald-300 bg-white'
-                                 }`}
-                               >
-                                 <span className="font-bold text-lg text-green-500 " > {pkg.quantity} </span>
-                                  <span className="font-bold text-lg text-slate-800 " >مصاحف برواية ورش عن نافع مقاس 14.20 سم   مع توصيل سريع  </span>
-
-                                 <span className={`text-sm ${selectedPackage?.id === pkg.id ? 'text-emerald-700 font-bold' : 'text-slate-500'}`}>
-                                   {pkg.price} د.ج
-                                 </span>
-                               </button>
-                             ))}
-                           </div>
-                        </div>
+                        {/* --- PACKAGE SELECTION SECTION (DYNAMIC) --- */}
+                        {availablePackages.length > 0 && (
+                          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 mt-4">
+                             <span className="font-bold text-slate-700 block mb-3 text-lg">اختر حجم الباقة:</span>
+                             
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                               {availablePackages.map((pkg: any, index: number) => (
+                                 <button
+                                   key={index}
+                                   type="button"
+                                   onClick={() => setCount(pkg.quantity)}
+                                   className={`p-4 rounded-xl border-2 flex flex-col items-start text-right transition-all ${
+                                     selectedPackage?.quantity === pkg.quantity
+                                     ? 'border-emerald-500 bg-emerald-50 shadow-md scale-[1.02]'
+                                     : 'border-slate-200 hover:border-emerald-300 bg-white'
+                                   }`}
+                                 >
+                                   <div className="flex justify-between items-center w-full mb-2">
+                                     <span className="font-black text-xl text-emerald-600 bg-emerald-100 px-3 py-1 rounded-lg"> 
+                                       {pkg.quantity} قطع 
+                                     </span>
+                                     <span className={`text-lg font-black ${selectedPackage?.quantity === pkg.quantity ? 'text-emerald-700' : 'text-slate-800'}`}>
+                                       {pkg.price} د.ج
+                                     </span>
+                                   </div>
+                                    
+                                    <span className="font-bold text-sm text-slate-600 leading-relaxed"> 
+                                      {pkg.title || "باقة مميزة"} 
+                                    </span>
+                                    
+                                 </button>
+                               ))}
+                             </div>
+                          </div>
+                        )}
 
                         <div className="pt-4 border-t border-slate-100 space-y-3">
                            <div className="flex justify-between items-center text-sm text-slate-500">
-                              <span>المجموع (باقة {count} مصاحف):</span>
+                              <span>المجموع (باقة {count} قطع):</span>
                               <span className="font-bold">{selectedPackage ? selectedPackage.price : (price * count)} د.ج</span>
                            </div>
                            <div className="flex justify-between items-center text-sm text-slate-500">
@@ -589,12 +463,10 @@ const ProductCheckoutPage = () => {
                            </div>
                         </div>
 
-                        <button onClick={handleCheckout} disabled={isLoading}
-                            className="w-full py-4 mt-4 bg-emerald-600 hover:bg-emerald-700 text-white text-xl font-black rounded-xl shadow-[0_8px_20px_rgb(5,150,105,0.3)] hover:shadow-[0_8px_25px_rgb(5,150,105,0.4)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0">
+                        <button onClick={handleCheckout} disabled={isLoading} className="w-full py-4 mt-4 bg-emerald-600 hover:bg-emerald-700 text-white text-xl font-black rounded-xl shadow-[0_8px_20px_rgb(5,150,105,0.3)] hover:shadow-[0_8px_25px_rgb(5,150,105,0.4)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0">
                              {isLoading ? <span className="animate-spin text-2xl">↻</span> : <><ShieldCheck className="w-6 h-6"/> اطلب باقتك الآن</>}
                         </button>
                         <p className="text-center text-slate-400 text-sm mt-2">الدفع عند الاستلام (Main à main) - ضمان 100%</p>
-                       
                         {message && <p className="text-center text-red-600 font-bold bg-red-50 p-3 rounded-lg border border-red-100 mt-2 animate-in fade-in slide-in-from-top-2">{message}</p>}
                     </div>
                </div>
@@ -603,24 +475,19 @@ const ProductCheckoutPage = () => {
         </div>
       </section>
 
-      {/* --- MARKETING HOOK (Top Section - DYNAMIC) --- */}
+      {/* --- HADITH SECTION --- */}
       <section className="pt-24   px-4 sm:px-6">
         <div className="max-w-4xl mx-auto -mt-15 text-center">
-         
-         
-          {/* Warning/Motivation Box (HADITH) */}
           <div className="bg-emerald-50 border-2 border-emerald-200 border-dashed rounded-xl p-4 md:p-6 flex flex-col sm:flex-row items-center justify-center gap-3  shadow-sm">
             <HeartHandshake className="text-emerald-500 w-10 h-10 shrink-0 animate-pulse" />
             <p className="text-emerald-800 w-60 font-bold text-base md:text-lg">
-             
                 {hadithText}
             </p>
           </div>
         </div>
       </section>
 
-
-      {/* --- REVIEWS / SOCIAL PROOF 1 (DYNAMIC) --- */}
+      {/* --- REVIEWS 1 --- */}
       <section className="py-16 px-4 mr-4 bg-slate-50">
           <div className="max-w-4xl mx-auto text-center">
               <div className="flex justify-center mb-4">
@@ -632,11 +499,10 @@ const ProductCheckoutPage = () => {
                     <img key={idx} src={imgSrc} alt='Review' className="w-full h-auto object-cover rounded-xl shadow-sm border border-slate-200" />
                   ))}
                 </div>
-             
           </div>
       </section>
 
-      {/* --- REVIEWS / SOCIAL PROOF 2 (DYNAMIC) --- */}
+      {/* --- REVIEWS 2 --- */}
       <section className="py-16 px-4 mr-4 bg-slate-50">
           <div className="max-w-4xl mx-auto text-center">
               <div className="flex justify-center mb-4">
@@ -648,33 +514,18 @@ const ProductCheckoutPage = () => {
                     <img key={idx} src={imgSrc} alt='Review' className="w-full h-auto object-cover rounded-xl shadow-sm border border-slate-200" />
                   ))}
                 </div>
-             
           </div>
       </section>
 
       {/* --- STICKY CTA BUTTON --- */}
-      <div className="fixed -bottom-3 left-0 w-full p-4 bg-white/95
-      backdrop-blur-md rounded-t-3xl border-t border-slate-200 z-50 flex flex-col items-center justify-center
-       shadow-[0_-15px_40px_rgba(0,0,0,0.08)] -right-5 lg:right-0">
-         
-          <button
-             onClick={scrollToForm}
-             className="w-full  max-w-md py-4 bg-emerald-600 text-white
-              text-xl font-black rounded-xl shadow-[0_8px_20px_rgb(5,150,105,0.3)]
-               hover:bg-emerald-700 hover:-translate-y-1 transition-all flex items-center
-                justify-center gap-2 animate-[pulse_2s_infinite]">
-              <HeartHandshake className="w-6 h-6" />
-              إملأ معلوماتك  وإختر باقتك
+      <div className="fixed -bottom-3 left-0 w-full p-4 bg-white/95 backdrop-blur-md rounded-t-3xl border-t border-slate-200 z-50 flex flex-col items-center justify-center shadow-[0_-15px_40px_rgba(0,0,0,0.08)] -right-5 lg:right-0">
+          <button onClick={scrollToForm} className="w-full  max-w-md py-4 bg-emerald-600 text-white text-xl font-black rounded-xl shadow-[0_8px_20px_rgb(5,150,105,0.3)] hover:bg-emerald-700 hover:-translate-y-1 transition-all flex items-center justify-center gap-2 animate-[pulse_2s_infinite]">
+              <HeartHandshake className="w-6 h-6" /> إملأ معلوماتك  وإختر باقتك
           </button>
-         
-          {/* Micro-copy للموثوقية */}
           <span className="text-emerald-700 text-sm font-bold mt-2.5 flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4" />
-              لا تدفع شيئاً الآن.. الدفع يداً بيد عند الاستلام
+              <ShieldCheck className="w-4 h-4" /> لا تدفع شيئاً الآن.. الدفع يداً بيد عند الاستلام
           </span>
-         
       </div>
-
     </section>
   );
 };

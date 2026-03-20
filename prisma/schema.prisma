@@ -25,6 +25,7 @@ model Product {
   hadithText    String?
   reviewImages1 String? // للحفظ كـ JSON String
   reviewImages2 String? // للحفظ كـ JSON String
+  packagesData String? 
 
   @@map("product")
 }

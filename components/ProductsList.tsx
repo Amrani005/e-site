@@ -3,9 +3,8 @@
 import { deleteProducts } from "@/actions/deletProducts";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Trash2, Plus, Package, Calendar, Tag ,Recycle} from "lucide-react";
+import { Trash2, Plus, Package, Calendar, Tag, Recycle } from "lucide-react";
 
-// Animation variants for the staggered list effect
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
@@ -28,8 +27,7 @@ export default function ProductsList({ products }: { products: any[] }) {
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r
-           from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
             المنتجات
           </h1>
           <p className="text-blue-200/60 text-sm mt-1">إدارة قائمة المنتجات والمخزون</p>
@@ -37,24 +35,15 @@ export default function ProductsList({ products }: { products: any[] }) {
         
         <Link 
           href="/dashboard/products/add" 
-          className="group bg-gradient-to-r from-blue-600 to-cyan-500
-           text-white py-2.5 px-6 rounded-xl hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 flex items-center gap-2"
+          className="group bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-2.5 px-6 rounded-xl hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 flex items-center gap-2"
         >
-          <Plus className="w-5 h-5 group-hover:rotate-90
-           duration-300" />
+          <Plus className="w-5 h-5 group-hover:rotate-90 duration-300" />
           <span>إضافة منتج</span>
         </Link>
 
         <Link href='/dashboard'
-         className="group bg-gradient-to-r from-blue-600 to-cyan-500
-          text-white py-2.5 px-6 rounded-xl hover:shadow-lg 
-          hover:shadow-cyan-500/20 transition-all duration-300 flex 
-          items-center gap-2">
-        
-          <p className="group-hover:scale-[1.1] duration-300 font-bold
-            text-white ">go to dashboard
-          </p>
-         
+         className="group bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-2.5 px-6 rounded-xl hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 flex items-center gap-2">
+          <p className="group-hover:scale-[1.1] duration-300 font-bold text-white ">go to dashboard</p>
         </Link>
       </div>
 
@@ -104,27 +93,25 @@ export default function ProductsList({ products }: { products: any[] }) {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex justify-center">
+                  <div className="flex justify-center items-center gap-2">
                     <form action={deleteProducts}>
                       <input type="hidden" name="id" value={product.id} />
                       <button 
                         type="submit" 
-                        className="p-2  text-red-400 hover:text-red-200 hover:bg-red-500/20 rounded-lg transition-all duration-200 opacity-70 group-hover:opacity-100"
+                        className="p-2 text-red-400 hover:text-red-200 hover:bg-red-500/20 rounded-lg transition-all duration-200 opacity-70 group-hover:opacity-100"
                         title="حذف المنتج"
                       >
                         <Trash2 className="w-5 h-5" />
                       </button>
-
                     </form>
                         
-                    <Link href={`/dashboard/products/${product.id}/edit`}>
-                      <button
-                        className="p-2  text-green-400 hover:text-red-200 hover:bg-red-500/20 rounded-lg transition-all duration-200 opacity-70 group-hover:opacity-100"
-                        title="update product " 
-                      >
-                        <a href="/app/dashboard/products/[id]/edit/page.tsx"><Recycle className="w-5 h-5"/></a>
-                        
-                       </button>
+                    {/* 👇 تم إصلاح رابط التعديل هنا ليرسل الـ ID الحقيقي مباشرة */}
+                    <Link 
+                      href={`/dashboard/products/${product.id}/edit`}
+                      className="p-2 text-green-400 hover:text-green-200 hover:bg-green-500/20 rounded-lg transition-all duration-200 opacity-70 group-hover:opacity-100"
+                      title="تعديل المنتج"
+                    >
+                      <Recycle className="w-5 h-5"/>
                     </Link>
                   </div>
                 </motion.div>

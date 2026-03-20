@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { v2 as cloudinary } from "cloudinary";    
+import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -10,103 +10,88 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function createProducts(formData: FormData) {
+export async function UpgradeProduct(formData: FormData) {
   try {
-    // 1. التقاط النصوص بأمان
+    const id = formData.get("id") as string;
     const name = formData.get("name") as string;
     const price = Number(formData.get("price"));
     const description = formData.get("description") as string;
-
     const hookTitle = formData.get("hookTitle") as string | null;
     const hookSubtitle = formData.get("hookSubtitle") as string | null;
     const hookDesc = formData.get("hookDesc") as string | null;
     const hadithText = formData.get("hadithText") as string | null;
-    
-    // 👇 هذا هو السطر الذي كان مفقوداً لالتقاط الباقات الديناميكية!
     const packagesData = formData.get("packagesData") as string | null;
 
-    // 2. دالة الرفع الآمنة للسحابة
+    if (!id) return { success: false, error: "ID is missing" };
+
+    const oldProduct = await db.product.findUnique({ where: { id: id } });
+    if (!oldProduct) return { success: false, error: "Product not found" };
+
     const uploadToCloudinary = async (file: File): Promise<string> => {
       if (!file || file.size === 0) return "";
-
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
-
       return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: "dzshop_products" }, 
+          { folder: "dzshop_products" },
           (error, result) => {
-            if (error) {
-              console.error("Cloudinary Error:", error);
-              reject(error);
-            } else {
-              resolve(result!.secure_url); 
-            }
+            if (error) reject(error);
+            else resolve(result!.secure_url);
           }
         );
         uploadStream.end(buffer);
       });
     };
 
-    // 3. رفع الصورة الرئيسية بأمان
     const imageFile = formData.get("image") as File;
-    let mainImageUrl = "";
+    let mainImageUrl = oldProduct.imageUrl; 
     if (imageFile && imageFile.size > 0) {
-      mainImageUrl = await uploadToCloudinary(imageFile); 
+      const newUrl = await uploadToCloudinary(imageFile);
+      if (newUrl) mainImageUrl = newUrl;
     }
 
-    // 4. دالة مساعدة محمية لرفع المصفوفات
-    const uploadMultipleFiles = async (fieldName: string): Promise<string[]> => {
+    const updateMultipleFiles = async (fieldName: string, oldData: string | null): Promise<string | null> => {
       const files = formData.getAll(fieldName);
+      const hasNewFiles = files.some(file => file instanceof File && file.size > 0);
+      if (!hasNewFiles) return oldData;
       const urls: string[] = [];
-      
       for (const file of files) {
         if (file instanceof File && file.size > 0) {
           try {
             const url = await uploadToCloudinary(file);
             if (url) urls.push(url);
-          } catch (e) {
-             console.error(`Failed to upload file from ${fieldName}`);
-          }
+          } catch (e) {}
         }
       }
-      return urls;
+      return urls.length > 0 ? JSON.stringify(urls) : oldData;
     };
 
-    // 5. رفع المصفوفات
-    const galleryUrls = await uploadMultipleFiles("gallery");
-    const review1Urls = await uploadMultipleFiles("reviewImages1");
-    const review2Urls = await uploadMultipleFiles("reviewImages2");
+    const galleryString = await updateMultipleFiles("gallery", oldProduct.images);
+    const reviewImages1String = await updateMultipleFiles("reviewImages1", oldProduct.reviewImages1);
+    const reviewImages2String = await updateMultipleFiles("reviewImages2", oldProduct.reviewImages2);
 
-    // 6. الحفظ في قاعدة البيانات
-    await db.product.create({
+    await db.product.update({
+      where: { id: id },
       data: {
         name: name,
         price: price,
-        description: description || null, 
+        description: description || null,
         imageUrl: mainImageUrl,
-        images: galleryUrls.length > 0 ? JSON.stringify(galleryUrls) : "[]",  
+        images: galleryString || "[]", 
         hookTitle: hookTitle || null,
         hookSubtitle: hookSubtitle || null,
         hookDesc: hookDesc || null,
         hadithText: hadithText || null,
-        
-        
-        packagesData: packagesData || null, 
-        
-        reviewImages1: review1Urls.length > 0 ? JSON.stringify(review1Urls) : null,
-        reviewImages2: review2Urls.length > 0 ? JSON.stringify(review2Urls) : null,
+        packagesData: packagesData || null,
+        reviewImages1: reviewImages1String || null,
+        reviewImages2: reviewImages2String || null,
       },
     });
 
-    // 7. غسيل الكاش
     revalidatePath("/dashboard/products");
-    revalidatePath("/"); 
-
+    revalidatePath("/");
     return { success: true };
-    
   } catch (error) {
-    console.error("❌ CRITICAL ERROR in createProducts:", error);
-    return { success: false, error: error instanceof Error ? error.message : "Unknown server error" };
+    return { success: false };
   }
 }
