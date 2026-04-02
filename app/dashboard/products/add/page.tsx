@@ -57,7 +57,7 @@ export default function AddProductPage() {
       const formData = new FormData(form);
 
       const options = {
-        maxSizeMB: 0.04, 
+        maxSizeMB: 0.2, 
         maxWidthOrHeight: 1080, 
         useWebWorker: true,
       };

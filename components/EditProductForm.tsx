@@ -56,7 +56,10 @@ export default function EditProductForm({ product }: { product: any }) {
       const formData = new FormData(form);
       formData.append("id", product.id); // نرسل الـ ID لكي يعرف السيرفر من يعدل
 
-      const options = { maxSizeMB: 0.04, maxWidthOrHeight: 1080, useWebWorker: true };
+      const options = { 
+        maxSizeMB: 0.2,
+        maxWidthOrHeight: 1080,
+        useWebWorker: true };
 
       const imageFile = formData.get("image") as File;
       if (imageFile && imageFile.size > 0) {

@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { X } from 'lucide-react';
+import { img } from 'motion/react-client';
 
 const cairo = Cairo({ subsets: ['arabic'], weight: ['400', '700', '900'] });
 const tajawal = Tajawal({ subsets: ['arabic'], weight: ['400', '500', '700', '800'] });
@@ -97,6 +98,9 @@ const ProductCheckoutPage = () => {
   const [images, setImages] = useState<string[]>([]);
   const [currentGalleryIndex, setCurrentGalleryIndex] = useState(0);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [reviewImages1, setReviewImages1] = useState<string[]>([]);
+  const [reviewImages2, setReviewImages2] = useState<string[]>([]);
+  const [galleryImages_2,setGalleryImage_2]= useState<string[]>([]);
   const [fullScreen,setFullScreen]= useState(false);
 
   // --- DYNAMIC PACKAGES STATE ---
@@ -109,9 +113,7 @@ const ProductCheckoutPage = () => {
   const [hookSubtitle, setHookSubtitle] = useState("مع توصيل سريع");
   const [hookDesc, setHookDesc] = useState("ساهم في نشر كتاب الله واكسب أجراً مستمراً لك أو لمن تحب. اختر الباقة التي تناسبك ونحن نتكفل بالباقي.");
   const [hadithText, setHadithText] = useState("إذا مات ابن آدم انقطع عمله إلا من ثلاث: صدقة جارية، أو علم ينتفع به، أو ولد صالح يدعو له.");
-  const [reviewImages1, setReviewImages1] = useState<string[]>(["/der8.jpeg", "/review1.jpeg", "/review2.jpeg"]);
-  const [reviewImages2, setReviewImages2] = useState<string[]>(["/der8.jpeg", "/der1.jpeg", "/der2.jpeg", "/der3.jpeg", "/der4.jpeg", "/der5.jpeg", "/der6.jpeg", "/der7.jpeg", "/der9.jpeg", "/der10.jpeg"]);
-
+  
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
@@ -475,6 +477,13 @@ const ProductCheckoutPage = () => {
         </div>
       </section>
 
+      <section>
+        <div className='grid grid-cols-2 gap-4'>
+          
+        </div>
+        
+      </section>
+
       {/* --- HADITH SECTION --- */}
       <section className="pt-24   px-4 sm:px-6">
         <div className="max-w-4xl mx-auto -mt-15 text-center">
@@ -509,7 +518,7 @@ const ProductCheckoutPage = () => {
                   {[1,2,3,4,5].map(star => <Star key={star} className="w-8 h-8 text-yellow-400 fill-yellow-400" />)}
               </div>
               <h2 className={`${cairo.className} text-3xl font-black text-slate-800 mb-8`}>آراء عملائنا الأخرى</h2>
-                <div className='grid grid-cols-4 lg:grid-cols-4 gap-3'>
+                <div className='grid grid-cols-2 lg:grid-cols-2 gap-3'>
                   {reviewImages2.map((imgSrc, idx) => (
                     <img key={idx} src={imgSrc} alt='Review' className="w-full h-auto object-cover rounded-xl shadow-sm border border-slate-200" />
                   ))}
