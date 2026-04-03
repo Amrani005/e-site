@@ -13,6 +13,7 @@ export default function AddProductPage() {
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [galleryImage, setGalleryImage] = useState<string[]>([]);
+  const [galleryImages_2, setGalleryImages_2] = useState<string[]>([]);
   
   const [reviewPreview1, setReviewPreview1] = useState<string[]>([]);
   const [reviewPreview2, setReviewPreview2] = useState<string[]>([]);
@@ -34,6 +35,11 @@ export default function AddProductPage() {
     const files = e.target.files;
     if (files && files.length > 0) setGalleryImage(Array.from(files).map(file => URL.createObjectURL(file)));
     else setGalleryImage([]);
+  };
+  const handleGalleryChange_2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) setGalleryImages_2(Array.from(files).map(file => URL.createObjectURL(file)));
+    else setGalleryImages_2([]);
   };
 
   const handleReview1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,6 +88,7 @@ export default function AddProductPage() {
       await compressAndAppendFiles("gallery");
       await compressAndAppendFiles("reviewImages1");
       await compressAndAppendFiles("reviewImages2");
+      await compressAndAppendFiles("galleryImages_2")
 
       const result = await createProducts(formData);
       
@@ -257,6 +264,17 @@ export default function AddProductPage() {
                   {galleryImage.length > 0 ? (
                     <div className="flex gap-1 overflow-hidden h-full">
                       {galleryImage.slice(0,3).map((img, i) => <img key={i} src={img} className="h-full w-12 object-cover rounded" />)}
+                    </div>
+                  ) : <><ImageIcon size={24} /><span className="text-xs mt-1">متعدد</span></>}
+                 </div>
+              </div>
+              <div className="relative group border-2 border-dashed border-slate-500 hover:border-emerald-400 rounded-xl transition bg-slate-800/50 p-4">
+                 <label className="block text-center text-xs text-emerald-400 font-bold mb-2"> صور عامة للمنتج</label>
+                 <input name="galleryImages_2" type="file" accept="image/*" multiple onChange={handleGalleryChange_2} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" />
+                 <div className="flex flex-col items-center justify-center text-slate-400 h-24">
+                  {galleryImages_2.length > 0 ? (
+                    <div className="flex gap-1 overflow-hidden h-full">
+                      {galleryImages_2.slice(0,3).map((img, i) => <img key={i} src={img} className="h-full w-12 object-cover rounded" />)}
                     </div>
                   ) : <><ImageIcon size={24} /><span className="text-xs mt-1">متعدد</span></>}
                  </div>

@@ -169,6 +169,7 @@ const ProductCheckoutPage = () => {
           if (product.hadithText) setHadithText(product.hadithText);
           if (product.reviewImages1) try { setReviewImages1(JSON.parse(product.reviewImages1)); } catch (e) {}
           if (product.reviewImages2) try { setReviewImages2(JSON.parse(product.reviewImages2)); } catch (e) {}
+          if(product.galleryImages_2) try {setGalleryImage_2(JSON.parse(product.galleryImages_2));} catch (e) {}
 
           // استيراد الباقات الديناميكية
           if (product.packagesData) {
@@ -278,7 +279,7 @@ const ProductCheckoutPage = () => {
   return (
     <section className={`flex flex-col  h-full ${tajawal.className}   text-slate-900    `} >
       {/* --- HERO & FORM SECTION --- */}
-      <section className="  p-6 -mx-3 sm:px-6 mt-40 lg:mt-60 ">
+      <section className="  p-6 -mr-2 sm:px-6 mt-40 lg:mt-60 ">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
              
@@ -477,11 +478,14 @@ const ProductCheckoutPage = () => {
         </div>
       </section>
 
-      <section>
-        <div className='grid grid-cols-2 gap-4'>
-          
-        </div>
-        
+      <section className="py-16 -mr-2  bg-slate-50">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className='flex flex-col gap-3'>
+             {galleryImages_2.map((imgSrc, idx) => (
+                <img key={idx} src={imgSrc}  className="w-full h-auto object-cover  shadow-sm border border-slate-200" />
+              ))}
+           </div>
+          </div>
       </section>
 
       {/* --- HADITH SECTION --- */}

@@ -77,6 +77,7 @@ export async function createProducts(formData: FormData) {
     const galleryUrls = await uploadMultipleFiles("gallery");
     const review1Urls = await uploadMultipleFiles("reviewImages1");
     const review2Urls = await uploadMultipleFiles("reviewImages2");
+    const gallery_2Urls = await uploadMultipleFiles("galleryImages_2")
 
     // 6. الحفظ في قاعدة البيانات
     await db.product.create({
@@ -90,12 +91,10 @@ export async function createProducts(formData: FormData) {
         hookSubtitle: hookSubtitle || null,
         hookDesc: hookDesc || null,
         hadithText: hadithText || null,
-        
-        
         packagesData: packagesData || null, 
-        
         reviewImages1: review1Urls.length > 0 ? JSON.stringify(review1Urls) : null,
         reviewImages2: review2Urls.length > 0 ? JSON.stringify(review2Urls) : null,
+        galleryImages_2: gallery_2Urls.length > 0 ? JSON.stringify(gallery_2Urls):null,
       },
     });
 

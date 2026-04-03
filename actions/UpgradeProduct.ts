@@ -69,6 +69,7 @@ export async function UpgradeProduct(formData: FormData) {
     const galleryString = await updateMultipleFiles("gallery", oldProduct.images);
     const reviewImages1String = await updateMultipleFiles("reviewImages1", oldProduct.reviewImages1);
     const reviewImages2String = await updateMultipleFiles("reviewImages2", oldProduct.reviewImages2);
+    const galleryImages_2String = await updateMultipleFiles("galleryImages_2",oldProduct.galleryImages_2);
 
     await db.product.update({
       where: { id: id },
@@ -85,6 +86,7 @@ export async function UpgradeProduct(formData: FormData) {
         packagesData: packagesData || null,
         reviewImages1: reviewImages1String || null,
         reviewImages2: reviewImages2String || null,
+        galleryImages_2: galleryImages_2String || null,
       },
     });
 
