@@ -480,9 +480,9 @@ const ProductCheckoutPage = () => {
 
       <section className="py-16  bg-slate-50">
           <div className="max-w-4xl mx-auto text-center">
-            <div className='flex p-5 items-center flex-col gap-3 lg:grid lg:grid-cols-2'>
+            <div className='flex p-5  flex-col gap-3 lg:grid lg:grid-cols-2'>
              {galleryImages_2.map((imgSrc, idx) => (
-                <img key={idx} src={imgSrc}   className="   shadow-sm border border-slate-200" />
+                <img key={idx} src={imgSrc}   className=" object-cover  shadow-sm border border-slate-200" />
               ))}
            </div>
           </div>

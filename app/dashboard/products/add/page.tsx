@@ -6,7 +6,9 @@ import { createProducts } from "@/actions/createProducts";
 import { motion } from "framer-motion";
 import { PackagePlus, DollarSign, AlignLeft, Send, UploadCloud, ImageIcon, Loader2, Type, Quote, Star, ListPlus } from "lucide-react";
 import Link from "next/link";
-import imageCompression from "browser-image-compression"; 
+
+const CLOUD_NAME = "deimq7tzj"; 
+const UPLOAD_PRESET = "dxtx2rdd"; 
 
 export default function AddProductPage() {
   const router = useRouter(); 
@@ -18,12 +20,12 @@ export default function AddProductPage() {
   const [reviewPreview1, setReviewPreview1] = useState<string[]>([]);
   const [reviewPreview2, setReviewPreview2] = useState<string[]>([]);
 
-  // --- نظام الباقات الديناميكي المخصص بالكامل ---
   const [dynamicPackages, setDynamicPackages] = useState([
     { quantity: 5, price: 4650, title: "مصاحف برواية ورش مقاس 14.20 سم" }
   ]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState("");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -54,43 +56,82 @@ export default function AddProductPage() {
     else setReviewPreview2([]);
   };
 
+  // دالة الرفع المباشر لـ Cloudinary
+  const uploadToCloudinary = async (file: File) => {
+    if (!file) return null;
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", UPLOAD_PRESET); 
+    
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+        method: "POST",
+        body: data,
+      });
+      
+      const json = await res.json();
+      
+      if (json.error) {
+        console.error("Cloudinary Error:", json.error.message);
+        return null;
+      }
+      
+      return json.secure_url;
+    } catch (err) {
+      console.error("Fetch Error:", err);
+      return null;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); 
     setIsSubmitting(true); 
+    setUploadProgress("جاري رفع الصور بجودة عالية...");
 
     try {
       const form = e.currentTarget;
-      const formData = new FormData(form);
+      const finalData = new FormData();
+      
+      finalData.append("name", (form.elements.namedItem("name") as HTMLInputElement).value);
+      finalData.append("price", (form.elements.namedItem("price") as HTMLInputElement).value);
+      finalData.append("description", (form.elements.namedItem("description") as HTMLTextAreaElement).value);
+      finalData.append("hookTitle", (form.elements.namedItem("hookTitle") as HTMLInputElement).value);
+      finalData.append("hookSubtitle", (form.elements.namedItem("hookSubtitle") as HTMLInputElement).value);
+      finalData.append("hadithText", (form.elements.namedItem("hadithText") as HTMLTextAreaElement).value);
+      finalData.append("hookDesc", (form.elements.namedItem("hookDesc") as HTMLTextAreaElement).value);
+      finalData.append("packagesData", JSON.stringify(dynamicPackages));
 
-      const options = {
-        maxSizeMB: 0.2, 
-        maxWidthOrHeight: 1080, 
-        useWebWorker: true,
-      };
-
-      const imageFile = formData.get("image") as File;
-      if (imageFile && imageFile.size > 0) {
-        const compressedImage = await imageCompression(imageFile, options);
-        formData.set("image", compressedImage, compressedImage.name);
+      // رفع الصورة الرئيسية
+      const imageInput = form.elements.namedItem("image") as HTMLInputElement;
+      if (imageInput.files && imageInput.files.length > 0) {
+        const url = await uploadToCloudinary(imageInput.files[0]);
+        if (url) finalData.append("imageUrl", url);
       }
 
-      const compressAndAppendFiles = async (fieldName: string) => {
-        const files = formData.getAll(fieldName) as File[];
-        formData.delete(fieldName); 
-        for (const file of files) {
-          if (file.size > 0) {
-            const compressedFile = await imageCompression(file, options);
-            formData.append(fieldName, compressedFile, compressedFile.name);
+      // دالة مساعدة لرفع المعارض المتعددة
+      const processGallery = async (inputName: string) => {
+        const input = form.elements.namedItem(inputName) as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+          const urls = [];
+          for (let i = 0; i < input.files.length; i++) {
+            const url = await uploadToCloudinary(input.files[i]);
+            if (url) urls.push(url);
           }
+          finalData.append(inputName, JSON.stringify(urls));
+        } else {
+          finalData.append(inputName, "[]");
         }
       };
 
-      await compressAndAppendFiles("gallery");
-      await compressAndAppendFiles("reviewImages1");
-      await compressAndAppendFiles("reviewImages2");
-      await compressAndAppendFiles("galleryImages_2")
+      await processGallery("gallery");
+      await processGallery("galleryImages_2");
+      await processGallery("reviewImages1");
+      await processGallery("reviewImages2");
 
-      const result = await createProducts(formData);
+      setUploadProgress("جاري حفظ البيانات في السيرفر...");
+      
+      // ارسال البيانات (روابط فقط) الى السيرفر
+      const result = await createProducts(finalData);
       
       if (result && result.success) {
         router.push("/dashboard/products");
@@ -100,9 +141,10 @@ export default function AddProductPage() {
       }
       
     } catch (error) {
-       alert("حدث خطأ أثناء الضغط والرفع");
+       alert("حدث خطأ أثناء الرفع.");
     } finally {
       setIsSubmitting(false); 
+      setUploadProgress("");
     }
   };
 
@@ -134,7 +176,6 @@ export default function AddProductPage() {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5" dir="rtl">
             
-            {/* --- BASIC INFO --- */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="relative group">
                  <PackagePlus className="absolute left-4 top-3.5 w-5 h-5 text-emerald-300" />
@@ -153,7 +194,6 @@ export default function AddProductPage() {
 
             <hr className="border-white/10 my-2" />
 
-            {/* --- CUSTOM PACKAGES (DYNAMIC) --- */}
             <div className="bg-slate-800/50 p-5 rounded-xl border border-slate-600 shadow-inner">
               <h3 className="text-emerald-400 font-bold mb-4 flex items-center gap-2"><ListPlus className="w-5 h-5"/> تخصيص الباقات (الكمية، السعر، والمحتوى)</h3>
               
@@ -219,7 +259,6 @@ export default function AddProductPage() {
 
             <hr className="border-white/10 my-2" />
 
-            {/* --- MARKETING TEXTS --- */}
             <h3 className="text-cyan-400 font-bold text-sm">النصوص التسويقية (الخطاف والحديث)</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -245,7 +284,6 @@ export default function AddProductPage() {
 
             <hr className="border-white/10 my-2" />
 
-            {/* --- IMAGES SECTION --- */}
             <h3 className="text-cyan-400 font-bold text-sm">الصور والمراجعات</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -307,7 +345,7 @@ export default function AddProductPage() {
               className={`mt-6 w-full text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 ${isSubmitting ? 'bg-slate-600 cursor-not-allowed' : 'bg-gradient-to-r from-emerald-500 to-cyan-500'}`}
             >
               {isSubmitting ? (
-                <><span>جاري الضغط والرفع...</span><Loader2 className="w-5 h-5 animate-spin" /></>
+                <><span>{uploadProgress || "جاري المعالجة..."}</span><Loader2 className="w-5 h-5 animate-spin" /></>
               ) : (
                 <><span>حفظ المنتج والباقات</span><Send className="w-5 h-5" /></>
               )}
