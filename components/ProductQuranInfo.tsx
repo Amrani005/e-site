@@ -279,7 +279,7 @@ const ProductCheckoutPage = () => {
   return (
     <section className={`flex flex-col  h-full ${tajawal.className}   text-slate-900    `} >
       {/* --- HERO & FORM SECTION --- */}
-      <section className="  p-6 -mr-2 sm:px-6 mt-40 lg:mt-60 ">
+      <section className="  p-6 sm:px-6 mt-40 lg:mt-60 ">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
              
@@ -478,11 +478,11 @@ const ProductCheckoutPage = () => {
         </div>
       </section>
 
-      <section className="py-16 -mr-2  bg-slate-50">
+      <section className="py-16  bg-slate-50">
           <div className="max-w-4xl mx-auto text-center">
-            <div className='flex flex-col gap-3'>
+            <div className='flex p-5 items-center flex-col gap-3 lg:grid lg:grid-cols-2'>
              {galleryImages_2.map((imgSrc, idx) => (
-                <img key={idx} src={imgSrc}  className="w-full h-auto object-cover  shadow-sm border border-slate-200" />
+                <img key={idx} src={imgSrc}   className="   shadow-sm border border-slate-200" />
               ))}
            </div>
           </div>
@@ -509,7 +509,8 @@ const ProductCheckoutPage = () => {
               <h2 className={`${cairo.className} text-3xl font-black text-slate-800 mb-8`}>آراء من ساهموا معنا في الخير</h2>
                 <div className='grid grid-cols-2 gap-3'>
                   {reviewImages1.map((imgSrc, idx) => (
-                    <img key={idx} src={imgSrc} alt='Review' className="w-full h-auto object-cover rounded-xl shadow-sm border border-slate-200" />
+                    <img key={idx} src={imgSrc} alt='Review' className="w-full h-auto object-cover rounded-xl shadow-sm border
+                     border-slate-200" />
                   ))}
                 </div>
           </div>
