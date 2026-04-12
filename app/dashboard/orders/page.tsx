@@ -1,7 +1,7 @@
 
 import { db } from '@/lib/db'
 import OrdersList from '@/components/OrdersList';
-
+import SideBarNav from "@/components/SideBarNav";
 export default async function OrdersPage ()  {
 
      
@@ -15,8 +15,8 @@ export default async function OrdersPage ()  {
      })
   return(
     <div>
-      <OrdersList 
-        orders={orders} />
+      <SideBarNav/>
+      <OrdersList orders={orders} />
     </div>
   );
 }

@@ -4,12 +4,12 @@ import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { UpgradeProduct } from "@/actions/UpgradeProduct"; 
 import { motion } from "framer-motion";
-import { PackagePlus, DollarSign, AlignLeft, Send, UploadCloud, ImageIcon, Loader2, Type, Quote, Star, ListPlus } from "lucide-react";
+import { PackagePlus, DollarSign, AlignLeft, Send, UploadCloud, ImageIcon, Loader2, Type, Quote, Star, ListPlus, X, Pencil } from "lucide-react";
 import Link from "next/link";
+import SideBarNav from "@/components/SideBarNav";
 
-// قم بتغيير هذه القيم بمعلومات حسابك في Cloudinary
 const CLOUD_NAME = "deimq7tzj"; 
-const UPLOAD_PRESET = "ml_default"; 
+const UPLOAD_PRESET = "dxtx2rdd"; 
 
 export default function EditProductForm({ product }: { product: any }) {
   const router = useRouter();
@@ -48,20 +48,20 @@ export default function EditProductForm({ product }: { product: any }) {
     const file = e.target.files?.[0];
     if (file) setImageUrl(URL.createObjectURL(file));
   };
+  
   const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>, setter: React.Dispatch<React.SetStateAction<string[]>>) => {
     const files = e.target.files;
     if (files && files.length > 0) setter(Array.from(files).map(file => URL.createObjectURL(file)));
   };
 
-  // دالة الرفع المباشر لـ Cloudinary
   const uploadToCloudinary = async (file: File) => {
     if (!file) return null;
     const data = new FormData();
     data.append("file", file);
-    data.append("upload_preset", "dxtx2rdd");
+    data.append("upload_preset", UPLOAD_PRESET);
     
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/deimq7tzj/image/upload`, {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
         method: "POST",
         body: data,
       });
@@ -76,7 +76,7 @@ export default function EditProductForm({ product }: { product: any }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setUploadProgress("جاري رفع الصور بجودة عالية...");
+    setUploadProgress("جاري التحقق وتحديث البيانات...");
 
     try {
       const form = e.currentTarget;
@@ -95,6 +95,7 @@ export default function EditProductForm({ product }: { product: any }) {
       // رفع الصورة الرئيسية
       const imageInput = form.elements.namedItem("image") as HTMLInputElement;
       if (imageInput.files && imageInput.files.length > 0) {
+        setUploadProgress("جاري رفع الصورة الرئيسية...");
         const url = await uploadToCloudinary(imageInput.files[0]);
         if (url) finalData.append("imageUrl", url);
       } else {
@@ -105,6 +106,7 @@ export default function EditProductForm({ product }: { product: any }) {
       const processGallery = async (inputName: string, oldData: string) => {
         const input = form.elements.namedItem(inputName) as HTMLInputElement;
         if (input.files && input.files.length > 0) {
+          setUploadProgress(`جاري رفع صور ${inputName}...`);
           const urls = [];
           for (let i = 0; i < input.files.length; i++) {
             const url = await uploadToCloudinary(input.files[i]);
@@ -123,7 +125,6 @@ export default function EditProductForm({ product }: { product: any }) {
 
       setUploadProgress("جاري حفظ البيانات في السيرفر...");
       
-      // إرسال البيانات (الروابط فقط) إلى السيرفر
       const result = await UpgradeProduct(finalData);
 
       if (result && result.success) {
@@ -141,138 +142,164 @@ export default function EditProductForm({ product }: { product: any }) {
   };
 
   return (
-    <div className="relative flex-col min-h-screen w-full flex items-center py-20 justify-center overflow-hidden bg-[#0f172a]">
-      <div className="flex justify-between gap-6 mb-10 z-10">
-        <Link href='/dashboard/products' className="text-white bg-white/10 px-6 py-2 rounded-xl border border-white/20 hover:bg-white/20 transition">رجوع للوحة</Link>
-      </div>
-
-      <motion.div key={product?.id || "loading"} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} className="relative z-10 w-full max-w-2xl p-6 mx-4">
-        <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl p-8 text-white">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-300 bg-clip-text text-transparent mb-2">
-              تعديل بيانات: {product?.name}
-            </h1>
+    <div className="min-h-screen w-full bg-[#F8FAFC] flex flex-col text-slate-900 pb-12" dir="rtl">
+        <SideBarNav/>
+      {/* Header - Sticky at top for easy access on mobile */}
+      <header className="bg-white border-b border-slate-200 px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600 hidden sm:block">
+            <Pencil className="w-5 h-5" />
           </div>
-
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5" dir="rtl">
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="relative group">
-                 <PackagePlus className="absolute left-4 top-3.5 w-5 h-5 text-emerald-300" />
-                 <input name="name" type="text" defaultValue={product?.name || ""} placeholder="اسم المنتج الأساسي" className="w-full bg-slate-900/50 border border-white/10 p-3 pl-12 rounded-xl focus:outline-none focus:border-emerald-400" required disabled={isSubmitting} />
-              </div>
-              <div className="relative group">
-                 <DollarSign className="absolute left-4 top-3.5 w-5 h-5 text-emerald-300" />
-                 <input name="price" type="number" defaultValue={product?.price || ""} placeholder="السعر الافتراضي" className="w-full bg-slate-900/50 border border-white/10 p-3 pl-12 rounded-xl focus:outline-none focus:border-emerald-400" required disabled={isSubmitting} />
-              </div>
-            </div>
-
-            <div className="relative group">
-               <AlignLeft className="absolute left-4 top-3.5 w-5 h-5 text-emerald-300" />
-               <textarea name="description" defaultValue={product?.description || ""} rows={2} placeholder="وصف المنتج (الأساسي)" className="w-full bg-slate-900/50 border border-white/10 p-3 pl-12 rounded-xl focus:outline-none focus:border-emerald-400" disabled={isSubmitting} />
-            </div>
-
-            <hr className="border-white/10 my-2" />
-
-            <div className="bg-slate-800/50 p-5 rounded-xl border border-slate-600 shadow-inner">
-              <h3 className="text-emerald-400 font-bold mb-4 flex items-center gap-2"><ListPlus className="w-5 h-5"/> تخصيص الباقات</h3>
-              {dynamicPackages.map((pkg: any, index: number) => (
-                <div key={index} className="flex flex-col gap-3 mb-4 p-4 border border-slate-600/50 rounded-lg bg-slate-900/80">
-                  <div className="flex gap-2">
-                    <input type="number" placeholder="الكمية" required value={pkg.quantity} onChange={(e) => { const newPkgs = [...dynamicPackages]; newPkgs[index].quantity = Number(e.target.value); setDynamicPackages(newPkgs); }} className="w-1/3 p-3 bg-slate-800 rounded-lg text-white focus:outline-none focus:border-emerald-500 border border-transparent transition-all" />
-                    <input type="number" placeholder="السعر" required value={pkg.price} onChange={(e) => { const newPkgs = [...dynamicPackages]; newPkgs[index].price = Number(e.target.value); setDynamicPackages(newPkgs); }} className="w-1/3 p-3 bg-slate-800 rounded-lg text-white focus:outline-none focus:border-emerald-500 border border-transparent transition-all" />
-                    <button type="button" onClick={() => { const newPkgs = dynamicPackages.filter((_, i) => i !== index); setDynamicPackages(newPkgs); }} className="w-1/3 p-3 bg-red-500/20 text-red-400 font-bold rounded-lg hover:bg-red-500/40 transition-colors">حذف</button>
-                  </div>
-                  <input type="text" placeholder="محتوى الباقة" required value={pkg.title} onChange={(e) => { const newPkgs = [...dynamicPackages]; newPkgs[index].title = e.target.value; setDynamicPackages(newPkgs); }} className="w-full p-3 bg-slate-800 rounded-lg text-white focus:outline-none focus:border-emerald-500 border border-transparent transition-all text-right" />
-                </div>
-              ))}
-              <button type="button" onClick={() => setDynamicPackages([...dynamicPackages, { quantity: 1, price: 1000, title: "باقة جديدة" }])} className="text-sm w-full text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 py-3 rounded-lg hover:bg-emerald-500/20 transition-colors font-bold">+ إضافة باقة جديدة</button>
-            </div>
-
-            <hr className="border-white/10 my-2" />
-
-            <h3 className="text-cyan-400 font-bold text-sm">النصوص التسويقية</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="relative group">
-                 <Type className="absolute left-4 top-3.5 w-5 h-5 text-cyan-300" />
-                 <input name="hookTitle" type="text" defaultValue={product?.hookTitle || ""} placeholder="العنوان العريض" className="w-full bg-slate-900/50 border border-white/10 p-3 pl-12 rounded-xl focus:outline-none focus:border-cyan-400" disabled={isSubmitting} />
-              </div>
-              <div className="relative group">
-                 <Type className="absolute left-4 top-3.5 w-5 h-5 text-cyan-300" />
-                 <input name="hookSubtitle" type="text" defaultValue={product?.hookSubtitle || ""} placeholder="العنوان الفرعي" className="w-full bg-slate-900/50 border border-white/10 p-3 pl-12 rounded-xl focus:outline-none focus:border-cyan-400" disabled={isSubmitting} />
-              </div>
-            </div>
-            <div className="relative group">
-               <Quote className="absolute left-4 top-3.5 w-5 h-5 text-emerald-300" />
-               <textarea name="hadithText" defaultValue={product?.hadithText || ""} rows={2} placeholder="نص الحديث النبوي" className="w-full bg-slate-900/50 border border-emerald-500/30 p-3 pl-12 rounded-xl focus:outline-none focus:border-emerald-400" disabled={isSubmitting} />
-            </div>
-            <div className="relative group">
-               <AlignLeft className="absolute left-4 top-3.5 w-5 h-5 text-cyan-300" />
-               <textarea name="hookDesc" defaultValue={product?.hookDesc || ""} rows={2} placeholder="الوصف التسويقي أسفل العنوان" className="w-full bg-slate-900/50 border border-white/10 p-3 pl-12 rounded-xl focus:outline-none focus:border-cyan-400" disabled={isSubmitting} />
-            </div>
-
-            <hr className="border-white/10 my-2" />
-
-            <h3 className="text-cyan-400 font-bold text-sm">تغيير الصور (اتركها فارغة للاحتفاظ بالقديمة)</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="relative group border-2 border-dashed border-slate-500 hover:border-emerald-400 rounded-xl transition bg-slate-800/50 p-4">
-                <label className="block text-center text-xs text-emerald-400 font-bold mb-2">الصورة الرئيسية</label>
-                <input name="image" type="file" accept="image/*" onChange={handleImageChange} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" />
-                <div className="flex flex-col items-center justify-center text-slate-400 h-24">
-                  {imageUrl ? <img src={imageUrl} alt="Preview" className="h-full object-cover rounded-lg" /> : <><UploadCloud size={24} /><span className="text-xs mt-1">اضغط للتغيير</span></>}
-                </div>
-              </div>
-              <div className="relative group border-2 border-dashed border-slate-500 hover:border-emerald-400 rounded-xl transition bg-slate-800/50 p-4">
-                 <label className="block text-center text-xs text-emerald-400 font-bold mb-2">صور المعرض</label>
-                 <input name="gallery" type="file" accept="image/*" multiple onChange={(e) => handleGalleryChange(e, setGalleryImage)} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" />
-                 <div className="flex flex-col items-center justify-center text-slate-400 h-24">
-                  {galleryImage.length > 0 ? (
-                    <div className="flex gap-1 overflow-hidden h-full">
-                      {galleryImage.slice(0,3).map((img, i) => <img key={i} src={img} className="h-full w-12 object-cover rounded" />)}
-                    </div>
-                  ) : <><ImageIcon size={24} /><span className="text-xs mt-1">اضغط للتغيير</span></>}
-                 </div>
-              </div>
-              <div className="relative group border-2 border-dashed border-slate-500 hover:border-emerald-400 rounded-xl transition bg-slate-800/50 p-4">
-                <label className="block text-center text-xs text-emerald-400 font-bold mb-2">صور عامة للمنتج</label>
-                <input name="galleryImages_2" type="file" accept="image/*" multiple onChange={(e) => handleGalleryChange(e, setGalleryImages_2)} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" />
-                <div className="flex flex-col items-center justify-center text-slate-400 h-24">
-                  {galleryImages_2.length > 0 ? (
-                    <div className="flex gap-1 overflow-hidden h-full">
-                      {galleryImages_2.slice(0,3).map((img, i) => <img key={i} src={img} className="h-full w-12 object-cover rounded" />)}
-                    </div>
-                  ) : <><ImageIcon size={24} /><span className="text-xs mt-1">اضغط للتغيير</span></>}
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="relative group border-2 border-dashed border-slate-500 hover:border-yellow-400 rounded-xl transition bg-slate-800/50 p-4">
-                 <label className="block text-center text-xs text-yellow-400 font-bold mb-2 flex justify-center gap-1"><Star size={14}/> تقييمات 1</label>
-                 <input name="reviewImages1" type="file" accept="image/*" multiple onChange={(e) => handleGalleryChange(e, setReviewPreview1)} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" />
-                 <div className="flex flex-col items-center justify-center text-slate-400 h-16">
-                  {reviewPreview1.length > 0 ? <span className="text-sm font-bold text-yellow-400">{reviewPreview1.length} صور</span> : <span className="text-xs">اضغط للتغيير</span>}
-                 </div>
-              </div>
-              <div className="relative group border-2 border-dashed border-slate-500 hover:border-yellow-400 rounded-xl transition bg-slate-800/50 p-4">
-                 <label className="block text-center text-xs text-yellow-400 font-bold mb-2 flex justify-center gap-1"><Star size={14}/> تقييمات 2</label>
-                 <input name="reviewImages2" type="file" accept="image/*" multiple onChange={(e) => handleGalleryChange(e, setReviewPreview2)} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" />
-                 <div className="flex flex-col items-center justify-center text-slate-400 h-16">
-                  {reviewPreview2.length > 0 ? <span className="text-sm font-bold text-yellow-400">{reviewPreview2.length} صور</span> : <span className="text-xs">اضغط للتغيير</span>}
-                 </div>
-              </div>
-            </div>
-
-            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={isSubmitting} className={`mt-6 w-full text-white font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-2 ${isSubmitting ? 'bg-slate-600 cursor-not-allowed' : 'bg-gradient-to-r from-emerald-500 to-cyan-500'}`}>
-              {isSubmitting ? (
-                <><span>{uploadProgress || "جاري المعالجة..."}</span><Loader2 className="w-5 h-5 animate-spin" /></>
-              ) : (
-                <><span>حفظ التعديلات</span><Send className="w-5 h-5" /></>
-              )}
-            </motion.button>
-          </form>
+          <div>
+            <h1 className="text-lg md:text-xl font-bold text-slate-900 leading-tight">تعديل المنتج</h1>
+            <p className="text-xs text-slate-500">تحديث تفاصيل: {product?.name}</p>
+          </div>
         </div>
-      </motion.div>
+        <Link 
+          href='/dashboard/products' 
+          className="text-xs md:text-sm font-medium text-slate-500 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 px-3 py-2 md:px-4 rounded-lg transition-colors border border-slate-200 flex items-center gap-2"
+        >
+          <X className="w-4 h-4" /> <span className="hidden sm:inline">إلغاء والعودة</span>
+        </Link>
+      </header>
+
+      {/* Main Form - Grid changes to 1 column on mobile, 3 columns on desktop */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 md:pt-8">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+          
+          {/* COLUMN 1: Basic Info & Packages */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-6">
+            <h2 className="text-sm font-bold text-indigo-600 mb-1 border-b border-slate-100 pb-2">المعلومات الأساسية</h2>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
+              <div className="relative">
+                 <label className="text-xs font-semibold text-slate-500 mb-1 block">اسم المنتج</label>
+                 <input name="name" type="text" defaultValue={product?.name || ""} placeholder="مثال: باقة رمضان" className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" required disabled={isSubmitting} />
+              </div>
+              <div className="relative">
+                 <label className="text-xs font-semibold text-slate-500 mb-1 block">السعر الافتراضي</label>
+                 <input name="price" type="number" defaultValue={product?.price || ""} placeholder="مثال: 4500" className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" required disabled={isSubmitting} />
+              </div>
+            </div>
+
+            <div className="relative">
+               <label className="text-xs font-semibold text-slate-500 mb-1 block">وصف المنتج</label>
+               <textarea name="description" rows={3} defaultValue={product?.description || ""} placeholder="وصف تفصيلي للمنتج..." className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none" disabled={isSubmitting} />
+            </div>
+
+            <div className="mt-2 flex flex-col">
+              <h3 className="text-xs font-bold text-slate-700 mb-3 flex items-center gap-1"><ListPlus className="w-4 h-4 text-indigo-500"/> تخصيص الباقات</h3>
+              
+              <div className="space-y-3">
+                {dynamicPackages.map((pkg: any, index: number) => (
+                  <div key={index} className="flex flex-col gap-2 p-3 border border-slate-100 rounded-lg bg-slate-50">
+                    <div className="flex gap-2">
+                      <input type="number" placeholder="الكمية" required value={pkg.quantity} onChange={(e) => { const newPkgs = [...dynamicPackages]; newPkgs[index].quantity = Number(e.target.value); setDynamicPackages(newPkgs); }} className="w-1/3 p-2 bg-white border border-slate-200 rounded text-sm focus:border-indigo-500 outline-none" />
+                      <input type="number" placeholder="السعر" required value={pkg.price} onChange={(e) => { const newPkgs = [...dynamicPackages]; newPkgs[index].price = Number(e.target.value); setDynamicPackages(newPkgs); }} className="w-1/3 p-2 bg-white border border-slate-200 rounded text-sm focus:border-indigo-500 outline-none" />
+                      <button type="button" onClick={() => setDynamicPackages(dynamicPackages.filter((_, i) => i !== index))} className="w-1/3 p-2 bg-red-50 text-red-600 text-xs font-bold rounded hover:bg-red-100 transition-colors">حذف</button>
+                    </div>
+                    <input type="text" placeholder="محتوى الباقة" required value={pkg.title} onChange={(e) => { const newPkgs = [...dynamicPackages]; newPkgs[index].title = e.target.value; setDynamicPackages(newPkgs); }} className="w-full p-2 bg-white border border-slate-200 rounded text-sm focus:border-indigo-500 outline-none" />
+                  </div>
+                ))}
+              </div>
+              
+              <button type="button" onClick={() => setDynamicPackages([...dynamicPackages, { quantity: 1, price: 1000, title: "باقة جديدة" }])} className="mt-3 text-xs w-full text-indigo-600 bg-indigo-50 border border-indigo-100 py-2.5 rounded-lg hover:bg-indigo-100 transition-colors font-bold">
+                + إضافة باقة أخرى
+              </button>
+            </div>
+          </motion.div>
+
+          {/* COLUMN 2: Marketing Content */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="flex flex-col gap-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-6">
+            <h2 className="text-sm font-bold text-indigo-600 mb-1 border-b border-slate-100 pb-2">النصوص التسويقية (Landing Page)</h2>
+            
+            <div className="relative">
+               <label className="text-xs font-semibold text-slate-500 mb-1 block">العنوان العريض (الخطاف)</label>
+               <input name="hookTitle" type="text" defaultValue={product?.hookTitle || ""} placeholder="مثال: فرصة لا تعوض..." className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" disabled={isSubmitting} />
+            </div>
+            
+            <div className="relative">
+               <label className="text-xs font-semibold text-slate-500 mb-1 block">العنوان الفرعي</label>
+               <input name="hookSubtitle" type="text" defaultValue={product?.hookSubtitle || ""} placeholder="وصف قصير تحت العنوان العريض..." className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" disabled={isSubmitting} />
+            </div>
+
+            <div className="relative">
+               <label className="text-xs font-semibold text-slate-500 mb-1 block flex items-center gap-1"><Quote className="w-3 h-3"/> نص الحديث النبوي أو الحكمة</label>
+               <textarea name="hadithText" rows={3} defaultValue={product?.hadithText || ""} placeholder="قال رسول الله صلى الله عليه وسلم..." className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none" disabled={isSubmitting} />
+            </div>
+
+            <div className="relative">
+               <label className="text-xs font-semibold text-slate-500 mb-1 block">الوصف التسويقي</label>
+               <textarea name="hookDesc" rows={5} defaultValue={product?.hookDesc || ""} placeholder="اشرح للزبون لماذا يجب عليه شراء هذا المنتج الآن..." className="w-full bg-slate-50 border border-slate-200 p-2.5 rounded-lg text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-none" disabled={isSubmitting} />
+            </div>
+          </motion.div>
+
+          {/* COLUMN 3: Media & Submit Action */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="flex flex-col gap-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 md:p-6 lg:sticky lg:top-24">
+            <h2 className="text-sm font-bold text-indigo-600 mb-1 border-b border-slate-100 pb-2">الصور والمراجعات</h2>
+
+            {/* Main Image */}
+            <div className="relative group border-2 border-dashed border-slate-300 hover:border-indigo-500 rounded-xl bg-slate-50 p-3 transition-colors h-32 flex flex-col justify-center">
+              <label className="absolute top-2 right-3 text-[10px] text-slate-400 font-bold">تغيير الصورة الرئيسية</label>
+              <input name="image" type="file" accept="image/*" onChange={handleImageChange} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+              <div className="flex flex-col items-center justify-center text-slate-400">
+                {imageUrl ? <img src={imageUrl} alt="Preview" className="h-24 w-auto object-contain rounded" /> : <><UploadCloud className="w-6 h-6 text-indigo-400 mb-1" /><span className="text-xs">اضغط لتغيير الصورة</span></>}
+              </div>
+            </div>
+
+            {/* 4 Grid Small Images */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="relative group border-2 border-dashed border-slate-300 hover:border-indigo-500 rounded-xl bg-slate-50 p-2 transition-colors h-24">
+                 <label className="block text-center text-[10px] text-slate-500 font-semibold mb-1">صور المعرض 1</label>
+                 <input name="gallery" type="file" accept="image/*" multiple onChange={(e) => handleGalleryChange(e, setGalleryImage)} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                 <div className="flex flex-col items-center justify-center text-slate-400 h-12">
+                  {galleryImage.length > 0 ? <span className="text-xs font-bold text-indigo-500">تم تحديد {galleryImage.length}</span> : <ImageIcon className="w-5 h-5 opacity-50" />}
+                 </div>
+              </div>
+
+              <div className="relative group border-2 border-dashed border-slate-300 hover:border-indigo-500 rounded-xl bg-slate-50 p-2 transition-colors h-24">
+                 <label className="block text-center text-[10px] text-slate-500 font-semibold mb-1">صور المعرض 2</label>
+                 <input name="galleryImages_2" type="file" accept="image/*" multiple onChange={(e) => handleGalleryChange(e, setGalleryImages_2)} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                 <div className="flex flex-col items-center justify-center text-slate-400 h-12">
+                  {galleryImages_2.length > 0 ? <span className="text-xs font-bold text-indigo-500">تم تحديد {galleryImages_2.length}</span> : <ImageIcon className="w-5 h-5 opacity-50" />}
+                 </div>
+              </div>
+
+              <div className="relative group border-2 border-dashed border-slate-300 hover:border-amber-400 rounded-xl bg-slate-50 p-2 transition-colors h-24">
+                 <label className="block text-center text-[10px] text-amber-600 font-semibold mb-1 flex justify-center items-center gap-1"><Star className="w-3 h-3"/> تقييمات 1</label>
+                 <input name="reviewImages1" type="file" accept="image/*" multiple onChange={(e) => handleGalleryChange(e, setReviewPreview1)} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                 <div className="flex flex-col items-center justify-center text-slate-400 h-12">
+                  {reviewPreview1.length > 0 ? <span className="text-xs font-bold text-amber-500">تم تحديد {reviewPreview1.length}</span> : <ImageIcon className="w-5 h-5 opacity-50" />}
+                 </div>
+              </div>
+
+              <div className="relative group border-2 border-dashed border-slate-300 hover:border-amber-400 rounded-xl bg-slate-50 p-2 transition-colors h-24">
+                 <label className="block text-center text-[10px] text-amber-600 font-semibold mb-1 flex justify-center items-center gap-1"><Star className="w-3 h-3"/> تقييمات 2</label>
+                 <input name="reviewImages2" type="file" accept="image/*" multiple onChange={(e) => handleGalleryChange(e, setReviewPreview2)} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                 <div className="flex flex-col items-center justify-center text-slate-400 h-12">
+                  {reviewPreview2.length > 0 ? <span className="text-xs font-bold text-amber-500">تم تحديد {reviewPreview2.length}</span> : <ImageIcon className="w-5 h-5 opacity-50" />}
+                 </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="mt-2 pt-4 border-t border-slate-100">
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className={`w-full text-white font-bold py-3.5 rounded-xl shadow-sm flex items-center justify-center gap-2 transition-all ${isSubmitting ? 'bg-slate-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-md'}`}
+              >
+                {isSubmitting ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /><span className="text-sm">{uploadProgress || "جاري المعالجة..."}</span></>
+                ) : (
+                  <><span className="text-sm">حفظ التعديلات</span><Send className="w-4 h-4" /></>
+                )}
+              </button>
+            </div>
+          </motion.div>
+
+        </form>
+      </main>
     </div>
   );
 }
