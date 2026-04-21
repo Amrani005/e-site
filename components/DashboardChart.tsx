@@ -44,10 +44,11 @@ export default function DashboardChart({ orders }: DashboardChartProps) {
   }, [orders, timeframe]);
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-      <div className="flex justify-between items-center mb-6">
+    <div className="bg-white p-6 rounded-2xl shadow-sm border
+     border-slate-100">
+      <div className="flex  justify-between items-center mb-6">
         <h3 className="text-xl font-bold text-slate-800">تحليل المبيعات</h3>
-        <div className="flex gap-2 bg-slate-100 p-1 rounded-lg">
+        <div className="lg:flex mad:flex grid grid-cols-2 gap-1 bg-slate-100 p-1 rounded-lg">
             <button 
             onClick={() => setTimeframe("day")}
             className={`px-4 py-1 rounded-md text-sm font-medium transition-all ${
